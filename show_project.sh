@@ -18,7 +18,7 @@ output=$(
     echo "# Angular Project Structure Overview"
     echo "This script provides a quick overview of the Angular project's structure and source files."
     echo "- Use angular cli if posible, this will mantain the file convention"
-    echo "- Make sure to use npx ng when providing code samples"
+    echo "- Make sure to use 'npx ng ...' when providing code samples. eg. 'npm ng component --standalone --skip-tests'"
     echo "- Use standalone components to avoid the need for NgModule"
 
     echo -e "\n## Level 1 Tree of Project Root"
