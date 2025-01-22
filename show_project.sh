@@ -4,6 +4,15 @@
 project_root="./"
 src_directory="./src"
 
+# Define files to show
+files_to_show=(
+  "src/main.ts"
+  "src/app/app.component.ts"
+  "src/app/app.config.ts"
+  "src/app/app.routes.ts"
+
+)
+
 # Generate output
 output=$(
     echo "# Angular Project Structure Overview"
@@ -29,12 +38,23 @@ output=$(
     else
         echo "No README.md file found."
     fi
+
+    # Show core file contents
+    echo -e "\n## Core File Contents"
+    for file in "${files_to_show[@]}"; do
+        if [ -f "$file" ]; then
+            echo -e "\n=== $file ==="
+            cat "$file"
+        else
+            echo -e "\nFile not found: $file"
+        fi
+    done
 )
 
 # Print output
 echo "$output"
 
-# Copy to clipboard
+# Copy to clipboard (requires xclip installed on Linux)
 echo "$output" | xclip -selection clipboard
 if [ $? -eq 0 ]; then
     echo -e "\n✓ Successfully copied to clipboard!"
