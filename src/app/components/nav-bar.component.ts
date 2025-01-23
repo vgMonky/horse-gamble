@@ -8,20 +8,31 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule, RouterModule],
   // Inline template
   template: `
-    <nav style="display:flex; gap:1rem;">
-      <a routerLink="/">Home</a>
-      <a routerLink="/trade">Trade</a>
-      <a routerLink="/explore">Explore</a>
+    <nav>
+      <div>
+        <a routerLink="/">| DEX |</a>
+        <a routerLink="/trade">Trade</a>
+        <a routerLink="/explore">Explore</a>
+        <a routerLink="/pool">Pool</a>
+      </div>
+
+      <div>
+        <a> ... </a>
+        <a> My Wallet </a>
+      </div>
     </nav>
   `,
   // Inline styles
   styles: [`
     nav {
       padding: 1rem;
+      display: flex;
+      justify-content: space-between;
     }
     a {
       text-decoration: none;
       font-weight: bold;
+      margin: 10px;
       color: hsl(var(--h), var(--s0), var(--l5))
     }
     a:hover {

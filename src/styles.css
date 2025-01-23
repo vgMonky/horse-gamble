@@ -16,10 +16,15 @@
     --l4: 60%;
     --l5: 75%;
     --l6: 90%;
+  
+    /* Example usage of our global variables, if desired: */
+    /* color: hsl(var(--h), var(--s1), var(--l3)); */
   }
+
+  
   
   /* You can also define some global base styles here */
-  body {
+body {
     margin: 0;
     font-family: sans-serif;
     color: hsl(var(--h), var(--s0), var(--l5));
