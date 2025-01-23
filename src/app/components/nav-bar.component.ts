@@ -18,25 +18,34 @@ import { CommonModule } from '@angular/common';
 
       <div>
         <a> ... </a>
-        <a> My Wallet </a>
+        <a class="btn"> My Wallet </a>
       </div>
     </nav>
   `,
   // Inline styles
   styles: [`
     nav {
-      padding: 1rem;
+      padding: 2rem;
       display: flex;
       justify-content: space-between;
     }
     a {
       text-decoration: none;
-      font-weight: bold;
       margin: 10px;
-      color: hsl(var(--h), var(--s0), var(--l5))
+      color: hsl(var(--h), var(--s0), var(--l4))
     }
     a:hover {
-      color: hsl(var(--h), var(--s1), var(--l3))
+      color: hsl(var(--h), var(--s0), var(--l6))
+    }
+    .btn{
+      font-size: 10pt;
+      padding: 10px 20px;
+      border: 1px solid hsl(var(--h), var(--s5), var(--l2));
+      border-radius: 20px;
+      transition: 0.6s;
+    }
+    .btn:hover{
+      background-color: hsl(var(--h), var(--s4), var(--l2));
     }
   `]
 })

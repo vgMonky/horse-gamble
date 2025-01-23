@@ -24,7 +24,7 @@ import { NavBarComponent } from './components/nav-bar.component';
       justify-content: center;
       align-items: center;
 
-      border: 1px solid red;
+      border: 1px dashed hsl(var(--h), var(--s1), var(--l2));
     }
   `]
 })

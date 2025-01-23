@@ -2,15 +2,20 @@
 
 :root {
     /* One color hue in degrees, e.g., 210 for a blue-ish tone */
-    --h: 280;
+    --h: 170;
   
     /* Saturation levels: 0% (gray) or 100% (full color) */
     --s0: 0%;
-    --s1: 100%;
+    --s1: 10%;
+    --s2: 30%;
+    --s3: 45%;
+    --s4: 60%;
+    --s5: 75%;
+    --s6: 90%;
   
     /* Luminosity levels from 0% (black) to ~100% (white) */
     --l0: 0%;
-    --l1: 15%;
+    --l1: 10%;
     --l2: 30%;
     --l3: 45%;
     --l4: 60%;
@@ -27,6 +32,6 @@
 body {
     margin: 0;
     font-family: sans-serif;
-    color: hsl(var(--h), var(--s0), var(--l5));
+    color: hsl(var(--h), var(--s0), var(--l4));
     background-color: hsl(var(--h), var(--s0), var(--l1));
 }
