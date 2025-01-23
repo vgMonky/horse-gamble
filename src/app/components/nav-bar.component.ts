@@ -17,16 +17,15 @@ import { CommonModule } from '@angular/common';
   // Inline styles
   styles: [`
     nav {
-      background-color: #eee;
       padding: 1rem;
     }
     a {
       text-decoration: none;
-      color: #333;
       font-weight: bold;
+      color: hsl(var(--h), var(--s0), var(--l5))
     }
     a:hover {
-      color: purple;
+      color: hsl(var(--h), var(--s1), var(--l3))
     }
   `]
 })

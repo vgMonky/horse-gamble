@@ -8,9 +8,7 @@ import { Component } from '@angular/core';
     <p>Welcome to the home page!</p>
   `,
   styles: [`
-    h2 {
-      color: #444;
-    }
+
   `]
 })
 export class HomeComponent {}

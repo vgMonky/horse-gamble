@@ -8,9 +8,7 @@ import { Component } from '@angular/core';
     <p>Perform your trades here!</p>
   `,
   styles: [`
-    h2 {
-      color: #225;
-    }
+
   `]
 })
 export class TradeComponent {}

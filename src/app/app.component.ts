@@ -7,22 +7,24 @@ import { NavBarComponent } from './components/nav-bar.component';
   standalone: true,
   imports: [RouterOutlet, NavBarComponent],
   template: `
-    <!-- Our standalone NavBar -->
     <app-nav-bar></app-nav-bar>
-
-    <!-- Where route components like Home/Trade/Explore get injected -->
-    <router-outlet></router-outlet>
+    <div class="view">
+      <router-outlet></router-outlet>
+    </div>
   `,
   styles: [`
-    /* Example styles (optional) */
     :host {
       display: block;
       margin: 0 auto;
-      font-family: sans-serif;
     }
-    app-nav-bar {
-      display: block;
-      margin-bottom: 1rem;
+    
+    .view{
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      border: 1px solid red;
     }
   `]
 })

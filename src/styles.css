@@ -1,1 +1,27 @@
-/* You can add global styles to this file, and also import other style files */
+/* styles.css */
+
+:root {
+    /* One color hue in degrees, e.g., 210 for a blue-ish tone */
+    --h: 280;
+  
+    /* Saturation levels: 0% (gray) or 100% (full color) */
+    --s0: 0%;
+    --s1: 100%;
+  
+    /* Luminosity levels from 0% (black) to ~100% (white) */
+    --l0: 0%;
+    --l1: 15%;
+    --l2: 30%;
+    --l3: 45%;
+    --l4: 60%;
+    --l5: 75%;
+    --l6: 90%;
+  }
+  
+  /* You can also define some global base styles here */
+  body {
+    margin: 0;
+    font-family: sans-serif;
+    color: hsl(var(--h), var(--s0), var(--l5));
+    background-color: hsl(var(--h), var(--s0), var(--l1));
+}
