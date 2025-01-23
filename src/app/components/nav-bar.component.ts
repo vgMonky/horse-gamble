@@ -46,6 +46,7 @@ import { CommonModule } from '@angular/common';
     }
     .btn:hover{
       background-color: hsl(var(--h), var(--s4), var(--l2));
+      cursor: pointer;
     }
   `]
 })
