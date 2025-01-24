@@ -10,7 +10,7 @@ files_to_show=(
   "src/app/app.component.ts"
   "src/app/app.config.ts"
   "src/app/app.routes.ts"
-  "src/style.css"
+  "src/styles.css"
 )
 
 # Generate output
