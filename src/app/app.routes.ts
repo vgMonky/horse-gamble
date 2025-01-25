@@ -1,10 +1,10 @@
 import { Routes } from '@angular/router';
-import { HomeComponent } from './pages/home.component';
-import { TradeComponent } from './pages/trade.component';
-import { ExploreComponent } from './pages/explore.component';
-import { PoolComponent } from './pages/pool.component';
+import { HomeComponent } from '@app/pages/home.component';
+import { TradeComponent } from '@app/pages/trade.component';
+import { ExploreComponent } from '@app/pages/explore.component';
+import { PoolComponent } from '@app/pages/pool.component';
 
-export const routes: Routes = [
+export const routes: Routes =  [
   // Navigate to 'home' component by default (empty path)
   { path: '', component: HomeComponent },
   
