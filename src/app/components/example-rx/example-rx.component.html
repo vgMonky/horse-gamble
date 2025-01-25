@@ -1,0 +1,9 @@
+
+<h2>Example Rx Component</h2>
+
+<ul>
+  <!-- We use the async pipe to auto-subscribe to the posts$ Observable -->
+  <li *ngFor="let post of posts$ | async">
+    <strong>{{ post.id }}:</strong> {{ post.title }}
+  </li>
+</ul>
