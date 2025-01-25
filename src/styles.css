@@ -39,3 +39,21 @@ body {
     color: hsl(var(--h), var(--s0), var(--l4));
     background-color: var(--c1);
 }
+
+.contained{
+  border: 1px dashed var(--c4);
+  border-radius: 20px;
+  padding: 10px 20px;
+}
+.btn{
+  font-size: 10pt;
+  padding: 10px 20px;
+  border: 1px solid var(--c3);
+  background-color: var(--c2);
+  border-radius: 20px;
+  transition: 0.5s;
+}
+.btn:hover{
+  background-color: var(--c3);
+  cursor: pointer;
+}

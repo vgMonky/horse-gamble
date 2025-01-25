@@ -12,15 +12,17 @@ import { PostsService } from '@app/services/posts.service';
   selector: 'app-example-rx',
   imports: [CommonModule],
   template: `
-    <h2>Example Rx Component</h2>
+    <div class="contained">
+      <h2>Example Rx Component</h2>
 
-    <ul>
-      <!-- We use the async pipe to auto-subscribe to the posts$ Observable -->
-      <li *ngFor="let post of posts$ | async">
-        <strong>{{ post.id }}:</strong> {{ post.title }}
-      </li>
-    </ul>
-  `
+      <ul>
+        <!-- We use the async pipe to auto-subscribe to the posts$ Observable -->
+        <li *ngFor="let post of posts$ | async">
+          <strong>{{ post.id }}:</strong> {{ post.title }}
+        </li>
+      </ul>
+    </div>
+  `,
 })
 export class ExampleRxComponent {
   // We'll define an Observable to hold API data

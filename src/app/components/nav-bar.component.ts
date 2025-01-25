@@ -38,17 +38,6 @@ import { CommonModule } from '@angular/common';
     a:hover {
       color: var(--c5)
     }
-    .btn{
-      font-size: 10pt;
-      padding: 10px 20px;
-      border: 1px solid var(--c3);
-      border-radius: 20px;
-      transition: 0.6s;
-    }
-    .btn:hover{
-      background-color: var(--c2);
-      cursor: pointer;
-    }
   `]
 })
 export class NavBarComponent {}
