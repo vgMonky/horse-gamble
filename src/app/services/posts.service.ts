@@ -9,21 +9,26 @@ import { Observable } from 'rxjs';
   providedIn: 'root' // This means Angular will automatically provide it app-wide
 })
 export class PostsService {
+  private readonly apiUrl = 'https://jsonplaceholder.typicode.com/posts';
+
   constructor(private http: HttpClient) {}
 
-  getFilteredPosts(): Observable<any[]> {
-    return this.http
-      .get<any[]>('https://jsonplaceholder.typicode.com/posts')
-      .pipe(
-        // Filter out items where 'id >= 10'
-        map(posts => posts.filter(post => post.id < 10)),
-        // Transform the titles to uppercase
-        map(posts =>
-          posts.map(post => ({
-            ...post,
-            title: post.title.toUpperCase()
-          }))
-        )
-      );
+  /**
+   * Fetches posts and applies filtering and transformation.
+   * @param maxId The maximum ID of posts to retrieve.
+   * @returns An Observable emitting the filtered and transformed posts.
+   */
+  getFilteredPosts(maxId: number): Observable<any[]> {
+    return this.http.get<any[]>(this.apiUrl).pipe(
+      // Filter out posts where 'id' is greater than or equal to maxId
+      map(posts => posts.filter(post => post.id < maxId)),
+      // Transform the titles to uppercase
+      map(posts =>
+        posts.map(post => ({
+          ...post,
+          title: post.title.toUpperCase()
+        }))
+      )
+    );
   }
 }
