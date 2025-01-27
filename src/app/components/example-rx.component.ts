@@ -1,28 +1,28 @@
 // src/app/components/example-rx.component.ts
 
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Observable, BehaviorSubject } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { Observable, of } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap, startWith, map } from 'rxjs/operators';
 
-// Import our new service
+// Import our PostsService
 import { PostsService } from '@app/services/posts.service';
 
 @Component({
   standalone: true,
   selector: 'app-example-rx',
-  imports: [CommonModule],
+  imports: [CommonModule, ReactiveFormsModule],
   template: `
     <div class="contained">
-      <h2>Example Rx Component</h2>
+      <h2>Example Rx Component with Reactive Forms</h2>
 
-      <!-- Input field to set the maximum number of posts -->
+      <!-- Input field bound to FormControl -->
       <label for="maxPosts">Number of Posts to Display:</label>
       <input
         id="maxPosts"
         type="number"
-        [value]="initialMaxId"
-        (input)="onMaxIdChange($event)"
+        [formControl]="maxIdControl"
         min="1"
         max="100"
       />
@@ -53,43 +53,42 @@ import { PostsService } from '@app/services/posts.service';
     }
   `]
 })
-export class ExampleRxComponent {
-  // Observable to hold API data
-  posts$: Observable<any[]>;
+export class ExampleRxComponent implements OnInit {
+  // Initialize posts$ with an empty array Observable
+  posts$: Observable<any[]> = of([]);
 
-  // BehaviorSubject to hold the current maxId value
-  private maxIdSubject: BehaviorSubject<number>;
-
-  // Initial value for maxId
+  maxIdControl: FormControl;
   initialMaxId = 10;
 
   constructor(private postsService: PostsService) {
-    // Initialize the BehaviorSubject with the initial maxId value
-    this.maxIdSubject = new BehaviorSubject<number>(this.initialMaxId);
+    this.maxIdControl = new FormControl(this.initialMaxId);
+  }
 
-    // Set up the posts$ Observable to react to changes in maxId
-    this.posts$ = this.maxIdSubject.asObservable().pipe(
-      // switchMap cancels previous HTTP requests if a new value comes in
-      switchMap(maxId => this.postsService.getFilteredPosts(maxId))
+  ngOnInit(): void {
+    this.posts$ = this.maxIdControl.valueChanges.pipe(
+      startWith(this.maxIdControl.value), // Emit the initial value
+      debounceTime(300),                   // Wait for 300ms pause in events
+      distinctUntilChanged(),              // Only emit if value has changed
+      switchMap((maxId: number) => {
+        const validatedMaxId = this.validateMaxId(maxId);
+        return this.postsService.getFilteredPosts(validatedMaxId);
+      })
     );
   }
 
   /**
-   * Handler for input changes to maxId.
-   * @param event The input event containing the new value.
+   * Validates the maxId input.
+   * Ensures the value is between 1 and 100.
+   * @param maxId The input value to validate.
+   * @returns A valid maxId within the range [1, 100].
    */
-  onMaxIdChange(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    let value = Number(input.value);
-
-    // Validate the input to be within desired range
+  private validateMaxId(maxId: number): number {
+    let value = Number(maxId);
     if (isNaN(value) || value < 1) {
       value = 1;
     } else if (value > 100) {
       value = 100;
     }
-
-    // Update the BehaviorSubject with the new maxId value
-    this.maxIdSubject.next(value);
+    return value;
   }
 }
