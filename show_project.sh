@@ -17,9 +17,13 @@ files_to_show=(
 output=$(
     echo "# Angular Project Structure Overview"
     echo "This script provides a quick overview of the Angular project's structure and source files."
-    echo "- Use angular cli if posible, this will mantain the file convention"
+    echo ""
+    echo "The next list of instrucctions only apply if the future promped scenarios needs it:"
+    echo "- Use angular cli if posible, this will mantain the file convention."
     echo "- Make sure to use 'npx ng ...' when providing code samples. eg. 'npm ng component --standalone --skip-tests'"
-    echo "- Use standalone components to avoid the need for NgModule"
+    echo "- Use standalone components to avoid the need for NgModule."
+    echo "- Use RxJS when ever it is convinient for asynchronous and event-based programs."
+    echo "- Use NgRx store when ever convinient for global state definitions and management"
 
     echo -e "\n## Level 1 Tree of Project Root"
     tree -L 1 "$project_root"

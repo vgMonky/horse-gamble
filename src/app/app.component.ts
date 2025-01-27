@@ -24,7 +24,7 @@ import { NavBarComponent } from './ui/nav-bar.component';
       justify-content: center;
       align-items: center;
 
-      border: 1px dashed var(--c2);
+      border: 1px dashed var(--c3);
     }
   `]
 })
