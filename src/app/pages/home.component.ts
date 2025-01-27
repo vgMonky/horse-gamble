@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {ExampleRxComponent} from '@app/components/example-rx.component';
+import {ExampleRxComponent} from '@app/ui/example-rx.component';
 
 @Component({
   standalone: true,
