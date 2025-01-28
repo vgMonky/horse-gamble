@@ -4,6 +4,14 @@
     /* One color hue in degrees, e.g., 210 for a blue-ish tone */
     --h: 170;
     --h1: 450;
+    
+    /* Light Theme */
+    --c5: hsl(var(--h), 0%, 35%); /* dark-b */
+    --c4: hsl(var(--h), 0%, 0%); /* dark */
+    --c2: hsl(var(--h), 50%, 70%); /* accent-b */
+    --c3: hsl(var(--h), 50%, 50%); /* accent */
+    --c1: hsl(var(--h), 0%, 95%); /* light-b */
+    --c0: hsl(var(--h), 10%, 98%); /* light */ 
 
     /* Dark Theme */
     --c0: hsl(var(--h), 0%, 6%); /* dark */
@@ -13,13 +21,7 @@
     --c4: hsl(var(--h), 0%, 60%); /* light-b */
     --c5: hsl(var(--h), 10%, 95%); /* light */
 
-    /* Light Theme */
-    --c5: hsl(var(--h), 0%, 35%); /* dark-b */
-    --c4: hsl(var(--h), 0%, 0%); /* dark */
-    --c2: hsl(var(--h), 50%, 70%); /* accent-b */
-    --c3: hsl(var(--h), 50%, 50%); /* accent */
-    --c1: hsl(var(--h), 0%, 95%); /* light-b */
-    --c0: hsl(var(--h), 10%, 98%); /* light */ 
+
 
  
   

@@ -7,7 +7,7 @@ import { Observable, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap, startWith, map } from 'rxjs/operators';
 
 // Import our PostsService
-import { PostsService } from '@app/services/posts.service';
+import { PostsService } from '@app/core/services/posts.service';
 
 @Component({
   standalone: true,
