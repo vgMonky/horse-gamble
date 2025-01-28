@@ -3,30 +3,16 @@
 :root {
     /* One color hue in degrees, e.g., 210 for a blue-ish tone */
     --h: 170;
-    /* Saturation levels: 0% (gray) or 100% (full color) */
-    --s0: 0%;
-    --s1: 10%;
-    --s2: 30%;
-    --s3: 45%;
-    --s4: 60%;
-    --s5: 75%;
-    --s6: 90%;
-    /* Luminosity levels from 0% (black) to ~100% (white) */
-    --l0: 5%;
-    --l1: 8%;
-    --l2: 30%;
-    --l3: 45%;
-    --l4: 60%;
-    --l5: 80%;
-    --l6: 90%;
-  
+    --h1: 450;
+
     /* Dark Theme */
-    --c0: hsl(var(--h), var(--s0), var(--l0)); /* dark */
-    --c1: hsl(var(--h), var(--s0), var(--l1)); /* dark-semi */
-    --c2: hsl(var(--h), var(--s2), var(--l1)); /* accent-dark */
-    --c3: hsl(var(--h), var(--s4), var(--l2)); /* accent */
-    --c4: hsl(var(--h), var(--s0), var(--l4)); /* light-semi */
-    --c5: hsl(var(--h), var(--s1), var(--l6)); /* light */
+    --c0: hsl(var(--h), 0%, 5%); /* dark */
+    --c1: hsl(var(--h), 0%, 8%); /* dark-semi */
+    --c2: hsl(var(--h), 30%, 8%); /* accent-dark */
+    --c3: hsl(var(--h), 60%, 30%); /* accent */
+    --c4: hsl(var(--h), 0%, 60%); /* light-semi */
+    --c5: hsl(var(--h), 10%, 95%); /* light */
+
   
   }
 
@@ -36,7 +22,7 @@
 body {
     margin: 0;
     font-family: sans-serif;
-    color: hsl(var(--h), var(--s0), var(--l4));
+    color: var(--c4);
     background-color: var(--c1);
 }
 
