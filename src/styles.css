@@ -6,24 +6,33 @@
     --h1: 450;
 
     /* Dark Theme */
-    --c0: hsl(var(--h), 0%, 5%); /* dark */
-    --c1: hsl(var(--h), 0%, 8%); /* dark-semi */
-    --c2: hsl(var(--h), 30%, 8%); /* accent-dark */
-    --c3: hsl(var(--h), 60%, 30%); /* accent */
-    --c4: hsl(var(--h), 0%, 60%); /* light-semi */
+    --c0: hsl(var(--h), 0%, 6%); /* dark */
+    --c1: hsl(var(--h), 0%, 8%); /* dark-b */
+    --c2: hsl(var(--h), 30%, 8%); /* accent-b */
+    --c3: hsl(var(--h), 56%, 35%); /* accent */
+    --c4: hsl(var(--h), 0%, 60%); /* light-b */
     --c5: hsl(var(--h), 10%, 95%); /* light */
 
+    /* Light Theme */
+    --c5: hsl(var(--h), 0%, 35%); /* dark-b */
+    --c4: hsl(var(--h), 0%, 0%); /* dark */
+    --c2: hsl(var(--h), 50%, 70%); /* accent-b */
+    --c3: hsl(var(--h), 50%, 50%); /* accent */
+    --c1: hsl(var(--h), 0%, 95%); /* light-b */
+    --c0: hsl(var(--h), 10%, 98%); /* light */ 
+
+ 
   
   }
 
   
   
-/* You can also define some global base styles here */
+/* Global base styles here */
 body {
     margin: 0;
     font-family: sans-serif;
     color: var(--c4);
-    background-color: var(--c1);
+    background-color: var(--c0);
 }
 
 .contained{
@@ -35,11 +44,20 @@ body {
   font-size: 10pt;
   padding: 10px 20px;
   border: 1px solid var(--c3);
-  background-color: var(--c2);
   border-radius: 20px;
-  transition: 0.5s;
+  transition: 0.2s;
 }
 .btn:hover{
   background-color: var(--c3);
   cursor: pointer;
+  color: var(--c0);
+}
+a {
+  text-decoration: none;
+  margin: 10px;
+  color: var(--c4);
+}
+a:hover {
+  color: var(--c5);
+
 }

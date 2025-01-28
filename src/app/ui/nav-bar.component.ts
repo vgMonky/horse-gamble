@@ -28,15 +28,7 @@ import { CommonModule } from '@angular/common';
       padding: 2rem 1rem;
       display: flex;
       justify-content: space-between;
-      background-color: var(--c1);
-    }
-    a {
-      text-decoration: none;
-      margin: 10px;
-      color: var(--c4);
-    }
-    a:hover {
-      color: var(--c5)
+      background-color: var(--c0);
     }
   `]
 })
