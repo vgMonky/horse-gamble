@@ -1,4 +1,4 @@
-// src/app/components/example-rx.component.ts
+// src/app/core/components/example-rx.component.ts
 
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';

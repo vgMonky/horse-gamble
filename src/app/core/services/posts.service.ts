@@ -1,4 +1,4 @@
-// src/app/services/posts.service.ts
+// src/app/core/services/posts.service.ts
 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
