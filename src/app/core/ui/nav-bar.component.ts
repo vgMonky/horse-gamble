@@ -10,15 +10,19 @@ import { CommonModule } from '@angular/common';
   template: `
     <nav>
       <div>
-        <a routerLink="/">| DEX |</a>
-        <a routerLink="/trade">Trade</a>
-        <a routerLink="/explore">Explore</a>
-        <a routerLink="/pool">Pool</a>
+        <a routerLink="/" 
+          routerLinkActive="active-link" 
+          [routerLinkActiveOptions]="{ exact: true }">
+          | DEX |
+        </a>
+        <a routerLink="/trade" routerLinkActive="active-link">Trade</a>
+        <a routerLink="/explore" routerLinkActive="active-link">Explore</a>
+        <a routerLink="/pool" routerLinkActive="active-link">Pool</a>
       </div>
 
       <div>
         <a> ... </a>
-        <a class="btn"> My Wallet </a>
+        <a class="btn">My Wallet</a>
       </div>
     </nav>
   `,
@@ -30,6 +34,10 @@ import { CommonModule } from '@angular/common';
       justify-content: space-between;
       background-color: var(--c0);
     }
+
+    .active-link {
+      color: var(--c5);
+  }
   `]
 })
 export class NavBarComponent {}
