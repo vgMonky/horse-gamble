@@ -11,6 +11,8 @@ files_to_show=(
   "src/app/app.config.ts"
   "src/app/app.routes.ts"
   "src/styles.css"
+  "src/app/core/store/app.state.ts"
+  "src/app/core/store/index_reducers.ts"
 )
 
 # Generate output
