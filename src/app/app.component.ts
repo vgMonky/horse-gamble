@@ -23,6 +23,7 @@ import { NavBarComponent } from './core/ui/nav-bar.component';
       flex-direction: column;
       justify-content: center;
       align-items: center;
+      border: 1px dashed var(--c3);
 
       // border: 1px dashed var(--c3);
     }

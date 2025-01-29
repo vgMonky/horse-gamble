@@ -21,7 +21,7 @@ import { DOCUMENT } from '@angular/common';
         >
           | DEX |
         </a>
-        <button 
+        <a 
           class="hamburger" 
           (click)="toggleMenu()" 
           aria-label="Toggle navigation menu" 
@@ -29,7 +29,7 @@ import { DOCUMENT } from '@angular/common';
           [attr.aria-controls]="menuId"
         >
           &#9776;
-        </button>
+        </a>
 
         <!-- Center: Nav links (visible on large screens) -->
         <div class="nav-center">
@@ -41,8 +41,8 @@ import { DOCUMENT } from '@angular/common';
 
       <!-- Right side: always visible -->
       <div class="nav-right">
-        <a href="#"> ... </a>
-        <a class="btn" href="#">My Wallet</a>
+        <a class="setting-icon"> &#9881; </a>
+        <a class="btn">My Wallet</a>
       </div>
     </nav>
 
@@ -88,11 +88,12 @@ import { DOCUMENT } from '@angular/common';
     /* Hamburger icon for smaller screens */
     .hamburger {
       display: none;    /* hidden by default, shown in mobile */
+      font-size: 1.3rem;
+      cursor: pointer;
+    }
+    .setting-icon{
       font-size: 1.5rem;
       cursor: pointer;
-      background: none;
-      border: none;
-      color: inherit;
     }
 
     /* Active link style */
