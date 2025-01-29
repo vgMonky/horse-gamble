@@ -10,8 +10,8 @@
     --c4: hsl(var(--h), 0%, 0%); /* dark */
     --c2: hsl(var(--h), 50%, 70%); /* accent-b */
     --c3: hsl(var(--h), 50%, 50%); /* accent */
-    --c1: hsl(var(--h), 0%, 95%); /* light-b */
-    --c0: hsl(var(--h), 10%, 98%); /* light */ 
+    --c1: hsl(var(--h), 0%, 70%); /* light-b */
+    --c0: hsl(var(--h), 0%, 94%); /* light */ 
 
     /* Dark Theme */
     --c0: hsl(var(--h1), 0%, 6%); /* dark */
@@ -20,6 +20,7 @@
     --c3: hsl(var(--h), 56%, 35%); /* accent */
     --c4: hsl(var(--h), 0%, 60%); /* light-b */
     --c5: hsl(var(--h), 10%, 95%); /* light */
+
 
   }
 
@@ -41,15 +42,16 @@ body {
 .btn{
   font-size: 10pt;
   padding: 10px 20px;
+  color: var(--c0);
   border: 1px solid var(--c3);
-  background-color: var(--c2);
+  background-color: var(--c3);
   border-radius: 20px;
   transition: 0.2s;
 }
 .btn:hover{
-  background-color: var(--c3);
+  background-color: var(--c0);
   cursor: pointer;
-  color: var(--c0);
+  color: var(--c3);
 }
 a {
   text-decoration: none;
@@ -57,5 +59,5 @@ a {
   color: var(--c4);
 }
 a:hover {
-  color: var(--c5);
+  color: var(--c3);
 }

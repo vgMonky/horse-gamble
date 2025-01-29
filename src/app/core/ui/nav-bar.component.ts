@@ -1,5 +1,3 @@
-// src/app/core/components/nav-bar.component.ts
-
 import { Component, Renderer2, Inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -41,8 +39,8 @@ import { DOCUMENT } from '@angular/common';
 
       <!-- Right side: always visible -->
       <div class="nav-right">
-        <a class="setting-icon"> &#9881; </a>
-        <a class="btn">My Wallet</a>
+        <a class="setting-icon" (click)="toggleSettings()"> &#9881; </a>
+        <a class="btn" (click)="toggleWallet()">My Wallet</a>
       </div>
     </nav>
 
@@ -53,6 +51,16 @@ import { DOCUMENT } from '@angular/common';
         <a routerLink="/explore" routerLinkActive="active-link" (click)="closeMenu()">Explore</a>
         <a routerLink="/pool" routerLinkActive="active-link" (click)="closeMenu()">Pool</a>
       </div>
+    </app-window-container>
+
+    <!-- Window Container for Settings -->
+    <app-window-container *ngIf="isSettingsOpen" (close)="closeSettings()">
+      <p>global preference settings here</p>
+    </app-window-container>
+
+    <!-- Window Container for My Wallet -->
+    <app-window-container *ngIf="isWalletOpen" (close)="closeWallet()">
+      <p>My Wallet content here</p>
     </app-window-container>
   `,
   styles: [`
@@ -129,13 +137,12 @@ import { DOCUMENT } from '@angular/common';
 })
 export class NavBarComponent {
   isMenuOpen = false;
+  isSettingsOpen = false;
+  isWalletOpen = false;
   menuId = 'mobile-menu';
 
   constructor(private renderer: Renderer2, @Inject(DOCUMENT) private document: Document) {}
 
-  /**
-   * Toggles the menu open/closed state.
-   */
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;
     if (this.isMenuOpen) {
@@ -144,12 +151,14 @@ export class NavBarComponent {
       this.renderer.removeClass(this.document.body, 'no-scroll');
     }
   }
-
-  /**
-   * Closes the menu and removes the no-scroll class from body.
-   */
   closeMenu() {
     this.isMenuOpen = false;
     this.renderer.removeClass(this.document.body, 'no-scroll');
   }
+
+  toggleSettings() {this.isSettingsOpen = !this.isSettingsOpen;}
+  closeSettings() {this.isSettingsOpen = false;}
+
+  toggleWallet() {this.isWalletOpen = !this.isWalletOpen;}
+  closeWallet() {this.isWalletOpen = false;}
 }
