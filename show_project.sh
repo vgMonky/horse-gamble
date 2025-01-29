@@ -24,6 +24,7 @@ output=$(
     echo "- Use standalone components to avoid the need for NgModule."
     echo "- Use RxJS when ever it is convinient for asynchronous and event-based programs."
     echo "- Use NgRx store when ever convinient for global state definitions and management"
+    echo "- The store will contain directories defined for store slices, and will centralize import references for reducers and effects on their corresponding index file. "
 
     echo -e "\n## Level 1 Tree of Project Root"
     tree -L 1 "$project_root"
