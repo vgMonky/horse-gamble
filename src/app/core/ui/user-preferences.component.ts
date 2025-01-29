@@ -1,5 +1,3 @@
-// src/app/core/ui/user-preferences.component.ts
-
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Store, select } from '@ngrx/store';
@@ -21,17 +19,31 @@ import { Observable, Subscription } from 'rxjs';
         Switch to {{ (isDarkTheme$ | async) ? 'Light' : 'Dark' }} Theme
       </button>
       
-      <!-- Hue Input -->
+      <!-- Hue Slider -->
       <div class="input-group">
-        <label for="hue">Hue (--h):</label>
-        <input type="number" id="hue" [value]="(hue$ | async)" (change)="updateHue($event)" min="0" max="360" />
+        <label for="hue">Hue (--h): {{ (hue$ | async) }}</label>
+        <input 
+          type="range" 
+          id="hue" 
+          [value]="(hue$ | async)" 
+          (input)="updateHue($event)" 
+          min="0" 
+          max="360" 
+        />
         <div class="color-display" [style.backgroundColor]="'hsl(' + (hue$ | async) + ', 50%, 50%)'"></div>
       </div>
       
-      <!-- Hue1 Input -->
+      <!-- Hue1 Slider -->
       <div class="input-group">
-        <label for="hue1">Hue1 (--h1):</label>
-        <input type="number" id="hue1" [value]="(hue1$ | async)" (change)="updateHue1($event)" min="0" max="360" />
+        <label for="hue1">Hue1 (--h1): {{ (hue1$ | async) }}</label>
+        <input 
+          type="range" 
+          id="hue1" 
+          [value]="(hue1$ | async)" 
+          (input)="updateHue1($event)" 
+          min="0" 
+          max="360" 
+        />
         <div class="color-display" [style.backgroundColor]="'hsl(' + (hue1$ | async) + ', 50%, 50%)'"></div>
       </div>
     </div>
@@ -51,11 +63,22 @@ import { Observable, Subscription } from 'rxjs';
       gap: 10px;
     }
 
+    .input-group label {
+      width: 100px;
+    }
+
+    .input-group input[type="range"] {
+      flex: 1;
+    }
+
     .color-display {
       width: 30px;
       height: 30px;
-      border-radius: 30px;
+      border-radius: 50%;
+      border: 1px solid #ccc;
     }
+
+
   `]
 })
 export class UserPreferencesComponent implements OnInit, OnDestroy {
