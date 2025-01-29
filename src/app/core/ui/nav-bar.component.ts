@@ -17,7 +17,9 @@ import { DOCUMENT } from '@angular/common';
           routerLinkActive="active-link" 
           [routerLinkActiveOptions]="{ exact: true }"
         >
-          | DEX |
+          <svg width="40" height="40" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="50" r="40" stroke="var(--c3)" stroke-width="10" fill="none" />
+          </svg>
         </a>
         <a 
           class="hamburger" 
@@ -40,6 +42,7 @@ import { DOCUMENT } from '@angular/common';
       <!-- Right side: always visible -->
       <div class="nav-right">
         <a class="setting-icon" (click)="toggleSettings()"> &#9881; </a>
+        <a class="search-icon" (click)="toggleSearch()"> &#9906; </a>
         <a class="btn" (click)="toggleWallet()">My Wallet</a>
       </div>
     </nav>
@@ -55,7 +58,12 @@ import { DOCUMENT } from '@angular/common';
 
     <!-- Window Container for Settings -->
     <app-window-container *ngIf="isSettingsOpen" (close)="closeSettings()">
-      <p>global preference settings here</p>
+      <p>User Preference Settings here</p>
+    </app-window-container>
+
+    <!-- Window Container for Search -->
+    <app-window-container *ngIf="isSearchOpen" (close)="closeSearch()">
+      <p>Search component here</p>
     </app-window-container>
 
     <!-- Window Container for My Wallet -->
@@ -63,8 +71,8 @@ import { DOCUMENT } from '@angular/common';
       <p>My Wallet content here</p>
     </app-window-container>
   `,
-  styles: [`
-    nav {
+  styles: [
+    `nav {
       padding: 1rem 2rem;
       display: flex;
       align-items: center;
@@ -86,7 +94,7 @@ import { DOCUMENT } from '@angular/common';
       gap: 1rem;
     }
 
-    /* Right side: "..." and "My Wallet" */
+    /* Right side: */
     .nav-right {
       display: flex;
       align-items: center;
@@ -99,7 +107,7 @@ import { DOCUMENT } from '@angular/common';
       font-size: 1.3rem;
       cursor: pointer;
     }
-    .setting-icon{
+    .setting-icon, .search-icon {
       font-size: 1.5rem;
       cursor: pointer;
     }
@@ -139,26 +147,20 @@ export class NavBarComponent {
   isMenuOpen = false;
   isSettingsOpen = false;
   isWalletOpen = false;
+  isSearchOpen = false;
   menuId = 'mobile-menu';
 
   constructor(private renderer: Renderer2, @Inject(DOCUMENT) private document: Document) {}
 
-  toggleMenu() {
-    this.isMenuOpen = !this.isMenuOpen;
-    if (this.isMenuOpen) {
-      this.renderer.addClass(this.document.body, 'no-scroll');
-    } else {
-      this.renderer.removeClass(this.document.body, 'no-scroll');
-    }
-  }
-  closeMenu() {
-    this.isMenuOpen = false;
-    this.renderer.removeClass(this.document.body, 'no-scroll');
-  }
+  toggleMenu() {this.isMenuOpen = !this.isMenuOpen;}
+  closeMenu() {this.isMenuOpen = false;}
 
   toggleSettings() {this.isSettingsOpen = !this.isSettingsOpen;}
   closeSettings() {this.isSettingsOpen = false;}
 
   toggleWallet() {this.isWalletOpen = !this.isWalletOpen;}
   closeWallet() {this.isWalletOpen = false;}
+
+  toggleSearch() {this.isSearchOpen = !this.isSearchOpen;}
+  closeSearch() {this.isSearchOpen = false;}
 }

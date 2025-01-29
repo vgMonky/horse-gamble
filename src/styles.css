@@ -2,7 +2,7 @@
 
 :root {
     /* One color hue in degrees, e.g., 210 for a blue-ish tone */
-    --h: 150;
+    --h: 170;
     --h1: 320;
 
     /* Light Theme */
@@ -14,7 +14,7 @@
     --c0: hsl(var(--h), 0%, 94%); /* light */ 
 
     /* Dark Theme */
-    --c0: hsl(var(--h1), 0%, 6%); /* dark */
+    --c0: hsl(var(--h), 0%, 6%); /* dark */
     --c1: hsl(var(--h), 0%, 8%); /* dark-b */
     --c2: hsl(var(--h), 30%, 8%); /* accent-b */
     --c3: hsl(var(--h), 56%, 35%); /* accent */
