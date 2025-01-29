@@ -7,7 +7,8 @@ import { routes } from './app.routes';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { EffectsModule } from '@ngrx/effects';
-import { userPreferencesReducer } from '@app/core/store/user_preferences/user-preferences.reducer';
+import { reducers } from './core/store/index_reducers'; // Import centralized reducers
+import { AppEffects } from './core/store/index_effects'; // Import centralized effects
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -16,14 +17,15 @@ export const appConfig: ApplicationConfig = {
     importProvidersFrom(HttpClientModule),
     importProvidersFrom(
       StoreModule.forRoot(
-        {userPreferences: userPreferencesReducer },
+        reducers,
         {
-        runtimeChecks: {
-          strictStateImmutability: true,
-          strictActionImmutability: true,
-        },
-      }),
-      EffectsModule.forRoot([]),
+          runtimeChecks: {
+            strictStateImmutability: true,
+            strictActionImmutability: true,
+          },
+        }
+      ),
+      EffectsModule.forRoot(AppEffects),
       StoreDevtoolsModule.instrument({
         maxAge: 25, // Retains last 25 states
         logOnly: false // Set to false since environment is not defined
