@@ -1,15 +1,15 @@
 /* styles.css */
 
-/* Default Light Theme */
+/* Default Dark Theme */
 :root {
   --h: 170;
   --h1: 320;
-  --c5: hsl(var(--h), 0%, 35%); /* dark-b */
-  --c4: hsl(var(--h), 0%, 0%); /* dark */
-  --c2: hsl(var(--h), 50%, 70%); /* accent-b */
-  --c3: hsl(var(--h), 50%, 50%); /* accent */
-  --c1: hsl(var(--h), 0%, 70%); /* light-b */
-  --c0: hsl(var(--h), 0%, 94%); /* light */ 
+  --c0: hsl(var(--h), 0%, 6%); /* dark */
+  --c1: hsl(var(--h), 0%, 8%); /* dark-b */
+  --c2: hsl(var(--h), 30%, 8%); /* accent-b */
+  --c3: hsl(var(--h), 56%, 35%); /* accent */
+  --c4: hsl(var(--h), 0%, 60%); /* light-b */
+  --c5: hsl(var(--h), 10%, 95%); /* light */
 }
 
 /* Dark Theme */
