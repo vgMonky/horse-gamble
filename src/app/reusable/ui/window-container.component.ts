@@ -34,6 +34,7 @@ import { CommonModule } from '@angular/common';
       position: relative; /* To position the close button */
       background-color: var(--c0);
       padding: 1.5rem;
+      margin: 0.6rem;
       border-radius: 8px;
       box-shadow: 0 2px 10px rgba(0,0,0,0.3);
       min-width: 200px;
