@@ -5,8 +5,8 @@ import { Component } from '@angular/core';
   selector: 'app-home',
   imports: [],
   template: `
-    <h2>Home Page</h2>
-    <p>Welcome to the home page!</p>
+    <h2>DEX</h2>
+    <p>A peer-to-peer marketplace where transactions occur directly between crypto traders.</p>
   `,
   styles: [`
 

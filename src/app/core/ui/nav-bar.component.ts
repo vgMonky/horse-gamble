@@ -43,7 +43,7 @@ import { DOCUMENT } from '@angular/common';
       <div class="nav-right">
         <a class="setting-icon" (click)="toggleSettings()"> &#9881; </a>
         <a class="search-icon" (click)="toggleSearch()"> &#9906; </a>
-        <a class="btn" (click)="toggleWallet()">My Wallet</a>
+        <a class="btn" (click)="toggleWallet()">Wallet</a>
       </div>
     </nav>
 
@@ -85,7 +85,7 @@ import { DOCUMENT } from '@angular/common';
     .nav-left {
       display: flex;
       align-items: center;
-      gap: 1rem;
+      gap: 0.3rem;
     }
 
     /* Center: Nav links for large screens */
@@ -98,7 +98,7 @@ import { DOCUMENT } from '@angular/common';
     .nav-right {
       display: flex;
       align-items: center;
-      gap: 1rem;
+      gap: 0.3rem;
     }
 
     /* Hamburger icon for smaller screens */
