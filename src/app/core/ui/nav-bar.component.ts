@@ -2,12 +2,13 @@ import { Component, Renderer2, Inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { WindowContainerComponent } from '@app/reusable/ui/window-container.component';
+import { UserPreferencesComponent } from './user-preferences.component';
 import { DOCUMENT } from '@angular/common';
 
 @Component({
   standalone: true,
   selector: 'app-nav-bar',
-  imports: [CommonModule, RouterModule, WindowContainerComponent],
+  imports: [CommonModule, RouterModule, WindowContainerComponent, UserPreferencesComponent],
   template: `
     <nav>
       <!-- Left side: DEX logo + Hamburger Icon (visible on small screens) -->
@@ -58,7 +59,7 @@ import { DOCUMENT } from '@angular/common';
 
     <!-- Window Container for Settings -->
     <app-window-container *ngIf="isSettingsOpen" (close)="closeSettings()">
-      <p>User Preference Settings here</p>
+      <app-user-preferences></app-user-preferences>
     </app-window-container>
 
     <!-- Window Container for Search -->

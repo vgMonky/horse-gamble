@@ -42,9 +42,7 @@ import { Observable, Subscription } from 'rxjs';
       flex-direction: column;
       gap: 20px;
       padding: 20px;
-      border: 1px solid var(--c4);
       border-radius: 10px;
-      background-color: var(--c1);
     }
 
     .input-group {
