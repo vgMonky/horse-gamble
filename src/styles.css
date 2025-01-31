@@ -3,7 +3,7 @@
 /* Default Dark Theme */
 :root {
   --h: 170;
-  --h1: 212;
+  --h1: 215;
 
   --c0: hsl(var(--h), 0%, 6%); /* dark */
   --c1: hsl(var(--h), 0%, 8%); /* dark-b */
@@ -77,9 +77,9 @@ color: var(--c4);
 a:hover {
 color: var(--c3);
 }
-/* Slider Track */
+
 input[type="range"] {
-  -webkit-appearance: none; /* Remove default styling */
+  -webkit-appearance: none;
   width: 100%;
   height: 8px;
   border-radius: 5px;

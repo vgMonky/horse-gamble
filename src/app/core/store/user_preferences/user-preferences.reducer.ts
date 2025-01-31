@@ -11,8 +11,8 @@ export interface UserPreferencesState {
 
 export const initialState: UserPreferencesState = {
   isDarkTheme: true,
-  h: 170,  // Default value matching styles.css
-  h1: 320, // Default value matching styles.css
+  h: 170, 
+  h1: 215, 
 };
 
 export const userPreferencesReducer = createReducer(
