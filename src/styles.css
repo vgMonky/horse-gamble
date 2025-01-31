@@ -3,13 +3,17 @@
 /* Default Dark Theme */
 :root {
   --h: 170;
-  --h1: 285;
+  --h1: 212;
+
   --c0: hsl(var(--h), 0%, 6%); /* dark */
   --c1: hsl(var(--h), 0%, 8%); /* dark-b */
   --c2: hsl(var(--h), 30%, 8%); /* accent-b */
   --c3: hsl(var(--h), 56%, 35%); /* accent */
   --c4: hsl(var(--h), 0%, 60%); /* light-b */
   --c5: hsl(var(--h), 10%, 95%); /* light */
+
+  --cc2: hsl(var(--h1), 30%, 8%); /* accent-b */
+  --cc3: hsl(var(--h1), 56%, 35%); /* accent */
 }
 
 /* Dark Theme */
@@ -20,6 +24,9 @@ body.dark-theme {
   --c3: hsl(var(--h), 56%, 35%); /* accent */
   --c4: hsl(var(--h), 0%, 60%); /* light-b */
   --c5: hsl(var(--h), 0%, 95%); /* light */
+
+  --cc2: hsl(var(--h1), 30%, 8%); /* accent-b */
+  --cc3: hsl(var(--h1), 56%, 35%); /* accent */
 }
 
 /* Light Theme */
@@ -30,6 +37,9 @@ body.light-theme {
   --c3: hsl(var(--h), 50%, 50%); /* accent */
   --c4: hsl(var(--h), 0%, 0%); /* dark */
   --c5: hsl(var(--h), 0%, 35%); /* dark-b */
+
+  --cc2: hsl(var(--h1), 30%, 8%); /* accent-b */
+  --cc3: hsl(var(--h1), 56%, 35%); /* accent */
 }
 
 /* Global base styles here */

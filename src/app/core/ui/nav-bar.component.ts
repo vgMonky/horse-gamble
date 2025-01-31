@@ -18,9 +18,16 @@ import { DOCUMENT } from '@angular/common';
           routerLinkActive="active-link" 
           [routerLinkActiveOptions]="{ exact: true }"
         >
-          <svg width="40" height="40" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="50" cy="50" r="40" stroke="var(--c3)" stroke-width="10" fill="none" />
-          </svg>
+        <svg width="40" height="40" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="gradientStroke" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="var(--c3)" />
+              <stop offset="100%" stop-color="var(--cc3)" />
+            </linearGradient>
+          </defs>
+          <circle cx="50" cy="50" r="40" stroke="url(#gradientStroke)" stroke-width="12" fill="none" />
+        </svg>
+
         </a>
         <a 
           class="hamburger" 
