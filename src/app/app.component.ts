@@ -1,34 +1,19 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { NavBarComponent } from './core/ui/nav-bar.component';
+import { NavBarComponent } from './components/nav-bar/nav-bar.component';
 
 @Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [RouterOutlet, NavBarComponent],
-  template: `
-    <app-nav-bar></app-nav-bar>
-    <div class="view">
-      <router-outlet></router-outlet>
-    </div>
-  `,
-  styles: [`
-    :host {
-      display: block;
-      margin: 0 auto;
-    }
-    
-    .view{
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      border: 1px dashed var(--c3);
-
-      // border: 1px dashed var(--c3);
-    }
-  `]
+    selector: 'app-root',
+    standalone: true,
+    imports: [RouterOutlet, NavBarComponent],
+    template: `
+        <app-nav-bar></app-nav-bar>
+        <div class="view">
+            <router-outlet></router-outlet>
+        </div>
+    `,
+    styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'my-angular-app';
+    title = 'my-angular-app';
 }

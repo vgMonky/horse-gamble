@@ -7,8 +7,7 @@ import { routes } from './app.routes';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { EffectsModule } from '@ngrx/effects';
-import { reducers } from './core/store/index_reducers'; // Import centralized reducers
-import { AppEffects } from './core/store/index_effects'; // Import centralized effects
+import { AppEffects, AppReducers } from './store/app.state';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -17,7 +16,7 @@ export const appConfig: ApplicationConfig = {
     importProvidersFrom(HttpClientModule),
     importProvidersFrom(
       StoreModule.forRoot(
-        reducers,
+        AppReducers,
         {
           runtimeChecks: {
             strictStateImmutability: true,
