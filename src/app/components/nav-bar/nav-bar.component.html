@@ -64,5 +64,5 @@
 
 <!-- Window Container for My Wallet -->
 <app-window-container *ngIf="isWalletOpen" (close)="closeWallet()">
-    <p>My Wallet content here</p>
+    <app-wallet-connect></app-wallet-connect>
 </app-window-container>
