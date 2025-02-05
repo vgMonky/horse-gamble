@@ -18,11 +18,11 @@ export class WalletConnectComponent {
 
   // Initialize the session kit with app details, network, and wallet plugin
   sessionKit = new SessionKit({
-    appName: 'my-angular-app',
+    appName: 'session-connect',
     chains: [
       {
-        id: '73e4385a2708e6d7048834fbc1079f2fabb17b3c125b146af438971e90716c4d', // Jungle 4 testnet ID
-        url: 'https://jungle4.greymass.com',  // Jungle 4 testnet URL
+        id: '4667b205c6838ef70ff7988f6e8257e8be0e1284a2f59699054a018f743b1d11',
+        url: 'https://mainnet.telos.net', 
       },
     ],
     ui: new WebRenderer(),
