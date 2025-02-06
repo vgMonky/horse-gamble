@@ -2,23 +2,17 @@
 
 import { ActionReducerMap } from '@ngrx/store';
 import { userReducer, UserState } from './user/user.reducer';
-import { walletReducer, WalletState } from './wallet/wallet.reducer';
+// Import additional state interfaces here as you create them
+// import { WalletState } from './wallet/wallet.reducer';
 // import { DataState } from './data/data.reducer';
 // ... other imports
 
 export interface AppState {
     user: UserState;
-    wallet: WalletState;
+    // wallet: WalletState;
     // data: DataState;
     // ... other state slices
 }
-
-export const AppReducers: ActionReducerMap<AppState> = {
-    user: userReducer,
-    wallet: walletReducer,
-    // data: dataReducer,
-    // ... other reducers
-};
 
 export const AppEffects = [
     //UserEffects,
@@ -26,3 +20,10 @@ export const AppEffects = [
     // DataEffects,
     // ... other effects
 ];
+
+export const AppReducers: ActionReducerMap<AppState> = {
+    user: userReducer,
+    // wallet: walletReducer,
+    // data: dataReducer,
+    // ... other reducers
+};

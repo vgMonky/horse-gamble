@@ -1,7 +1,7 @@
-<div class="wallet-container" *ngIf="session$ | async as session; else notConnected">
-  <p>Connected as: {{ session.actor }}</p>
-  <button class="btn" (click)="logout()">Disconnect Wallet</button>
+<div class="wallet-container">
+  <button class="btn" (click)="login()" *ngIf="!session">Connect Wallet</button>
+  <div *ngIf="session">
+    <p>Connected as: {{ session.actor }}</p>
+    <button class="btn" (click)="logout()">Disconnect Wallet</button>
+  </div>
 </div>
-<ng-template #notConnected>
-  <button class="btn" (click)="login()">Connect Wallet</button>
-</ng-template>
