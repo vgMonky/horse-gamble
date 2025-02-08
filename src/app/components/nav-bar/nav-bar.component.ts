@@ -10,7 +10,13 @@ import { WalletConnectComponent } from '@app/components/wallet-connect/wallet-co
 @Component({
     standalone: true,
     selector: 'app-nav-bar',
-    imports: [CommonModule, RouterModule, UserPreferencesComponent, WalletConnectComponent, WindowContainerComponent],
+imports: [
+    CommonModule,
+    RouterModule,
+    UserPreferencesComponent,
+    WalletConnectComponent,
+    WindowContainerComponent,
+],
     templateUrl: './nav-bar.component.html',
     styleUrls: ['./nav-bar.component.scss']
 })
