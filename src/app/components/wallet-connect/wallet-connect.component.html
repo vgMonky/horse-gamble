@@ -1,5 +1,5 @@
 <div class="wallet-container">
-    <button class="btn" (click)="login()" *ngIf="!session">Connect Wallet</button>
+    <button class="btn" (click)="login()" *ngIf="!session">Login</button>
     <div *ngIf="session">
         <p>Connected as: {{ session.actor }}</p>
         <button class="btn" (click)="logout()">Disconnect Wallet</button>
