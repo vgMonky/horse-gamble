@@ -20,16 +20,12 @@ import { CommonModule } from '@angular/common';
 export class WindowContainerComponent {
     @Output() close = new EventEmitter<void>();
 
-    /**
-     * Emit the close event when the overlay is clicked.
-     */
+    /* Emit the close event when the overlay is clicked.*/
     onOverlayClick() {
         this.close.emit();
     }
 
-    /**
-     * Emit the close event when the close button is clicked.
-     */
+    /* Emit the close event when the close button is clicked.*/
     onCloseClick() {
         this.close.emit();
     }
