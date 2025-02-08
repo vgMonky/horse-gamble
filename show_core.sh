@@ -6,15 +6,15 @@ src_directory="./src"
 
 # Define files to show
 files_to_show=(
-  "src/main.ts"
-  "src/app/app.component.ts"
-  "src/app/app.config.ts"
-  "src/app/app.routes.ts"
-  "src/styles.scss"
-  "src/app/store/app.state.ts"
-  "src/app/store/user/user.actions.ts"
-  "src/app/store/user/user.selectors.ts"
-  "src/app/store/user/index.ts"
+    "src/main.ts"
+    "src/app/app.component.ts"
+    "src/app/app.config.ts"
+    "src/app/app.routes.ts"
+    "src/styles.scss"
+    "src/app/store/app.state.ts"
+    "src/app/store/user/user.actions.ts"
+    "src/app/store/user/user.selectors.ts"
+    "src/app/store/user/index.ts"
 )
 
 # Generate output
