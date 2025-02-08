@@ -15,6 +15,7 @@ import { CommonModule } from '@angular/common';
 })
 export class WalletConnectComponent {
     session: any = undefined;  // Store the session once the user logs in
+    isUserOpen = false;
 
     // Initialize the session kit with app details, network, and wallet plugin
     sessionKit = new SessionKit({
@@ -57,4 +58,9 @@ export class WalletConnectComponent {
             console.log('Session restored:', this.session);
         }
     }
+
+    toggleUserDropdown() {this.isUserOpen = !this.isUserOpen;}
+    closeUserDropdown() {this.isUserOpen = false;}
 }
+
+

@@ -1,7 +1,11 @@
 <div class="wallet-container">
     <button class="btn" (click)="login()" *ngIf="!session">Login</button>
     <div *ngIf="session">
-        <p>Connected as: {{ session.actor }}</p>
-        <button class="btn" (click)="logout()">Disconnect Wallet</button>
+        <a class="btn" (click)="toggleUserDropdown()">{{ session.actor }}</a>
     </div>
+</div>
+
+<div class="contained" *ngIf="isUserOpen" (close)="closeUserDropdown()">
+    <button class="btn" (click)="logout()">Logout</button>
+    <button class="btn" >My Wallet</button>
 </div>
