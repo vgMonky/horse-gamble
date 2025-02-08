@@ -8,13 +8,13 @@ import { DropDownComponent } from '../drop-down/drop-down.component';
 
 
 @Component({
-    selector: 'app-wallet-connect',
+    selector: 'app-login',
     standalone: true,
     imports: [CommonModule, DropDownComponent],
-    templateUrl: './wallet-connect.component.html',
-    styleUrls: ['./wallet-connect.component.scss'],
+    templateUrl: './login.component.html',
+    styleUrls: ['./login.component.scss'],
 })
-export class WalletConnectComponent {
+export class LoginComponent {
     session: any = undefined;  // Store the session once the user logs in
     isUserOpen = false;
 
