@@ -4,11 +4,19 @@ import { CommonModule } from '@angular/common';
 import { WindowContainerComponent } from '@app/components/window-container/window-container.component';
 import { UserPreferencesComponent } from '../user-preferences/user-preferences.component';
 import { DOCUMENT } from '@angular/common';
+import { WalletConnectComponent } from '@app/components/wallet-connect/wallet-connect.component';
+
 
 @Component({
     standalone: true,
     selector: 'app-nav-bar',
-    imports: [CommonModule, RouterModule, WindowContainerComponent, UserPreferencesComponent],
+imports: [
+    CommonModule,
+    RouterModule,
+    UserPreferencesComponent,
+    WalletConnectComponent,
+    WindowContainerComponent,
+],
     templateUrl: './nav-bar.component.html',
     styleUrls: ['./nav-bar.component.scss']
 })
