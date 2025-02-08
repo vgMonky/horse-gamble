@@ -4,12 +4,13 @@ import { WebRenderer } from '@wharfkit/web-renderer';
 import { WalletPluginAnchor } from '@wharfkit/wallet-plugin-anchor';
 import { WalletPluginCleos } from '@wharfkit/wallet-plugin-cleos';
 import { CommonModule } from '@angular/common';
+import { DropDownComponent } from '../drop-down/drop-down.component';
 
 
 @Component({
     selector: 'app-wallet-connect',
     standalone: true,
-    imports: [CommonModule],
+    imports: [CommonModule, DropDownComponent],
     templateUrl: './wallet-connect.component.html',
     styleUrls: ['./wallet-connect.component.scss'],
 })
@@ -58,9 +59,6 @@ export class WalletConnectComponent {
             console.log('Session restored:', this.session);
         }
     }
-
-    toggleUserDropdown() {this.isUserOpen = !this.isUserOpen;}
-    closeUserDropdown() {this.isUserOpen = false;}
 }
 
 
