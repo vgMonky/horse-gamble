@@ -39,7 +39,7 @@
     <div class="nav-right">
         <a class="setting-icon" (click)="toggleSettings()"> &#9881; </a>
         <a class="search-icon" (click)="toggleSearch()"> &#9906; </a>
-        <a class="btn" (click)="toggleWallet()">Wallet</a>
+        <app-login></app-login>
     </div>
 </nav>
 
@@ -60,9 +60,4 @@
 <!-- Window Container for Search -->
 <app-window-container *ngIf="isSearchOpen" (close)="closeSearch()">
     <p>Search component here</p>
-</app-window-container>
-
-<!-- Window Container for My Wallet -->
-<app-window-container *ngIf="isWalletOpen" (close)="closeWallet()">
-    <app-wallet-connect></app-wallet-connect>
 </app-window-container>

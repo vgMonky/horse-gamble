@@ -1,0 +1,12 @@
+<div class="dropdown">
+    <div class="btn" (click)="toggleDropdown()">
+        {{ buttonText }}
+    </div>
+
+    <!-- Overlay that appears when the dropdown is open -->
+    <div *ngIf="isOpen" class="overlay" (click)="closeDropdown()"></div>
+
+    <div *ngIf="isOpen" class="dropdown-content">
+        <ng-content></ng-content>
+    </div>
+</div>

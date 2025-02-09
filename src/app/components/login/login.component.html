@@ -1,0 +1,9 @@
+<div class="wallet-container">
+    <button class="btn" (click)="login()" *ngIf="!session">Login</button>
+    <div *ngIf="session">
+        <app-drop-down buttonText="{{ session.actor }}">
+            <a>My Wallet</a>
+            <a (click)="logout()">Logout</a>
+        </app-drop-down>
+    </div>
+</div>

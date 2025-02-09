@@ -4,17 +4,19 @@ import { WebRenderer } from '@wharfkit/web-renderer';
 import { WalletPluginAnchor } from '@wharfkit/wallet-plugin-anchor';
 import { WalletPluginCleos } from '@wharfkit/wallet-plugin-cleos';
 import { CommonModule } from '@angular/common';
+import { DropDownComponent } from '../drop-down/drop-down.component';
 
 
 @Component({
-    selector: 'app-wallet-connect',
+    selector: 'app-login',
     standalone: true,
-    imports: [CommonModule],
-    templateUrl: './wallet-connect.component.html',
-    styleUrls: ['./wallet-connect.component.scss'],
+    imports: [CommonModule, DropDownComponent],
+    templateUrl: './login.component.html',
+    styleUrls: ['./login.component.scss'],
 })
-export class WalletConnectComponent {
+export class LoginComponent {
     session: any = undefined;  // Store the session once the user logs in
+    isUserOpen = false;
 
     // Initialize the session kit with app details, network, and wallet plugin
     sessionKit = new SessionKit({
@@ -58,3 +60,5 @@ export class WalletConnectComponent {
         }
     }
 }
+
+
