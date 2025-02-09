@@ -12,5 +12,5 @@ npx ng serve
 
 Fast
 ```bash
-nvm use v22.12.0; rm .angular/ -fr; npx ng serve
+nvm use v22.12.0; rm .angular/ node_modules -fr; npm i; npx ng serve
 ```
