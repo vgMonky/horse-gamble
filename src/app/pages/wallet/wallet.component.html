@@ -1,1 +1,9 @@
 <h2>Wallet Page</h2>
+
+<p *ngIf="actor; else noSession">
+    Connected as: <strong>{{ actor }}</strong>
+</p>
+
+<ng-template #noSession>
+    <p>No active session. Please log in first.</p>
+</ng-template>
