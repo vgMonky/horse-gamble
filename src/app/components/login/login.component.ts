@@ -21,7 +21,6 @@ import { RouterModule } from '@angular/router';
 })
 export class LoginComponent {
     session: any = undefined;  // Store the session once the user logs in
-    isUserOpen = false;
 
     // Initialize the session kit with app details, network, and wallet plugin
     sessionKit = new SessionKit({
