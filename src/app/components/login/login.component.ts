@@ -5,12 +5,17 @@ import { WalletPluginAnchor } from '@wharfkit/wallet-plugin-anchor';
 import { WalletPluginCleos } from '@wharfkit/wallet-plugin-cleos';
 import { CommonModule } from '@angular/common';
 import { DropDownComponent } from '../drop-down/drop-down.component';
+import { RouterModule } from '@angular/router';
 
 
 @Component({
     selector: 'app-login',
     standalone: true,
-    imports: [CommonModule, DropDownComponent],
+    imports: [
+        CommonModule, 
+        DropDownComponent,
+        RouterModule
+    ],
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss'],
 })
