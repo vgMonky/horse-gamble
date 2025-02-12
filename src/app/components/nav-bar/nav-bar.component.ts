@@ -35,9 +35,6 @@ export class NavBarComponent {
     toggleSettings() {this.isSettingsOpen = !this.isSettingsOpen;}
     closeSettings() {this.isSettingsOpen = false;}
 
-    toggleWallet() {this.isWalletOpen = !this.isWalletOpen;}
-    closeWallet() {this.isWalletOpen = false;}
-
     toggleSearch() {this.isSearchOpen = !this.isSearchOpen;}
     closeSearch() {this.isSearchOpen = false;}
 }

@@ -1,0 +1,24 @@
+<div *ngIf="actor; else noSession">
+    <h2>{{ actor }}</h2>
+
+    <div *ngIf="loading; else balanceList">
+        <p>[ Loading... ]</p>
+    </div>
+
+    <ng-template #balanceList>
+        <div *ngIf="balances | keyvalue as tokenBalances">
+            <div *ngFor="let balance of tokenBalances">
+                <div class="token-balance">
+                    {{ balance.value }}
+                </div>
+            </div>
+        </div>
+    </ng-template>
+    <br>
+    <button class="btn" (click)="refreshBalances()">Refresh Balances</button>
+
+</div>
+
+<ng-template #noSession>
+    <p>No active session. Please log in first.</p>
+</ng-template>
