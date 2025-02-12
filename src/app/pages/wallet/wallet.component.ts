@@ -27,8 +27,6 @@ export class WalletComponent implements OnInit, OnDestroy {
             this.actor = session?.actor;
             if (this.actor) {
                 await this.loadBalances(this.actor);
-            } else {
-                this.balances = {}; // Clear balances if no session is active
             }
         });
     }
