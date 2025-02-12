@@ -1,15 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { SessionService } from '@app/services/session-kit.service';
-
-interface Token {
-    name: string;
-    symbol: string;
-    account: string;
-    precision: number;
-    logo: string;
-    chain: string;
-}
+import { Token } from 'src/types';
 
 @Injectable({
     providedIn: 'root'
