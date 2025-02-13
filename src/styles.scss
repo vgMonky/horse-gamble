@@ -48,19 +48,19 @@ body.dark-theme {
     --c-gradient-1: linear-gradient(30deg, var(--c-accent-0b) 0%, var(--c-accent-0) 100%);
 
     --c-shadow-0: 2px 2px 10px hsla(var(--h0), 60%, 60%, 0.0);
-    --c-shadow-1: 2px 2px 20px hsla(var(--h0), 60%, 80%, 0.1);
+    --c-shadow-1: 2px 2px 10px hsla(var(--h0), 60%, 80%, 0.08);
 }
 
 /* Light Theme */
 body.light-theme {
     --c-background-0: hsl(var(--h0), 0%, 92%); // background light 0
     --c-background-1: hsl(var(--h0), 0%, 91%); // background light 1
-    --c-background-2: hsl(var(--h0), 0%, 86%); // background light 2
-    --c-background-3: hsl(var(--h0), 0%, 85%); // background light 3
-    --c-background-4: hsl(var(--h0), 0%, 84%); // background light 4
+    --c-background-2: hsl(var(--h0), 0%, 88%); // background light 2
+    --c-background-3: hsl(var(--h0), 0%, 87%); // background light 3
+    --c-background-4: hsl(var(--h0), 0%, 86%); // background light 4
 
-    --c-foreground-2: hsl(var(--h0), 0%, 11%); // foreground dark 2
-    --c-foreground-1: hsl(var(--h0), 0%, 8%); // foreground dark 1
+    --c-foreground-2: hsl(var(--h0), 0%, 50%); // foreground dark 2
+    --c-foreground-1: hsl(var(--h0), 0%, 40%); // foreground dark 1
     --c-foreground-0: hsl(var(--h0), 0%, 0%); // foreground dark 0
 
     --c-accent-0: hsl(var(--h0), 60%, 48%); // accent 0
@@ -74,8 +74,8 @@ body.light-theme {
     --c-gradient-0: linear-gradient(30deg, var(--c-accent-0) 0%, var(--c-accent-0b) 100%);
     --c-gradient-1: linear-gradient(30deg, var(--c-accent-0b) 0%, var(--c-accent-0) 100%);
 
-    --c-shadow-0: 0px 0px 0px hsla(var(--h0), 0%, 0%, 0.3);
-    --c-shadow-1: 1px 3px 20px hsla(var(--h0), 0%, 0%, 0.2);
+    --c-shadow-0: 0px 0px 1px hsla(var(--h0), 0%, 0%, 0.3);
+    --c-shadow-1: 1px 2px 20px hsla(var(--h0), 0%, 0%, 0.08);
 }
 
 /* Global base styles here */

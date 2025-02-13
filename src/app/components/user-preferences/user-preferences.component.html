@@ -1,26 +1,26 @@
 <div class="preferences-container">
     <h2>User Preferences</h2>
     <div class="contained">
-        <h3>Dark / Light</h3>
+        <h3>Mode</h3>
         <app-toggle (stateChange)="onStateChange($event)">
             <ng-template #stateContent>
-                <p>State 0</p>
+                <p>Dark</p>
             </ng-template>
-    
+
             <ng-template #stateContent>
-                <p>State 1</p>
+                <p>Light</p>
             </ng-template>
         </app-toggle>
-        <button class="btn" (click)="toggleTheme()">
+        <p class="btn" (click)="toggleTheme()">
             Switch to {{ (isDarkTheme$ | async) ? 'Light' : 'Dark' }} Theme
-        </button>
+        </p>
     </div>    
     <div class="contained">
-        <h3>Hue Theme</h3>
+        <h3>Hue</h3>
         <div class="theme-selector">
-            <button (click)="setHueTheme('default')">Default</button>
-            <button (click)="setHueTheme('candyflip')">Candyflip</button>
-            <button (click)="setHueTheme('cryptonite')">Cryptonite</button>
+            <p class="btn" (click)="setHueTheme('default')">Default</p>
+            <p class="btn" (click)="setHueTheme('candyflip')">Candyflip</p>
+            <p class="btn" (click)="setHueTheme('cryptonite')">Cryptonite</p>
         </div>
         <br>
         <!-- Hue Slider -->
@@ -51,19 +51,4 @@
             <div class="color-display" [style.backgroundColor]="'hsl(' + (hue1$ | async) + ', 50%, 50%)'"></div>
         </div>        
     </div>
-
-    <h3>Current State = {{ currentState }}</h3>
-    <app-toggle (stateChange)="onStateChange($event)">
-        <ng-template #stateContent>
-            <p>State 0</p>
-        </ng-template>
-
-        <ng-template #stateContent>
-            <p>State 1</p>
-        </ng-template>
-
-        <ng-template #stateContent>
-            <p>State 2</p>
-        </ng-template>
-    </app-toggle>
 </div>
