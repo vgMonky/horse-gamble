@@ -5,13 +5,13 @@ import { actions } from './user.actions';
 
 export interface UserState {
     isDarkTheme: boolean;
-    h: number;
+    h0: number;
     h1: number;
 }
 
 export const initialState: UserState = {
     isDarkTheme: true,
-    h: 170, 
+    h0: 170, 
     h1: 215, 
 };
 
@@ -21,9 +21,9 @@ export const userReducer = createReducer(
         ...state,
         isDarkTheme: !state.isDarkTheme,
     })),
-    on(actions.setHue, (state, { h }) => ({
+    on(actions.setHue, (state, { h0 }) => ({
         ...state,
-        h,
+        h0,
     })),
     on(actions.setHue1, (state, { h1 }) => ({
         ...state,

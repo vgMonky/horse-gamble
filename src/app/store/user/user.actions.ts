@@ -6,7 +6,7 @@ const toggleTheme = createAction('[User Preferences] Toggle Theme');
 
 const setHue = createAction(
     '[User Preferences] Set Hue',
-    props<{ h: number }>()
+    props<{ h0: number }>()
 );
 
 const setHue1 = createAction(

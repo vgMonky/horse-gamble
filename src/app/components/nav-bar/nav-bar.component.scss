@@ -3,7 +3,7 @@ nav {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: var(--c0);
+    background-color: var(--c-background-0);
     position: relative; /* for absolutely-positioned nav links */
 }
 
@@ -40,7 +40,7 @@ nav {
 
 /* Active link style */
 .active-link {
-    color: var(--c5);
+    color: var(--c-foreground-0);
 }
 
 /* Menu Links Inside Window Container */

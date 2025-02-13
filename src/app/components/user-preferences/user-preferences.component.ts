@@ -14,13 +14,13 @@ import { Observable, Subscription } from 'rxjs';
 })
 export class UserPreferencesComponent implements OnInit, OnDestroy {
     isDarkTheme$: Observable<boolean>;
-    hue$: Observable<number>;
+    hue0$: Observable<number>;
     hue1$: Observable<number>;
     private subscriptions: Subscription = new Subscription();
 
     constructor(private store: Store<AppState>) {
         this.isDarkTheme$ = this.store.pipe(select(user.selectors.isDarkTheme));
-        this.hue$ = this.store.pipe(select(user.selectors.hue));
+        this.hue0$ = this.store.pipe(select(user.selectors.hue0));
         this.hue1$ = this.store.pipe(select(user.selectors.hue1));
     }
 
@@ -52,10 +52,10 @@ export class UserPreferencesComponent implements OnInit, OnDestroy {
 
     updateHue(event: Event) {
         const input = event.target as HTMLInputElement;
-        const h = Number(input.value);
-        if (h >= 0 && h <= 360) {
-            this.store.dispatch(user.actions.setHue({ h }));
-            this.updateCssVariable('--h', h);
+        const h0 = Number(input.value);
+        if (h0 >= 0 && h0 <= 360) {
+            this.store.dispatch(user.actions.setHue({ h0 }));
+            this.updateCssVariable('--h0', h0);
         }
     }
 

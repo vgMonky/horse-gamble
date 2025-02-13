@@ -5,19 +5,20 @@
     <button class="btn" (click)="toggleTheme()">
         Switch to {{ (isDarkTheme$ | async) ? 'Light' : 'Dark' }} Theme
     </button>
+    <br>
     
     <!-- Hue Slider -->
     <div class="input-group">
-        <label for="hue">Hue (--h): {{ (hue$ | async) }}</label>
+        <label for="hue0">Hue0 (--h0): {{ (hue0$ | async) }}</label>
         <input 
             type="range" 
-            id="hue" 
-            [value]="(hue$ | async)" 
+            id="hue0" 
+            [value]="(hue0$ | async)" 
             (input)="updateHue($event)" 
             min="0" 
-            max="360" 
+            max="360"
         />
-        <div class="color-display" [style.backgroundColor]="'hsl(' + (hue$ | async) + ', 50%, 50%)'"></div>
+        <div class="color-display" [style.backgroundColor]="'hsl(' + (hue0$ | async) + ', 50%, 50%)'"></div>
     </div>
     
     <!-- Hue1 Slider -->

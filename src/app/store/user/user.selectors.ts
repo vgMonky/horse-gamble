@@ -10,9 +10,9 @@ const isDarkTheme = createSelector(
     (state: UserState) => state.isDarkTheme
 );
 
-const hue = createSelector(
+const hue0 = createSelector(
     selectUserState,
-    (state: UserState) => state.h
+    (state: UserState) => state.h0
 );
 
 const hue1 = createSelector(
@@ -22,6 +22,6 @@ const hue1 = createSelector(
 
 export const selectors = {
     isDarkTheme,
-    hue,
+    hue0,
     hue1,
 };
