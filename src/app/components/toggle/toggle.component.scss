@@ -1,0 +1,27 @@
+.toggle-group {
+    display: flex;
+    gap: 5px;
+    border-radius: 8px;
+    padding: 5px 5px;
+
+    .toggle-btn {
+        background-color: var(--c-background-1);
+        color: var(--c4);
+        border: 1px solid var(--c-background-2);
+        border-radius: 8px;
+        padding: 5px 10px;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        &:hover {
+            border-color: var(--c-accent-1);
+        }
+
+        &.active {
+            color: var(--c4);
+            background-color: var(--c-background-2);
+        }
+    }
+}

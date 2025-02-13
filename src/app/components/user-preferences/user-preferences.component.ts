@@ -4,15 +4,18 @@ import { Store, select } from '@ngrx/store';
 import { AppState } from '@app/store/app.state';
 import { user } from '@app/store/user';
 import { Observable, Subscription } from 'rxjs';
+import { ToggleComponent } from '../toggle/toggle.component';
 
 @Component({
     selector: 'app-user-preferences',
     standalone: true,
-    imports: [CommonModule],
+    imports: [CommonModule, ToggleComponent],
     templateUrl: './user-preferences.component.html',
     styleUrls: ['./user-preferences.component.scss']
 })
 export class UserPreferencesComponent implements OnInit, OnDestroy {
+    currentState = 0;
+
     isDarkTheme$: Observable<boolean>;
     hue0$: Observable<number>;
     hue1$: Observable<number>;
@@ -22,6 +25,10 @@ export class UserPreferencesComponent implements OnInit, OnDestroy {
         this.isDarkTheme$ = this.store.pipe(select(user.selectors.isDarkTheme));
         this.hue0$ = this.store.pipe(select(user.selectors.hue0));
         this.hue1$ = this.store.pipe(select(user.selectors.hue1));
+    }
+
+    onStateChange(newState: number) {
+        this.currentState = newState;
     }
 
     ngOnInit(): void {

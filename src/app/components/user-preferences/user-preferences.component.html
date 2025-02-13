@@ -40,6 +40,21 @@
                 max="360" 
             />
             <div class="color-display" [style.backgroundColor]="'hsl(' + (hue1$ | async) + ', 50%, 50%)'"></div>
-        </div>
+        </div>        
     </div>
+
+    <h3>Current State = {{ currentState }}</h3>
+    <app-toggle (stateChange)="onStateChange($event)">
+        <ng-template #stateContent>
+            <p>State 0</p>
+        </ng-template>
+
+        <ng-template #stateContent>
+            <p>State 1</p>
+        </ng-template>
+
+        <ng-template #stateContent>
+            <p>State 2</p>
+        </ng-template>
+    </app-toggle>
 </div>
