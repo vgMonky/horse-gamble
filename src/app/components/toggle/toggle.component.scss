@@ -6,8 +6,8 @@
 
     .toggle-btn {
         background-color: var(--c-background-1);
-        color: var(--c4);
-        border: 1px solid var(--c-background-2);
+        color: var(--c-foreground-2);
+        border: 1px solid var(--c-background-3);
         border-radius: 8px;
         padding: 5px 10px;
         cursor: pointer;
@@ -21,7 +21,7 @@
 
         &.active {
             color: var(--c4);
-            background-color: var(--c-background-2);
+            background-color: var(--c-background-4);
         }
     }
 }

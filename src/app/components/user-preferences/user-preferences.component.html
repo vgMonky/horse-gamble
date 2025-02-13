@@ -2,6 +2,15 @@
     <h2>User Preferences</h2>
     <div class="contained">
         <h3>Dark / Light</h3>
+        <app-toggle (stateChange)="onStateChange($event)">
+            <ng-template #stateContent>
+                <p>State 0</p>
+            </ng-template>
+    
+            <ng-template #stateContent>
+                <p>State 1</p>
+            </ng-template>
+        </app-toggle>
         <button class="btn" (click)="toggleTheme()">
             Switch to {{ (isDarkTheme$ | async) ? 'Light' : 'Dark' }} Theme
         </button>
