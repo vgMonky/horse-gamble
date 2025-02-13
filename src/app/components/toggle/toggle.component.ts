@@ -1,4 +1,4 @@
-import { Component, ContentChildren, QueryList, AfterContentInit, EventEmitter, Output } from "@angular/core";
+import { Component, ContentChildren, QueryList, AfterContentInit, EventEmitter, Output, Input } from "@angular/core";
 import { CommonModule } from "@angular/common";
 
 @Component({
@@ -11,7 +11,7 @@ import { CommonModule } from "@angular/common";
 export class ToggleComponent implements AfterContentInit {
     @ContentChildren('stateContent') projectedContents!: QueryList<any>;
     @Output() stateChange = new EventEmitter<number>();
-    currentState = 0;
+    @Input() currentState = 0;
 
     ngAfterContentInit() {
         if (this.projectedContents.length === 0) {

@@ -29,11 +29,13 @@ export class UserPreferencesComponent implements OnInit, OnDestroy {
 
     onStateChange(newState: number) {
         this.currentState = newState;
+        this.toggleTheme(); // Dispatch store action to toggle the theme
     }
 
     ngOnInit(): void {
         // Subscribe to theme changes to update the body class
         const themeSub = this.isDarkTheme$.subscribe((isDark) => {
+            this.currentState = isDark ? 0 : 1; // Sync toggle state with theme
             if (isDark) {
                 document.body.classList.add('dark-theme');
                 document.body.classList.remove('light-theme');
