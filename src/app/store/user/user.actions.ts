@@ -1,4 +1,4 @@
-// src/app/core/store/user_preferences/user-preferences.actions.ts
+// src/app/core/store/user/user.actions.ts
 
 import { createAction, props } from '@ngrx/store';
 

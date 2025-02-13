@@ -1,4 +1,4 @@
-// src/app/core/store/user_preferences/user-preferences.reducer.ts
+// src/app/core/store/user/user.reducer.ts
 
 import { createReducer, on } from '@ngrx/store';
 import { actions } from './user.actions';
