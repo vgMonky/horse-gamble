@@ -21,12 +21,17 @@ export const userReducer = createReducer(
         ...state,
         isDarkTheme: !state.isDarkTheme,
     })),
-    on(actions.setHue, (state, { h0 }) => ({
+    on(actions.setHue0, (state, { h0 }) => ({
         ...state,
         h0,
     })),
     on(actions.setHue1, (state, { h1 }) => ({
         ...state,
+        h1,
+    })),
+    on(actions.setHueTheme, (state, { h0, h1 }) => ({
+        ...state,
+        h0,
         h1,
     }))
 );

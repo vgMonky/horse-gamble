@@ -1,9 +1,9 @@
 /* styles.css */
 
-// COLOR VARIABLES:
+// SEMANTIC CCOLOR VARIABLES:
 // The idea is to define color variables based on the "background-foreground-accent" concept,
-// by using only this color variables components get styled in a global way,
-// and automatically adapt to light/dark theme mantaining good visual contrast and consistency */   
+// by using only this color variables components get styled in a global way by automatically
+// adapting to light/dark & Hue themeing, mantaining good visual contrast and consistency */   
 :root{
     --h0: 160; // hue 0
     --h1: 230; // hue 1
@@ -52,8 +52,8 @@ body.dark-theme {
 /* Light Theme */
 body.light-theme {
     --c-background-0: hsl(var(--h0), 0%, 90%); // background light 0
-    --c-background-1: hsl(var(--h0), 0%, 78%); // background light1
-    --c-background-2: hsl(var(--h0), 0%, 70%); // background light 2
+    --c-background-1: hsl(var(--h0), 0%, 89%); // background light 1
+    --c-background-2: hsl(var(--h0), 0%, 86%); // background light 2
 
     --c-foreground-2: hsl(var(--h0), 0%, 11%); // foreground dark 2
     --c-foreground-1: hsl(var(--h0), 0%, 8%); // foreground dark 1
@@ -122,4 +122,11 @@ input[type="range"] {
     background: var(--c-background-2);
     outline: none;
     margin: 0;
+}
+
+.contained{
+    border: 1px solid var(--c-background-2);
+    border-radius: 4px;
+    background-color: var(--c-background-1);
+    padding: 20px 30px;
 }

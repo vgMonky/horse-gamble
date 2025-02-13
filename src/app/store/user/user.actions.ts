@@ -4,7 +4,7 @@ import { createAction, props } from '@ngrx/store';
 
 const toggleTheme = createAction('[User Preferences] Toggle Theme');
 
-const setHue = createAction(
+const setHue0 = createAction(
     '[User Preferences] Set Hue',
     props<{ h0: number }>()
 );
@@ -14,8 +14,14 @@ const setHue1 = createAction(
     props<{ h1: number }>()
 );
 
+const setHueTheme = createAction(
+    '[User Preferences] Set Hue Theme',
+    props<{ h0: number; h1: number }>()
+);
+
 export const actions = {
     toggleTheme,
-    setHue,
+    setHue0,
     setHue1,
+    setHueTheme,
 };
