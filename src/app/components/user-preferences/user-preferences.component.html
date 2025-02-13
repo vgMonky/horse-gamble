@@ -18,14 +18,14 @@
     <div class="contained">
         <h3>Hue</h3>
         <div class="theme-selector">
-            <p class="btn" (click)="setHueTheme('default')">Default</p>
-            <p class="btn" (click)="setHueTheme('candyflip')">Candyflip</p>
-            <p class="btn" (click)="setHueTheme('cryptonite')">Cryptonite</p>
+            <p class="btn default-theme" (click)="setHueTheme('default')">Default</p>
+            <p class="btn candyflip-theme" (click)="setHueTheme('candyflip')">Candyflip</p>
+            <p class="btn cryptonite-theme" (click)="setHueTheme('cryptonite')">Cryptonite</p>
         </div>
         <br>
         <!-- Hue Slider -->
         <div class="input-group">
-            <label for="hue0">Hue0 (--h0): {{ (hue0$ | async) }}</label>
+            <label for="hue0">Hue0: {{ (hue0$ | async) }}</label>
             <input 
                 type="range" 
                 id="hue0" 
@@ -39,7 +39,7 @@
         
         <!-- Hue1 Slider -->
         <div class="input-group">
-            <label for="hue1">Hue1 (--h1): {{ (hue1$ | async) }}</label>
+            <label for="hue1">Hue1: {{ (hue1$ | async) }}</label>
             <input 
                 type="range" 
                 id="hue1" 

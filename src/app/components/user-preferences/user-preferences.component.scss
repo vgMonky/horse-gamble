@@ -10,6 +10,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
+    margin-top: 15px;
 }
 
 .input-group label {
@@ -21,8 +22,54 @@
 }
 
 .color-display {
-    width: 30px;
-    height: 30px;
+    width: 25px;
+    height: 25px;
     border-radius: 50%;
     border: 1px solid var(--c-background-0);
+}
+
+.default-theme {
+    $start-color: hsl(160, 60%, 35%);
+    $end-color: hsl(230, 60%, 50%);
+
+    color: var(--c-foreground-1);
+    border: 1px solid var(--c-background-4);
+    background-image: var(--c-background-0) ;
+
+    &:hover {
+        border: 1px solid var(--c-background-0);
+        color: var(--c-background-0);
+        background-image: linear-gradient(30deg, $end-color 0%, $start-color 100%);
+    }
+}
+
+.candyflip-theme {
+    $start-color: hsl(160, 80%, 35%);
+    $end-color: hsl(280, 70%, 50%);
+
+    color: var(--c-foreground-1);
+    border: 1px solid var(--c-background-4);
+    background-image: var(--c-background-0) ;
+
+    &:hover {
+        border: 1px solid var(--c-background-0);
+        color: var(--c-background-0);
+        background-image: linear-gradient(30deg, $end-color 0%, $start-color 100%);
+    }
+}
+
+.cryptonite-theme {
+    $start-color: hsl(190, 75%, 35%);
+    $end-color: hsl(70, 65%, 50%);
+
+    color: var(--c-foreground-1);
+    border: 1px solid var(--c-background-4);
+    background-image: var(--c-background-0) ;
+    // background-image: linear-gradient(30deg, $end-color 0%, $end-color 100%);
+
+    &:hover {
+        border: 1px solid var(--c-background-0);
+        color: var(--c-background-0);
+        background-image: linear-gradient(30deg, $end-color 0%, $start-color 100%);
+    }
 }
