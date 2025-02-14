@@ -6,7 +6,7 @@ import { withInterceptorsFromDi, provideHttpClient } from '@angular/common/http'
 import { routes } from './app.routes';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { EffectsModule } from '@ngrx/effects';
+import { EffectsModule, provideEffects } from '@ngrx/effects';
 import { AppEffects, AppReducers } from './store/app.state';
 
 export const appConfig: ApplicationConfig = {
@@ -24,11 +24,11 @@ export const appConfig: ApplicationConfig = {
                     },
                 }
             ),
-            EffectsModule.forRoot(AppEffects),
             StoreDevtoolsModule.instrument({
                 maxAge: 25, // Retains last 25 states
                 logOnly: false // Set to false since environment is not defined
-            })
+            }),
+            EffectsModule.forRoot(AppEffects) 
         ),
     ],
 };

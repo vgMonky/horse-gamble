@@ -35,14 +35,7 @@ export class UserPreferencesComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         // Subscribe to theme changes to update the body class
         const themeSub = this.isDarkTheme$.subscribe((isDark) => {
-            this.currentState = isDark ? 0 : 1; // Sync toggle state with theme
-            if (isDark) {
-                document.body.classList.add('dark-theme');
-                document.body.classList.remove('light-theme');
-            } else {
-                document.body.classList.add('light-theme');
-                document.body.classList.remove('dark-theme');
-            }
+            this.currentState = isDark ? 1 : 0; // Sync toggle state with theme
         });
 
         this.subscriptions.add(themeSub);
@@ -64,7 +57,6 @@ export class UserPreferencesComponent implements OnInit, OnDestroy {
         const h0 = Number(input.value);
         if (h0 >= 0 && h0 <= 360) {
             this.store.dispatch(user.actions.setHue0({ h0 }));
-            this.updateCssVariable('--h0', h0);
         }
     }
 
@@ -73,7 +65,6 @@ export class UserPreferencesComponent implements OnInit, OnDestroy {
         const h1 = Number(input.value);
         if (h1 >= 0 && h1 <= 360) {
             this.store.dispatch(user.actions.setHue1({ h1 }));
-            this.updateCssVariable('--h1', h1);
         }
     }
 
@@ -95,11 +86,6 @@ export class UserPreferencesComponent implements OnInit, OnDestroy {
         }
     
         this.store.dispatch(user.actions.setHueTheme({ h0, h1 }));
-        this.updateCssVariable('--h0', h0);
-        this.updateCssVariable('--h1', h1);
     }
 
-    private updateCssVariable(variable: string, value: string | number) {
-        document.documentElement.style.setProperty(variable, value.toString());
-    }
 }
