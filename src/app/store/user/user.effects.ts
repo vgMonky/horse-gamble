@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { tap } from 'rxjs/operators';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
+import { tap, withLatestFrom } from 'rxjs/operators';
 import { AppState } from '../app.state';
 import { user } from './index';
 
@@ -10,14 +10,49 @@ export class UserEffects {
     private actions$ = inject(Actions);
     private store = inject(Store<AppState>);
 
+    // Apply theme based on saved state at app start
+    initializeTheme$ = createEffect(
+        () =>
+            this.store.pipe(
+                select(user.selectors.isDarkTheme),
+                tap((isDarkTheme) => {
+                    document.body.classList.toggle('dark-theme', isDarkTheme);
+                    document.body.classList.toggle('light-theme', !isDarkTheme);
+                })
+            ),
+        { dispatch: false }
+    );
+
+    initializeHues$ = createEffect(
+        () =>
+            this.store.pipe(
+                select(user.selectors.hue0),
+                tap((h0) => {
+                    document.documentElement.style.setProperty('--h0', h0.toString());
+                })
+            ),
+        { dispatch: false }
+    );
+
+    initializeHues1$ = createEffect(
+        () =>
+            this.store.pipe(
+                select(user.selectors.hue1),
+                tap((h1) => {
+                    document.documentElement.style.setProperty('--h1', h1.toString());
+                })
+            ),
+        { dispatch: false }
+    );
+
     toggleTheme$ = createEffect(
         () =>
             this.actions$.pipe(
                 ofType(user.actions.toggleTheme),
-                tap(() => {
-                    const isDark = document.body.classList.contains('dark-theme');
-                    document.body.classList.toggle('dark-theme', !isDark);
-                    document.body.classList.toggle('light-theme', isDark);
+                withLatestFrom(this.store.select(user.selectors.isDarkTheme)),
+                tap(([_, isDarkTheme]) => {
+                    document.body.classList.toggle('dark-theme', isDarkTheme);
+                    document.body.classList.toggle('light-theme', !isDarkTheme);
                 })
             ),
         { dispatch: false }
