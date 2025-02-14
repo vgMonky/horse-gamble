@@ -1,43 +1,37 @@
 # ToggleComponent Usage Guide
 
 ## Overview
-The `ToggleComponent` is a reusable Angular component that allows toggling between multiple projected states. The currently active state is highlighted and emits an event (`stateChange`) that can be used by the parent component.
+The `ToggleComponent` is a reusable Angular component that allows toggling between multiple projected states. It highlights the currently active state and emits a `stateChange` event that the parent component can use.
 
 ---
 
-## How to Use
-
-### Step 1: Import the Component
-Make sure the `ToggleComponent` is properly declared in your standalone project and available for import.
+## Installation
+Ensure the `ToggleComponent` is available in your standalone project and imported correctly.
 
 ```typescript
-import { ToggleComponent } from './components/experimental/toggle.component';
+import { ToggleComponent } from './components/toggle.component';
 ```
 
-### Step 2: Add the Component to Your Template
+---
 
-Project multiple content states using Angular's `ng-template` inside the `ToggleComponent`. Each `ng-template` should be tagged with `#stateContent`.
+## Usage
+
+### Basic Example
+Use `ng-template` with `#stateContent` to define multiple toggle states.
 
 ```html
 <app-toggle (stateChange)="onStateChange($event)">
     <ng-template #stateContent>
-        <p>State 0: Welcome!</p>
+        <p>Dark Mode</p>
     </ng-template>
-
     <ng-template #stateContent>
-        <p>State 1: How are you?</p>
-    </ng-template>
-
-    <ng-template #stateContent>
-        <p>State 2: Goodbye!</p>
+        <p>Light Mode</p>
     </ng-template>
 </app-toggle>
 ```
 
-### Step 3: Listen for the `stateChange` Event
-The `stateChange` event emits the current active state index whenever the state changes. In the parent component, you can capture and use this event as needed.
-
-Example:
+### Handling State Changes
+Capture the emitted state index in the parent component.
 
 ```typescript
 import { Component } from '@angular/core';
@@ -46,18 +40,12 @@ import { Component } from '@angular/core';
     selector: 'app-root',
     template: `
         <h1>Current State = {{ currentState }}</h1>
-        
         <app-toggle (stateChange)="onStateChange($event)">
             <ng-template #stateContent>
                 <p>State 0</p>
             </ng-template>
-
             <ng-template #stateContent>
                 <p>State 1</p>
-            </ng-template>
-
-            <ng-template #stateContent>
-                <p>State 2</p>
             </ng-template>
         </app-toggle>
     `,
@@ -73,8 +61,69 @@ export class AppComponent {
 
 ---
 
-## Example Behavior
-- **Initial Display:** The first state (`State 0`) will be shown when the component loads.
-- **State Toggle:** Clicking any button will toggle to the corresponding state.
-- **Event Emission:** Each toggle emits the current state index, which the parent component can use to update UI or trigger additional logic.
+## API
+
+### Inputs
+- `@Input() currentState: number` (optional) - Sets the initial state.
+
+### Outputs
+- `@Output() stateChange: EventEmitter<number>` - Emits the current state index when toggled.
+
+---
+
+## Example: Binding with Store
+To keep the toggle in sync with an NgRx store, use an observable.
+
+```typescript
+import { Component } from '@angular/core';
+import { Store, select } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { AppState } from '@app/store/app.state';
+import { user } from '@app/store/user';
+
+@Component({
+    selector: 'app-user-preferences',
+    template: `
+        <h1>Current State = {{ currentState$ | async }}</h1>
+        <app-toggle [currentState]="currentState$ | async" (stateChange)="onStateChange($event)">
+            <ng-template #stateContent>
+                <p>Dark</p>
+            </ng-template>
+            <ng-template #stateContent>
+                <p>Light</p>
+            </ng-template>
+            <ng-template #stateContent>
+                <p>None</p>
+            </ng-template>
+        </app-toggle>
+    `,
+})
+export class UserPreferencesComponent {
+    currentState$: Observable<number>;
+
+    constructor(private store: Store<AppState>) {
+        this.currentState$ = this.store.pipe(
+            select(user.selectors.isDarkTheme),
+            map((isDark) => (isDark === null ? 2 : isDark ? 0 : 1))
+        );
+    }
+
+    onStateChange(newState: number) {
+        switch (newState) {
+            case 0:
+                this.store.dispatch(user.actions.setDark());
+                break;
+            case 1:
+                this.store.dispatch(user.actions.setLight());
+                break;
+            case 2:
+                this.store.dispatch(user.actions.setNone());
+                break;
+        }
+    }
+}
+```
+
+This ensures the toggle state remains synchronized with the store and updates dynamically. 🚀
 
