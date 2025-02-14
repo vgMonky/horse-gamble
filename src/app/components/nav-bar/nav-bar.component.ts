@@ -37,4 +37,5 @@ export class NavBarComponent {
 
     toggleWallet() {this.isWalletOpen = !this.isWalletOpen;}
     closeWallet() {this.isWalletOpen = false;}
+
 }
