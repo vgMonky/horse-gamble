@@ -1,5 +1,3 @@
-// src/app/core/store/user/user.reducer.ts
-
 import { createReducer, on } from '@ngrx/store';
 import { actions } from './user.actions';
 
@@ -20,6 +18,14 @@ export const userReducer = createReducer(
     on(actions.toggleTheme, (state) => ({
         ...state,
         isDarkTheme: !state.isDarkTheme,
+    })),
+    on(actions.setDark, (state) => ({
+        ...state,
+        isDarkTheme: true,
+    })),
+    on(actions.setLight, (state) => ({
+        ...state,
+        isDarkTheme: false,
     })),
     on(actions.setHue0, (state, { h0 }) => ({
         ...state,

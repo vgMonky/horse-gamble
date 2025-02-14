@@ -2,14 +2,14 @@
     <h2>User Preferences</h2>
     <div class="contained">
         <h3>Mode</h3>
-        <app-toggle [currentState]="currentState" (stateChange)="onStateChange($event)">
+        <app-toggle [currentState]="(currentState$ | async) ?? 0" (stateChange)="onStateChange($event)">
             <ng-template #stateContent>
                 <p>Dark</p>
             </ng-template>
             <ng-template #stateContent>
                 <p>Light</p>
             </ng-template>
-        </app-toggle>        
+        </app-toggle>         
     </div>    
     <div class="contained">
         <h3>Hue</h3>

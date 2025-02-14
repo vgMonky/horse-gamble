@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Store, select } from '@ngrx/store';
 import { AppState } from '@app/store/app.state';
 import { user } from '@app/store/user';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, map, Subscription } from 'rxjs';
 import { ToggleComponent } from '../toggle/toggle.component';
 
 @Component({
@@ -13,44 +13,33 @@ import { ToggleComponent } from '../toggle/toggle.component';
     templateUrl: './user-preferences.component.html',
     styleUrls: ['./user-preferences.component.scss']
 })
-export class UserPreferencesComponent implements OnInit, OnDestroy {
-    currentState = 0;
+export class UserPreferencesComponent {
+    currentState$: Observable<number>;
 
-    isDarkTheme$: Observable<boolean>;
     hue0$: Observable<number>;
     hue1$: Observable<number>;
-    private subscriptions: Subscription = new Subscription();
 
     constructor(private store: Store<AppState>) {
-        this.isDarkTheme$ = this.store.pipe(select(user.selectors.isDarkTheme));
         this.hue0$ = this.store.pipe(select(user.selectors.hue0));
         this.hue1$ = this.store.pipe(select(user.selectors.hue1));
+
+        this.currentState$ = this.store.pipe(
+            select(user.selectors.isDarkTheme),
+            map((isDark) => isDark ? 0 : 1) // Dark = 0, Light = 1
+        );
+            
     }
 
     onStateChange(newState: number) {
-        this.currentState = newState;
-        this.toggleTheme(); // Dispatch store action to toggle the theme
-    }
-
-    ngOnInit(): void {
-        // Subscribe to theme changes to update the body class
-        const themeSub = this.isDarkTheme$.subscribe((isDark) => {
-            this.currentState = isDark ? 1 : 0; // Sync toggle state with theme
-        });
-
-        this.subscriptions.add(themeSub);
-
-        // Initialize theme class based on the current state
-        // (Handled by the subscription above)
-    }
-
-    ngOnDestroy(): void {
-        this.subscriptions.unsubscribe();
-    }
-
-    toggleTheme() {
-        this.store.dispatch(user.actions.toggleTheme());
-    }
+        switch (newState) {
+            case 0:
+                this.store.dispatch(user.actions.setDark());
+                break;
+            case 1:
+                this.store.dispatch(user.actions.setLight());
+                break;
+        }
+    }    
 
     updateHue(event: Event) {
         const input = event.target as HTMLInputElement;
