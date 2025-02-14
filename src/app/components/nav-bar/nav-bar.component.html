@@ -9,11 +9,11 @@
         <svg width="40" height="40" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
             <defs>
             <linearGradient id="gradientStroke" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stop-color="var(--c3)" />
-                <stop offset="100%" stop-color="var(--cc3)" />
+                <stop offset="0%" stop-color="var(--c-accent-0)" />
+                <stop offset="100%" stop-color="var(--c-accent-0b)" />
             </linearGradient>
             </defs>
-            <circle cx="50" cy="50" r="40" stroke="url(#gradientStroke)" stroke-width="12" fill="none" />
+            <circle cx="50" cy="50" r="40" stroke="url(#gradientStroke)" stroke-width="15" fill="none" />
         </svg>
 
         </a>
@@ -38,7 +38,6 @@
     <!-- Right side: always visible -->
     <div class="nav-right">
         <a class="setting-icon" (click)="toggleSettings()"> &#9881; </a>
-        <a class="search-icon" (click)="toggleSearch()"> &#9906; </a>
         <app-login></app-login>
     </div>
 </nav>
@@ -55,9 +54,4 @@
 <!-- Window Container for Settings -->
 <app-window-container *ngIf="isSettingsOpen" (close)="closeSettings()">
     <app-user-preferences></app-user-preferences>
-</app-window-container>
-
-<!-- Window Container for Search -->
-<app-window-container *ngIf="isSearchOpen" (close)="closeSearch()">
-    <p>Search component here</p>
 </app-window-container>

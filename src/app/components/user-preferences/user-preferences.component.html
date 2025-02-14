@@ -1,36 +1,50 @@
 <div class="preferences-container">
     <h2>User Preferences</h2>
-    
-    <!-- Toggle Theme Button -->
-    <button class="btn" (click)="toggleTheme()">
-        Switch to {{ (isDarkTheme$ | async) ? 'Light' : 'Dark' }} Theme
-    </button>
-    
-    <!-- Hue Slider -->
-    <div class="input-group">
-        <label for="hue">Hue (--h): {{ (hue$ | async) }}</label>
-        <input 
-            type="range" 
-            id="hue" 
-            [value]="(hue$ | async)" 
-            (input)="updateHue($event)" 
-            min="0" 
-            max="360" 
-        />
-        <div class="color-display" [style.backgroundColor]="'hsl(' + (hue$ | async) + ', 50%, 50%)'"></div>
-    </div>
-    
-    <!-- Hue1 Slider -->
-    <div class="input-group">
-        <label for="hue1">Hue1 (--h1): {{ (hue1$ | async) }}</label>
-        <input 
-            type="range" 
-            id="hue1" 
-            [value]="(hue1$ | async)" 
-            (input)="updateHue1($event)" 
-            min="0" 
-            max="360" 
-        />
-        <div class="color-display" [style.backgroundColor]="'hsl(' + (hue1$ | async) + ', 50%, 50%)'"></div>
+    <div class="contained">
+        <h3>Mode</h3>
+        <app-toggle [currentState]="(currentState$ | async) ?? 0" (stateChange)="onStateChange($event)">
+            <ng-template #stateContent>
+                <p>Dark</p>
+            </ng-template>
+            <ng-template #stateContent>
+                <p>Light</p>
+            </ng-template>
+        </app-toggle>         
+    </div>    
+    <div class="contained">
+        <h3>Hue</h3>
+        <div class="theme-selector">
+            <p class="btn default-theme" (click)="setHueTheme('default')">Default</p>
+            <p class="btn candyflip-theme" (click)="setHueTheme('candyflip')">Candyflip</p>
+            <p class="btn cryptonite-theme" (click)="setHueTheme('cryptonite')">Cryptonite</p>
+        </div>
+        <br>
+        <!-- Hue Slider -->
+        <div class="input-group">
+            <label for="hue0">Hue0: {{ (hue0$ | async) }}</label>
+            <input 
+                type="range" 
+                id="hue0" 
+                [value]="(hue0$ | async)" 
+                (input)="updateHue($event)" 
+                min="0" 
+                max="360"
+            />
+            <div class="color-display" [style.backgroundColor]="'hsl(' + (hue0$ | async) + ', 50%, 50%)'"></div>
+        </div>
+        
+        <!-- Hue1 Slider -->
+        <div class="input-group">
+            <label for="hue1">Hue1: {{ (hue1$ | async) }}</label>
+            <input 
+                type="range" 
+                id="hue1" 
+                [value]="(hue1$ | async)" 
+                (input)="updateHue1($event)" 
+                min="0" 
+                max="360" 
+            />
+            <div class="color-display" [style.backgroundColor]="'hsl(' + (hue1$ | async) + ', 50%, 50%)'"></div>
+        </div>        
     </div>
 </div>

@@ -8,6 +8,9 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    border: 1px dashed var(--c3);
+    
+    /* Creates a fading shadow effect at the top */
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0) 10%);
+    
+
 }
-  

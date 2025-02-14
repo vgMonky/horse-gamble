@@ -2,6 +2,7 @@
 
 import { ActionReducerMap } from '@ngrx/store';
 import { userReducer, UserState } from './user/user.reducer';
+import { UserEffects } from './user/user.effects';
 // Import additional state interfaces here as you create them
 // import { WalletState } from './wallet/wallet.reducer';
 // import { DataState } from './data/data.reducer';
@@ -15,7 +16,7 @@ export interface AppState {
 }
 
 export const AppEffects = [
-    //UserEffects,
+    UserEffects,
     // WalletEffects,
     // DataEffects,
     // ... other effects
