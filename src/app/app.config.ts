@@ -6,7 +6,7 @@ import { withInterceptorsFromDi, provideHttpClient } from '@angular/common/http'
 import { routes } from './app.routes';
 import { StoreModule, MetaReducer } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { EffectsModule, provideEffects } from '@ngrx/effects';
+import { EffectsModule} from '@ngrx/effects';
 import { AppEffects, AppReducers } from './store/app.state';
 import { localStorageSync } from 'ngrx-store-localstorage';
 
