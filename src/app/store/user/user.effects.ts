@@ -4,11 +4,32 @@ import { Store, select } from '@ngrx/store';
 import { tap, withLatestFrom } from 'rxjs/operators';
 import { AppState } from '../app.state';
 import { user } from './index';
+import { LocalStorageService } from '@app/services/local-storage.service'; // adjust path if needed
 
 @Injectable()
 export class UserEffects {
     private actions$ = inject(Actions);
     private store = inject(Store<AppState>);
+    private localStorageService = inject(LocalStorageService);
+
+    savePreferences$ = createEffect(
+        () =>
+            this.actions$.pipe(
+                ofType(
+                    user.actions.toggleTheme,
+                    user.actions.setDark,
+                    user.actions.setLight,
+                    user.actions.setHue0,
+                    user.actions.setHue1,
+                    user.actions.setHueTheme
+                ),
+                withLatestFrom(this.store.select((state) => state.user)), // entire user slice
+                tap(([action, userState]) => {
+                    this.localStorageService.save('preference-anonymuos', userState);
+                })
+            ),
+        { dispatch: false }
+    );
 
     toggleTheme$ = createEffect(
         () =>
