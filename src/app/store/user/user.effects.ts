@@ -5,40 +5,24 @@ import { tap, withLatestFrom } from 'rxjs/operators';
 import { AppState } from '../app.state';
 import { user } from './index';
 import { LocalStorageService } from '@app/services/local-storage.service';
-import { UserState } from './user.reducer';
+import { SessionService } from '@app/services/session-kit.service';
 
 @Injectable()
 export class UserEffects {
     private actions$ = inject(Actions);
     private store = inject(Store<AppState>);
     private localStorageService = inject(LocalStorageService);
+    private sessionService = inject(SessionService)
     
     initPreferences$ = createEffect(
         () =>
         this.actions$.pipe(
-            ofType('@ngrx/effects/init'), // or your custom load action
-            tap(() => {
-            const preferences = this.localStorageService.get<UserState>('preference-anonymuos', null);
-    
-            if (preferences) {
-                if (preferences.isDarkTheme) {
-                this.store.dispatch(user.actions.setDark());
-                } else {
-                this.store.dispatch(user.actions.setLight());
-                }
-    
-                if (
-                typeof preferences.h0 === 'number' &&
-                typeof preferences.h1 === 'number'
-                ) {
-                this.store.dispatch(
-                    user.actions.setHueTheme({
-                    h0: preferences.h0,
-                    h1: preferences.h1,
-                    })
-                );
-                }
-            }
+            ofType('@ngrx/effects/init'),
+            withLatestFrom(this.store.select((state) => state.user)),
+            tap(([_, userState]) => {
+                const actor = this.sessionService.currentSession?.actor ?? null;
+                this.localStorageService.saveUserPreferences(actor, userState)
+                this.localStorageService.restoreUserPreferences(actor);
             })
         ),
         { dispatch: false }
@@ -46,20 +30,21 @@ export class UserEffects {
 
     savePreferences$ = createEffect(
         () =>
-            this.actions$.pipe(
-                ofType(
-                    user.actions.toggleTheme,
-                    user.actions.setDark,
-                    user.actions.setLight,
-                    user.actions.setHue0,
-                    user.actions.setHue1,
-                    user.actions.setHueTheme
-                ),
-                withLatestFrom(this.store.select((state) => state.user)), // entire user slice
-                tap(([action, userState]) => {
-                    this.localStorageService.save('preference-anonymuos', userState);
-                })
+        this.actions$.pipe(
+            ofType(
+            user.actions.toggleTheme,
+            user.actions.setDark,
+            user.actions.setLight,
+            user.actions.setHue0,
+            user.actions.setHue1,
+            user.actions.setHueTheme
             ),
+            withLatestFrom(this.store.select((state) => state.user)),
+            tap(([_, userState]) => {
+                const actor = this.sessionService.currentSession?.actor ?? null;
+                this.localStorageService.saveUserPreferences(actor, userState);
+            })
+        ),
         { dispatch: false }
     );
 

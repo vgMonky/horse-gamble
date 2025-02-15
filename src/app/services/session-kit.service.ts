@@ -1,15 +1,17 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { SessionKit } from '@wharfkit/session';
 import { WebRenderer } from '@wharfkit/web-renderer';
 import { WalletPluginAnchor } from '@wharfkit/wallet-plugin-anchor';
 import { WalletPluginCleos } from '@wharfkit/wallet-plugin-cleos';
-
+import { LocalStorageService } from './local-storage.service';
 @Injectable({
     providedIn: 'root',
 })
 export class SessionService {
     private sessionKit: SessionKit;
+    private localStorageService = inject(LocalStorageService);
+    
 
     // BehaviorSubject to store and emit session changes
     private sessionSubject = new BehaviorSubject<any>(undefined);
@@ -42,7 +44,8 @@ export class SessionService {
         try {
             const { session } = await this.sessionKit.login();
             this.sessionSubject.next(session);  // Emit the new session
-            console.log('Login successful:', session);
+            const actor = session?.actor; 
+            this.localStorageService.restoreUserPreferences(actor.toString());      
             return session;
         } catch (error) {
             console.error('Login failed:', error);
@@ -58,6 +61,7 @@ export class SessionService {
             this.sessionSubject.next(undefined);  // Emit session cleared
             console.log('Logout successful');
         }
+        this.localStorageService.restoreUserPreferences(null);
     }
 
     // Restore session method
@@ -66,6 +70,12 @@ export class SessionService {
         this.sessionSubject.next(session);  // Emit restored session
         if (session) {
             console.log('Session restored:', session);
+        }
+        const actor = session?.actor || null;
+        if (actor) {
+            this.localStorageService.restoreUserPreferences(actor.toString());
+        } else {
+            this.localStorageService.restoreUserPreferences(null);
         }
         return session;
     }
