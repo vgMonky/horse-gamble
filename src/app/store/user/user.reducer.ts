@@ -1,7 +1,7 @@
 import { createReducer, on } from '@ngrx/store';
 import { actions } from './user.actions';
 
-export interface UserState {
+export interface UserState{
     isDarkTheme: boolean;
     h0: number;
     h1: number;
