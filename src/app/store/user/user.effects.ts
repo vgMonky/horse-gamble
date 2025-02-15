@@ -10,41 +10,6 @@ export class UserEffects {
     private actions$ = inject(Actions);
     private store = inject(Store<AppState>);
 
-    // Apply theme based on saved state at app start
-    initializeTheme$ = createEffect(
-        () =>
-            this.store.pipe(
-                select(user.selectors.isDarkTheme),
-                tap((isDarkTheme) => {
-                    document.body.classList.toggle('dark-theme', isDarkTheme);
-                    document.body.classList.toggle('light-theme', !isDarkTheme);
-                })
-            ),
-        { dispatch: false }
-    );
-
-    initializeHues$ = createEffect(
-        () =>
-            this.store.pipe(
-                select(user.selectors.hue0),
-                tap((h0) => {
-                    document.documentElement.style.setProperty('--h0', h0.toString());
-                })
-            ),
-        { dispatch: false }
-    );
-
-    initializeHues1$ = createEffect(
-        () =>
-            this.store.pipe(
-                select(user.selectors.hue1),
-                tap((h1) => {
-                    document.documentElement.style.setProperty('--h1', h1.toString());
-                })
-            ),
-        { dispatch: false }
-    );
-
     toggleTheme$ = createEffect(
         () =>
             this.actions$.pipe(

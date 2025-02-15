@@ -8,17 +8,6 @@ import { StoreModule, MetaReducer } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { EffectsModule} from '@ngrx/effects';
 import { AppEffects, AppReducers } from './store/app.state';
-import { localStorageSync } from 'ngrx-store-localstorage';
-
-export function localStorageMetaReducer(reducer: any) {
-    return localStorageSync({
-        keys: ['user'],  
-        rehydrate: true, 
-    })(reducer);
-}
-
-const metaReducers: MetaReducer<any>[] = [localStorageMetaReducer];
-
 
 export const appConfig: ApplicationConfig = {
     providers: [
@@ -29,7 +18,6 @@ export const appConfig: ApplicationConfig = {
             StoreModule.forRoot(
                 AppReducers,
                 {
-                    metaReducers,
                     runtimeChecks: {
                         strictStateImmutability: true,
                         strictActionImmutability: true,
