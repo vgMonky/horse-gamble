@@ -6,17 +6,17 @@
     </div>
 
     <ng-template #balanceList>
-        <div *ngIf="balances | keyvalue as tokenBalances">
-            <div *ngFor="let balance of tokenBalances">
-                <div class="token-balance">
-                    {{ balance.value }}
+        <div *ngIf="balances.length > 0">
+            <div *ngFor="let balance of balances">
+                <div class="balanceDisplay">
+                    {{ balance.amount }} {{ balance.token.symbol }}
                 </div>
             </div>
         </div>
     </ng-template>
+
     <br>
     <button class="btn" (click)="refreshBalances()">Refresh Balances</button>
-
 </div>
 
 <ng-template #noSession>
