@@ -6,9 +6,9 @@ import { Token } from 'src/types';
     providedIn: 'root'
 })
 export class TokenBalanceService {
-    constructor(private sessionService: SessionService) {}
+    constructor() {}
 
-    async getTokenBalance(client: any, token: Token, account: string): Promise<{ amount: { raw: number; formatted: string }; token: Token } | undefined> {
+    async getTokenBalance(client: any, token: Token, account: string, get_zero_balance: boolean): Promise<{ amount: { raw: number; formatted: string }; token: Token } | undefined> {
         try {
             const result = await client.get_currency_balance(token.account, account, token.symbol);
             console.log(`Balance result for ${token.symbol}:`, result);
@@ -16,7 +16,7 @@ export class TokenBalanceService {
             let rawAmount = 0;
             if (Array.isArray(result) && result.length > 0) {
                 const balanceEntry = result[0];
-    
+
                 if (typeof balanceEntry === 'object' && balanceEntry.units?.value?.words?.length > 0) {
                     rawAmount = balanceEntry.units.value.words[0];
                     console.log(`Extracted raw balance for ${token.symbol}:`, rawAmount);
@@ -26,9 +26,16 @@ export class TokenBalanceService {
             } else {
                 console.log(`No balance found for ${token.symbol}, fallback: 0`);
             }
-
+            
             const formattedAmount = this.formatBalance(rawAmount, token);
-            return { amount: { raw: rawAmount, formatted: formattedAmount }, token };
+            let balanceData = { amount: { raw: rawAmount, formatted: formattedAmount }, token };
+
+            if (!get_zero_balance){
+                return this.isZeroBalance(balanceData) ? balanceData : undefined
+            } else {
+                return balanceData
+            }
+
         } catch (error) {
             console.error(`Error fetching balance for ${token.symbol}:`, error);
             return undefined;
@@ -39,5 +46,9 @@ export class TokenBalanceService {
         const precision = token.precision;
         const factor = Math.pow(10, precision);
         return (rawAmount / factor).toFixed(precision);
+    }
+
+    isZeroBalance(balance: { amount: { raw: number }; token: Token }): boolean {
+        return balance.token.symbol === 'TLOS' || balance.amount.raw > 0;
     }
 }

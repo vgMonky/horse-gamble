@@ -54,7 +54,8 @@ export class WalletComponent implements OnInit, OnDestroy {
                 let balanceData = await this.tokenBalanceService.getTokenBalance(
                     this.sessionService.currentSession?.client.v1.chain, 
                     token, 
-                    account
+                    account,
+                    false
                 );
                 if(balanceData){
                     this.balances.push(balanceData);
