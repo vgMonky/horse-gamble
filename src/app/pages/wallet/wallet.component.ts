@@ -16,7 +16,7 @@ import { Subscription } from 'rxjs';
 export class WalletComponent implements OnInit, OnDestroy {
     actor: string | undefined;
     tokens: Token[] = [];
-    balances: { amount: number; token: Token }[] = [];
+    balances: { amount: { raw: number; formatted: string }; token: Token }[] = [];
     loading = false;  
     private sessionSubscription!: Subscription;
     private tokenSubscription!: Subscription;

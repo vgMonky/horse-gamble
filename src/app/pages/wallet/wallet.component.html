@@ -6,13 +6,11 @@
     </div>
 
     <ng-template #balanceList>
-        <div *ngIf="balances.length > 0">
             <div *ngFor="let balance of balances">
                 <div class="balanceDisplay">
-                    {{ balance.amount }} {{ balance.token.symbol }}
+                    {{ balance.amount.formatted }} {{ balance.token.symbol }}
                 </div>
             </div>
-        </div>
     </ng-template>
 
     <br>
