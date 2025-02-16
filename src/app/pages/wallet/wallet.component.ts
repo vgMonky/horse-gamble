@@ -14,7 +14,6 @@ import { Subscription } from 'rxjs';
     styleUrls: ['./wallet.component.scss'],
 })
 export class WalletComponent implements OnInit, OnDestroy {
-    actor: string | undefined;
     tokens: Token[] = [];
     balances: { amount: { raw: number; formatted: string }; token: Token }[] = [];
     loading = false;  
@@ -22,15 +21,14 @@ export class WalletComponent implements OnInit, OnDestroy {
     private tokenSubscription!: Subscription;
 
     constructor(
-        private sessionService: SessionService,
+        public sessionService: SessionService, // Changed from private to public
         private tokenBalanceService: TokenBalanceService,
         private tokenListService: TokenListService
     ) {}
 
     ngOnInit() {
         this.sessionSubscription = this.sessionService.session$.subscribe(async session => {
-            this.actor = session?.actor;
-            if (this.actor) {
+            if (session?.actor) {
                 this.loadTokenList();
             }
         });
@@ -39,38 +37,40 @@ export class WalletComponent implements OnInit, OnDestroy {
     private loadTokenList() {
         this.tokenSubscription = this.tokenListService.getTokens().subscribe(tokens => {
             this.tokens = tokens;
-            if (this.actor) {
-                this.loadBalances(this.actor);
+            if (this.sessionService.currentSession?.actor) {
+                this.loadBalances();
             }
         });
     }
 
-    private async loadBalances(account: string) {
-        this.loading = true;  
-        this.balances = []; 
-    
+    private async loadBalances() {
+        const account = this.sessionService.currentSession?.actor;
+        if (!account) return;
+
+        this.loading = true;
+        this.balances = [];
+
         for (const token of this.tokens) {
             try {
-                let balanceData = await this.tokenBalanceService.getTokenBalance(
+                const balanceData = await this.tokenBalanceService.getTokenBalance(
                     this.sessionService.currentSession?.client.v1.chain, 
                     token, 
-                    account,
-                    false
+                    account
                 );
-                if(balanceData){
+                if (balanceData) {
                     this.balances.push(balanceData);
                 }
             } catch (error) {
                 console.error(`Error fetching balance for ${token.symbol}:`, error);
             }
         }
-    
+
         this.loading = false;
     }    
 
     async refreshBalances() {
-        if (this.actor) {
-            await this.loadBalances(this.actor);
+        if (this.sessionService.currentSession?.actor) {
+            await this.loadBalances();
         }
     }
 

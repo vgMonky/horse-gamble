@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { SessionService } from '@app/services/session-kit.service';
 import { Token } from 'src/types';
 
 @Injectable({
@@ -8,7 +7,7 @@ import { Token } from 'src/types';
 export class TokenBalanceService {
     constructor() {}
 
-    async getTokenBalance(client: any, token: Token, account: string, get_zero_balance: boolean): Promise<{ amount: { raw: number; formatted: string }; token: Token } | undefined> {
+    async getTokenBalance(client: any, token: Token, account: string, get_zero_balance: boolean = false): Promise<{ amount: { raw: number; formatted: string }; token: Token } | undefined> {
         try {
             const result = await client.get_currency_balance(token.account, account, token.symbol);
             console.log(`Balance result for ${token.symbol}:`, result);

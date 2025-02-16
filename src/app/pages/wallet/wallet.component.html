@@ -1,5 +1,5 @@
-<div *ngIf="actor; else noSession">
-    <h2>{{ actor }}</h2>
+<div *ngIf="sessionService.currentSession?.actor; else noSession">
+    <h2>{{ sessionService.currentSession.actor }}</h2>
 
     <div *ngIf="loading; else balanceList">
         <p>[ Loading... ]</p>
