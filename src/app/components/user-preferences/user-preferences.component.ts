@@ -53,9 +53,9 @@ export class UserPreferencesComponent implements OnInit, OnDestroy {
         // Debounce hue1
         this.hue1Subject
             .pipe(
-                debounceTime(100),
-                distinctUntilChanged(),
-                takeUntil(this.destroy$)
+                debounceTime(100),          // Wait 300ms
+                distinctUntilChanged(),     // Only if value changed
+                takeUntil(this.destroy$)    // Unsubscribe on destroy
             )
             .subscribe((h1) => {
                 this.store.dispatch(user.actions.setHue1({ h1 }));
@@ -96,7 +96,7 @@ export class UserPreferencesComponent implements OnInit, OnDestroy {
 
     setHueTheme(theme: 'default' | 'candyflip' | 'cryptonite') {
         let h0, h1;
-        
+
         switch (theme) {
             case 'candyflip':
                 h0 = 160;
@@ -110,7 +110,7 @@ export class UserPreferencesComponent implements OnInit, OnDestroy {
                 h0 = 160;
                 h1 = 230;
         }
-    
+
         this.store.dispatch(user.actions.setHueTheme({ h0, h1 }));
     }
 }

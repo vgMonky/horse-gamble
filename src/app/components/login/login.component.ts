@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DropDownComponent } from '../drop-down/drop-down.component';
 import { RouterModule } from '@angular/router';
@@ -15,13 +15,9 @@ import { SessionService } from '@app/services/session-kit.service';
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss'],
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
 
     constructor(public sessionService: SessionService) {}
-
-    ngOnInit() {
-        this.sessionService.restoreSession();
-    }
 
     async login() {
         try {
