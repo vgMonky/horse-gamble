@@ -38,9 +38,9 @@ export class UserPreferencesComponent implements OnInit, OnDestroy {
         // Debounce hue0
         this.hue0Subject
             .pipe(
-                debounceTime(100),          
-                distinctUntilChanged(),     
-                takeUntil(this.destroy$)    
+                debounceTime(100),
+                distinctUntilChanged(),
+                takeUntil(this.destroy$)
             )
             .subscribe((h0) => {
                 this.store.dispatch(user.actions.setHue0({ h0 }));
@@ -49,9 +49,9 @@ export class UserPreferencesComponent implements OnInit, OnDestroy {
         // Debounce hue1
         this.hue1Subject
             .pipe(
-                debounceTime(100),          
-                distinctUntilChanged(),     
-                takeUntil(this.destroy$)    
+                debounceTime(100),
+                distinctUntilChanged(),
+                takeUntil(this.destroy$)
             )
             .subscribe((h1) => {
                 this.store.dispatch(user.actions.setHue1({ h1 }));

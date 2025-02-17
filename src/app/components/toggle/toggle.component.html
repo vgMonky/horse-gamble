@@ -1,8 +1,8 @@
 <div class="toggle-group">
-    <button 
-        *ngFor="let content of projectedContents; let i = index" 
-        (click)="setState(i)" 
-        class="toggle-btn" 
+    <button
+        *ngFor="let content of projectedContents; let i = index"
+        (click)="setState(i)"
+        class="toggle-btn"
         [class.active]="currentState === i"
     >
         <ng-template [ngTemplateOutlet]="content"></ng-template>

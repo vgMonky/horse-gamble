@@ -28,7 +28,7 @@ export const appConfig: ApplicationConfig = {
                 maxAge: 25, // Retains last 25 states
                 logOnly: false // Set to false since environment is not defined
             }),
-            EffectsModule.forRoot(AppEffects) 
+            EffectsModule.forRoot(AppEffects)
         ),
     ],
 };

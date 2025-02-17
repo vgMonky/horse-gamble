@@ -71,27 +71,27 @@ export class TokenBalanceService {
             // Check if result is an array with at least one item
             if (Array.isArray(result) && result.length > 0) {
                 const balanceEntry = result[0];
-    
+
                 // If it's a string, return as-is
                 if (typeof balanceEntry === 'string') {
                     return balanceEntry;
                 }
-    
+
                 // If it's an object, extract numeric value (adjust this based on actual API response structure)
                 if (typeof balanceEntry === 'object' && balanceEntry.value) {
                     const balance = balanceEntry.value.toString(); // Convert to string safely
                     return this.formatBalance(balance, token);
                 }
             }
-    
+
             return this.formatBalance(0, token); // Default to zero balance
         } catch (error) {
             console.error(`Error fetching balance for ${token.symbol}:`, error);
             return this.formatBalance(0, token);
         }
     }
-    
-    
+
+
 
     // Format balance using token precision
     private formatBalance(amount: number | string, token: Token): string {
