@@ -15,7 +15,6 @@ import { ToggleComponent } from '../toggle/toggle.component';
     styleUrls: ['./user-preferences.component.scss']
 })
 export class UserPreferencesComponent implements OnInit, OnDestroy {
-    // Observables from store
     hue0$: Observable<number>;
     hue1$: Observable<number>;
     currentState$: Observable<number>;
@@ -23,12 +22,9 @@ export class UserPreferencesComponent implements OnInit, OnDestroy {
     // Subjects for debouncing
     private hue0Subject = new Subject<number>();
     private hue1Subject = new Subject<number>();
-
-    // Cleanup subject
-    private destroy$ = new Subject<void>();
+    private destroy$ = new Subject<void>(); // Cleanup subject
 
     constructor(private store: Store<AppState>) {
-        // Access store slices
         this.hue0$ = this.store.pipe(select(user.selectors.hue0));
         this.hue1$ = this.store.pipe(select(user.selectors.hue1));
 
@@ -42,9 +38,9 @@ export class UserPreferencesComponent implements OnInit, OnDestroy {
         // Debounce hue0
         this.hue0Subject
             .pipe(
-                debounceTime(100),          // Wait 300ms
-                distinctUntilChanged(),     // Only if value changed
-                takeUntil(this.destroy$)    // Unsubscribe on destroy
+                debounceTime(100),          
+                distinctUntilChanged(),     
+                takeUntil(this.destroy$)    
             )
             .subscribe((h0) => {
                 this.store.dispatch(user.actions.setHue0({ h0 }));
@@ -53,9 +49,9 @@ export class UserPreferencesComponent implements OnInit, OnDestroy {
         // Debounce hue1
         this.hue1Subject
             .pipe(
-                debounceTime(100),          // Wait 300ms
-                distinctUntilChanged(),     // Only if value changed
-                takeUntil(this.destroy$)    // Unsubscribe on destroy
+                debounceTime(100),          
+                distinctUntilChanged(),     
+                takeUntil(this.destroy$)    
             )
             .subscribe((h1) => {
                 this.store.dispatch(user.actions.setHue1({ h1 }));
@@ -78,7 +74,7 @@ export class UserPreferencesComponent implements OnInit, OnDestroy {
         }
     }
 
-    updateHue(event: Event) {
+    updateHue0(event: Event) {
         const input = event.target as HTMLInputElement;
         const h0 = Number(input.value);
         if (h0 >= 0 && h0 <= 360) {
