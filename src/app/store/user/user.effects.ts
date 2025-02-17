@@ -12,17 +12,14 @@ export class UserEffects {
     private actions$ = inject(Actions);
     private store = inject(Store<AppState>);
     private localStorageService = inject(LocalStorageService);
-    private sessionService = inject(SessionService)
-    
+    private sessionService = inject(SessionService);
+
     initPreferences$ = createEffect(
         () =>
         this.actions$.pipe(
             ofType('@ngrx/effects/init'),
-            withLatestFrom(this.store.select((state) => state.user)),
-            tap(([_, userState]) => {
-                const actor = this.sessionService.currentSession?.actor ?? null;
-                this.localStorageService.saveUserPreferences(actor, userState)
-                this.localStorageService.restoreUserPreferences(actor);
+            tap(() => {
+                this.sessionService.restoreSession();
             })
         ),
         { dispatch: false }
@@ -32,12 +29,12 @@ export class UserEffects {
         () =>
         this.actions$.pipe(
             ofType(
-            user.actions.toggleTheme,
-            user.actions.setDark,
-            user.actions.setLight,
-            user.actions.setHue0,
-            user.actions.setHue1,
-            user.actions.setHueTheme
+                user.actions.toggleTheme,
+                user.actions.setDark,
+                user.actions.setLight,
+                user.actions.setHue0,
+                user.actions.setHue1,
+                user.actions.setHueTheme
             ),
             withLatestFrom(this.store.select((state) => state.user)),
             tap(([_, userState]) => {
@@ -83,7 +80,7 @@ export class UserEffects {
                 })
             ),
         { dispatch: false }
-    );    
+    );
 
     setHue0$ = createEffect(
         () =>

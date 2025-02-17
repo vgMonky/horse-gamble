@@ -1,6 +1,6 @@
 <div class="wallet-container">
     <button class="btn" (click)="login()" *ngIf="!(sessionService.session$ | async)">Login</button>
-    
+
     <div *ngIf="(sessionService.session$ | async) as session">
         <app-drop-down [buttonText]="session.actor">
             <a routerLink="/wallet">Wallet</a>

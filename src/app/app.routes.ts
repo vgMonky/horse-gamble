@@ -8,7 +8,7 @@ import { WalletComponent } from './pages/wallet/wallet.component';
 export const routes: Routes = [
     // Navigate to 'home' component by default (empty path)
     { path: '', component: HomeComponent },
-    
+
     { path: 'trade', component: TradeComponent },
     { path: 'explore', component: ExploreComponent },
     { path: 'pool', component: PoolComponent },

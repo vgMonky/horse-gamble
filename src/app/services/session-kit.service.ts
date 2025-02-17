@@ -11,7 +11,7 @@ import { LocalStorageService } from './local-storage.service';
 export class SessionService {
     private sessionKit: SessionKit;
     private localStorageService = inject(LocalStorageService);
-    
+
 
     // BehaviorSubject to store and emit session changes
     private sessionSubject = new BehaviorSubject<any>(undefined);
@@ -44,8 +44,8 @@ export class SessionService {
         try {
             const { session } = await this.sessionKit.login();
             this.sessionSubject.next(session);  // Emit the new session
-            const actor = session?.actor; 
-            this.localStorageService.restoreUserPreferences(actor.toString());      
+            const actor = session?.actor;
+            this.localStorageService.restoreUserPreferences(actor.toString());
             return session;
         } catch (error) {
             console.error('Login failed:', error);

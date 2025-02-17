@@ -1,9 +1,9 @@
 <nav>
     <!-- Left side: DEX logo + Hamburger Icon (visible on small screens) -->
     <div class="nav-left">
-        <a 
-            routerLink="/" 
-            routerLinkActive="active-link" 
+        <a
+            routerLink="/"
+            routerLinkActive="active-link"
             [routerLinkActiveOptions]="{ exact: true }"
         >
         <svg width="40" height="40" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -17,10 +17,10 @@
         </svg>
 
         </a>
-        <a 
-            class="hamburger" 
-            (click)="toggleMenu()" 
-            aria-label="Toggle navigation menu" 
+        <a
+            class="hamburger"
+            (click)="toggleMenu()"
+            aria-label="Toggle navigation menu"
             [attr.aria-expanded]="isMenuOpen"
             [attr.aria-controls]="menuId"
         >
