@@ -1,101 +1,100 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, combineLatest, firstValueFrom } from 'rxjs';
 import { SessionService } from '@app/services/session-kit.service';
-import { Token } from 'src/types';
+import { TokenListService } from '@app/services/token-list.service';
+import { Token, Balance } from 'src/types';
 
 @Injectable({
     providedIn: 'root'
 })
 export class TokenBalanceService {
-    private tokens: Token[] = [];
+    private balances$ = new BehaviorSubject<Balance[]>([]);
 
     constructor(
         private sessionService: SessionService,
-        private http: HttpClient
+        private tokenListService: TokenListService
     ) {
-        this.loadTokenList();
+        combineLatest([this.sessionService.session$, this.tokenListService.getTokens()])
+            .subscribe(([session, tokens]) => {
+                if (session?.actor) {
+                    this.fetchAllBalances(tokens, session.actor);
+                } else {
+                    this.balances$.next([]); // Clear balances on logout
+                }
+            });
     }
 
-    // Load token list from JSON file
-    private loadTokenList() {
-        this.http.get<Token[]>('assets/tokens_mainnet.json').subscribe({
-            next: tokens => (this.tokens = tokens),
-            error: err => console.error('Error loading token list:', err)
-        });
+    private async fetchAllBalances(tokens: Token[], account: string) {
+        const client = this.sessionService.currentSession?.client.v1.chain;
+        if (!client || !account) {
+            this.balances$.next([]);
+            return;
+        }
+
+        try {
+            const balancePromises = tokens.map(token => 
+                this.getTokenBalance(client, token, account).then(balance => balance || null)
+            );
+
+            const balances = (await Promise.all(balancePromises)).filter(b => b !== null) as Balance[];
+            this.balances$.next(balances);
+        } catch (error) {
+            console.error('Error fetching all balances:', error);
+            this.balances$.next([]); // Reset on failure
+        }
     }
 
-    // Fetch all token balances for the current account
-    async getAllBalances(account: string): Promise<{ [symbol: string]: string }> {
+    getAllBalances() {
+        return this.balances$.asObservable();
+    }
+    
+    refreshAllBalances() {
         const session = this.sessionService.currentSession;
-        if (!session) {
-            throw new Error('No active session. Please log in first.');
+        if (session?.actor) {
+            this.fetchAllBalances(this.tokenListService.getTokensValue(), session.actor);
         }
-
-        const balances: { [symbol: string]: string } = {};
-
-        for (const token of this.tokens) {
-            try {
-                const balance = await this.getBalance(session.client.v1.chain, token, account);
-                balances[token.symbol] = balance;
-            } catch (error) {
-                console.error(`Error fetching balance for ${token.symbol}:`, error);
-                balances[token.symbol] = this.formatBalance(0, token);
-            }
-        }
-        console.log('Raw balances:', balances);
-
-        const filteredBalances = this.filter_zero_balance(balances);
-        return filteredBalances;
     }
 
-    // ✅ Function to filter out tokens with zero balance, keeping TLOS always
-    private filter_zero_balance(balances: { [symbol: string]: string }): { [symbol: string]: string } {
-        const filteredBalances: { [symbol: string]: string } = {};
-
-        for (const [symbol, balance] of Object.entries(balances)) {
-            const numericBalance = parseFloat(balance.split(' ')[0]); // Extract numeric part
-
-            if (symbol === 'TLOS' || numericBalance > 0) {
-                filteredBalances[symbol] = balance;
-            }
-        }
-
-        return filteredBalances;
-    }
-
-    // Fetch balance for a single token
-    private async getBalance(client: any, token: Token, account: string): Promise<string> {
+    async getTokenBalance(client: any, token: Token, account: string, get_zero_balance: boolean = false): Promise<Balance | undefined> {
         try {
             const result = await client.get_currency_balance(token.account, account, token.symbol);
-            console.log(result)
-            // Check if result is an array with at least one item
+            console.log(`Balance result for ${token.symbol}:`, result);
+    
+            let rawAmount = 0;
             if (Array.isArray(result) && result.length > 0) {
                 const balanceEntry = result[0];
-    
-                // If it's a string, return as-is
-                if (typeof balanceEntry === 'string') {
-                    return balanceEntry;
+
+                if (typeof balanceEntry === 'object' && balanceEntry.units?.value?.words?.length > 0) {
+                    rawAmount = balanceEntry.units.value.words[0];
+                    console.log(`Extracted raw balance for ${token.symbol}:`, rawAmount);
+                } else {
+                    console.warn(`Unexpected balance format for ${token.symbol}:`, balanceEntry);
                 }
-    
-                // If it's an object, extract numeric value (adjust this based on actual API response structure)
-                if (typeof balanceEntry === 'object' && balanceEntry.value) {
-                    const balance = balanceEntry.value.toString(); // Convert to string safely
-                    return this.formatBalance(balance, token);
-                }
+            } else {
+                console.log(`No balance found for ${token.symbol}, fallback: 0`);
             }
-    
-            return this.formatBalance(0, token); // Default to zero balance
+            
+            const formattedAmount = this.formatBalance(rawAmount, token);
+            let balanceData: Balance = { amount: { raw: rawAmount, formatted: formattedAmount }, token };
+
+            if (!get_zero_balance){
+                return this.isZeroBalance(balanceData) ? balanceData : undefined;
+            } else {
+                return balanceData;
+            }
         } catch (error) {
             console.error(`Error fetching balance for ${token.symbol}:`, error);
-            return this.formatBalance(0, token);
+            return undefined;
         }
     }
-    
-    
 
-    // Format balance using token precision
-    private formatBalance(amount: number | string, token: Token): string {
+    formatBalance(rawAmount: number, token: Token): string {
         const precision = token.precision;
-        return `${Number(amount).toFixed(precision)} ${token.symbol}`;
+        const factor = Math.pow(10, precision);
+        return (rawAmount / factor).toFixed(precision);
+    }
+
+    isZeroBalance(balance: { amount: { raw: number }; token: Token }): boolean {
+        return balance.token.symbol === 'TLOS' || balance.amount.raw > 0;
     }
 }

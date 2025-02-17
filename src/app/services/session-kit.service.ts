@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { Router } from '@angular/router';
 import { SessionKit } from '@wharfkit/session';
 import { WebRenderer } from '@wharfkit/web-renderer';
 import { WalletPluginAnchor } from '@wharfkit/wallet-plugin-anchor';
@@ -15,7 +16,9 @@ export class SessionService {
     private sessionSubject = new BehaviorSubject<any>(undefined);
     session$: Observable<any> = this.sessionSubject.asObservable();
 
-    constructor() {
+    constructor(
+        private router: Router // inject the Router
+    ) {
         this.sessionKit = new SessionKit({
             appName: 'session-connect',
             chains: [
@@ -43,6 +46,7 @@ export class SessionService {
             const { session } = await this.sessionKit.login();
             this.sessionSubject.next(session);  // Emit the new session
             console.log('Login successful:', session);
+            this.router.navigate(['/wallet']);
             return session;
         } catch (error) {
             console.error('Login failed:', error);
