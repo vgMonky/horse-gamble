@@ -32,7 +32,7 @@ export class TokenBalanceService {
         }
 
         try {
-            const balancePromises = tokens.map(token => 
+            const balancePromises = tokens.map(token =>
                 this.getTokenBalance(client, token, account).then(balance => balance || null)
             );
 
@@ -47,7 +47,7 @@ export class TokenBalanceService {
     getAllBalances() {
         return this.balances$.asObservable();
     }
-    
+
     refreshAllBalances() {
         const session = this.sessionService.currentSession;
         if (session?.actor) {
@@ -59,7 +59,7 @@ export class TokenBalanceService {
         try {
             const result = await client.get_currency_balance(token.account, account, token.symbol);
             console.log(`Balance result for ${token.symbol}:`, result);
-    
+
             let rawAmount = 0;
             if (Array.isArray(result) && result.length > 0) {
                 const balanceEntry = result[0];
@@ -73,17 +73,18 @@ export class TokenBalanceService {
             } else {
                 console.log(`No balance found for ${token.symbol}, fallback: 0`);
             }
-            
+
             const formattedAmount = this.formatBalance(rawAmount, token);
             let balanceData: Balance = { amount: { raw: rawAmount, formatted: formattedAmount }, token };
 
+            // filter out if zero unles its TLOS
             if (!get_zero_balance){
-                return this.isZeroBalance(balanceData) ? balanceData : undefined;
+                return this.isValid(balanceData) ? balanceData : undefined;
             } else {
                 return balanceData;
             }
 
-            return this.formatBalance(0, token); // Default to zero balance
+            return balanceData
 
         } catch (error) {
             console.error(`Error fetching balance for ${token.symbol}:`, error);
@@ -97,7 +98,7 @@ export class TokenBalanceService {
         return (rawAmount / factor).toFixed(precision);
     }
 
-    isZeroBalance(balance: { amount: { raw: number }; token: Token }): boolean {
+    isValid(balance: { amount: { raw: number }; token: Token }): boolean {
         return balance.token.symbol === 'TLOS' || balance.amount.raw > 0;
     }
 }
