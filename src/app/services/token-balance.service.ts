@@ -1,13 +1,61 @@
 import { Injectable } from '@angular/core';
-import { Token } from 'src/types';
+import { BehaviorSubject, combineLatest, firstValueFrom } from 'rxjs';
+import { SessionService } from '@app/services/session-kit.service';
+import { TokenListService } from '@app/services/token-list.service';
+import { Token, Balance } from 'src/types';
 
 @Injectable({
     providedIn: 'root'
 })
 export class TokenBalanceService {
-    constructor() {}
+    private balances$ = new BehaviorSubject<Balance[]>([]);
 
-    async getTokenBalance(client: any, token: Token, account: string, get_zero_balance: boolean = false): Promise<{ amount: { raw: number; formatted: string }; token: Token } | undefined> {
+    constructor(
+        private sessionService: SessionService,
+        private tokenListService: TokenListService
+    ) {
+        combineLatest([this.sessionService.session$, this.tokenListService.getTokens()])
+            .subscribe(([session, tokens]) => {
+                if (session?.actor) {
+                    this.fetchAllBalances(tokens, session.actor);
+                } else {
+                    this.balances$.next([]); // Clear balances on logout
+                }
+            });
+    }
+
+    private async fetchAllBalances(tokens: Token[], account: string) {
+        const client = this.sessionService.currentSession?.client.v1.chain;
+        if (!client || !account) {
+            this.balances$.next([]);
+            return;
+        }
+
+        try {
+            const balancePromises = tokens.map(token => 
+                this.getTokenBalance(client, token, account).then(balance => balance || null)
+            );
+
+            const balances = (await Promise.all(balancePromises)).filter(b => b !== null) as Balance[];
+            this.balances$.next(balances);
+        } catch (error) {
+            console.error('Error fetching all balances:', error);
+            this.balances$.next([]); // Reset on failure
+        }
+    }
+
+    getAllBalances() {
+        return this.balances$.asObservable();
+    }
+    
+    refreshAllBalances() {
+        const session = this.sessionService.currentSession;
+        if (session?.actor) {
+            this.fetchAllBalances(this.tokenListService.getTokensValue(), session.actor);
+        }
+    }
+
+    async getTokenBalance(client: any, token: Token, account: string, get_zero_balance: boolean = false): Promise<Balance | undefined> {
         try {
             const result = await client.get_currency_balance(token.account, account, token.symbol);
             console.log(`Balance result for ${token.symbol}:`, result);
@@ -27,14 +75,13 @@ export class TokenBalanceService {
             }
             
             const formattedAmount = this.formatBalance(rawAmount, token);
-            let balanceData = { amount: { raw: rawAmount, formatted: formattedAmount }, token };
+            let balanceData: Balance = { amount: { raw: rawAmount, formatted: formattedAmount }, token };
 
             if (!get_zero_balance){
-                return this.isZeroBalance(balanceData) ? balanceData : undefined
+                return this.isZeroBalance(balanceData) ? balanceData : undefined;
             } else {
-                return balanceData
+                return balanceData;
             }
-
         } catch (error) {
             console.error(`Error fetching balance for ${token.symbol}:`, error);
             return undefined;
