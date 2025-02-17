@@ -18,9 +18,13 @@ export class WalletComponent implements OnInit, OnDestroy {
     private balanceSubscription!: Subscription;
 
     constructor(
-        public sessionService: SessionService, // Set sessionService as public
+        private sessionService: SessionService,
         private tokenBalanceService: TokenBalanceService
     ) {}
+
+    get actor(): string | undefined {
+        return this.sessionService.currentSession?.actor;
+    }
 
     ngOnInit() {
         this.loading = true;
