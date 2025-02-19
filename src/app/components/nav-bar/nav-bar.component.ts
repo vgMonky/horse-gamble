@@ -1,10 +1,10 @@
 import { Component, Renderer2, Inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { WindowContainerComponent } from '@app/components/window-container/window-container.component';
-import { UserPreferencesComponent } from '../user-preferences/user-preferences.component';
+import { WindowContainerComponent } from '@app/components/base-components/window-container/window-container.component';
+import { UserPreferencesComponent } from '@app/components/user-preferences/user-preferences.component';
 import { DOCUMENT } from '@angular/common';
-import { LoginComponent } from '../login/login.component';
+import { LoginComponent } from '@app/components/login/login.component';
 
 
 @Component({
