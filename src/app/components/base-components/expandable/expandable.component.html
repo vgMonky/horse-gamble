@@ -1,4 +1,4 @@
-<div class="expandable-container">
+<div class="expandable-container" [ngClass]="{ 'expanded': isOpen }">
     <div class="header" (click)="toggle()">
         <ng-container *ngIf="!isOpen; else openHeader">
             <ng-content select="[closedHeader]"></ng-content>

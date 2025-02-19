@@ -4,24 +4,32 @@
     overflow: hidden;
     min-width: 380px;
     transition: all 0.3s ease-in-out;
+
+    &.expanded {
+        box-shadow: var(--c-shadow-1);
+
+        .header {
+            background-color: var(--c-background-1);
+        }
+    }
 }
 
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 15px;
+    padding: 5px 20px;
     background-color: var(--c-background-3);
     cursor: pointer;
     user-select: none;
     transition: background-color 0.3s ease;
-}
 
-.header:hover {
-    background-color: var(--c-background-1);
-    //color: var(--c-accent-0);
-    .arrow {
-        color: var(--c-accent-0);
+    &:hover {
+        background-color: var(--c-background-1);
+
+        .arrow {
+            color: var(--c-accent-0);
+        }
     }
 }
 
@@ -34,8 +42,10 @@
     overflow: hidden;
     background-color: var(--c-background-1);
     padding: 0 15px;
-}
+    border-top: 1px solid var(--c-background-3);
+    transition: padding 0.3s ease;
 
-.body.expanded {
-    padding: 15px;
+    &.expanded {
+        padding: 15px;
+    }
 }
