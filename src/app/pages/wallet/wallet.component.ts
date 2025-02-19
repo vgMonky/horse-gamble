@@ -5,11 +5,12 @@ import { SessionService } from '@app/services/session-kit.service';
 import { Subscription } from 'rxjs';
 import { Balance } from 'src/types';
 import { ExpandableComponent } from '@app/components/base-components/expandable/expandable.component';
+import { ExpandableGroupComponent } from '@app/components/base-components/expandable/expandable-group.component';
 
 @Component({
     selector: 'app-wallet',
     standalone: true,
-    imports: [CommonModule, ExpandableComponent],
+    imports: [CommonModule, ExpandableComponent, ExpandableGroupComponent],
     templateUrl: './wallet.component.html',
     styleUrls: ['./wallet.component.scss'],
 })

@@ -13,22 +13,26 @@
             </div>
     </ng-template>
 
-    <app-expandable>
-        <!-- Closed header content -->
-        <div closedHeader>
-            <p>Closed</p>
-        </div>
+    <app-expandable-group>
+        <app-expandable>
+            <div closedHeader><p>Closed 1</p></div>
+            <div openHeader><p>Opened 1</p></div>
+            <div body><p>Content for Expandable 1</p></div>
+        </app-expandable>
 
-        <!-- Open header content -->
-        <div openHeader>
-            <p>Opened</p>
-        </div>
+        <app-expandable>
+            <div closedHeader><p>Closed 2</p></div>
+            <div openHeader><p>Opened 2</p></div>
+            <div body><p>Content for Expandable 2</p></div>
+        </app-expandable>
 
-        <!-- Body content -->
-        <div body>
-            <p>This is the body content visible when expanded.</p>
-        </div>
-    </app-expandable>
+        <app-expandable>
+            <div closedHeader><p>Closed 3</p></div>
+            <div openHeader><p>Opened 3</p></div>
+            <div body><p>Content for Expandable 3</p></div>
+        </app-expandable>
+    </app-expandable-group>
+
 
     <br>
     <button class="btn" (click)="refreshBalances()">Refresh Balances</button>
