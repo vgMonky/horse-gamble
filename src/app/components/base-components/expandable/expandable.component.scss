@@ -1,5 +1,5 @@
 .expandable-container {
-    border: 2px solid var(--c-background-3);
+    border: 1px solid var(--c-background-3);
     border-radius: 8px;
     overflow: hidden;
     min-width: 360px;
@@ -7,10 +7,15 @@
 
     &.expanded {
         box-shadow: var(--c-shadow-1);
+        border: 1px solid var(--c-accent-0);
+
 
         .header {
             background-color: var(--c-background-1);
+            color: var(--c-accent-0);
         }
+
+
     }
 }
 
@@ -26,10 +31,12 @@
 
     &:hover {
         background-color: var(--c-background-1);
+        color: var(--c-accent-0);
 
         .arrow {
             color: var(--c-accent-0);
         }
+
     }
 }
 
@@ -47,5 +54,6 @@
 
     &.expanded {
         padding: 15px;
+        padding-bottom: 40px;
     }
 }
