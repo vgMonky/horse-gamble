@@ -1,7 +1,7 @@
 import { createReducer, on } from '@ngrx/store';
 import { actions } from './user.actions';
 
-export interface UserState {
+export interface UserState{
     isDarkTheme: boolean;
     h0: number;
     h1: number;
@@ -9,8 +9,8 @@ export interface UserState {
 
 export const initialState: UserState = {
     isDarkTheme: true,
-    h0: 170, 
-    h1: 215, 
+    h0: 170,
+    h1: 215,
 };
 
 export const userReducer = createReducer(

@@ -4,9 +4,9 @@ import { ApplicationConfig, provideZoneChangeDetection, importProvidersFrom } fr
 import { provideRouter } from '@angular/router';
 import { withInterceptorsFromDi, provideHttpClient } from '@angular/common/http';
 import { routes } from './app.routes';
-import { StoreModule } from '@ngrx/store';
+import { StoreModule, MetaReducer } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { EffectsModule, provideEffects } from '@ngrx/effects';
+import { EffectsModule} from '@ngrx/effects';
 import { AppEffects, AppReducers } from './store/app.state';
 
 export const appConfig: ApplicationConfig = {
@@ -28,7 +28,7 @@ export const appConfig: ApplicationConfig = {
                 maxAge: 25, // Retains last 25 states
                 logOnly: false // Set to false since environment is not defined
             }),
-            EffectsModule.forRoot(AppEffects) 
+            EffectsModule.forRoot(AppEffects)
         ),
     ],
 };
