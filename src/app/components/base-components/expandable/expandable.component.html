@@ -1,0 +1,14 @@
+<div class="expandable-container">
+    <div class="header" (click)="toggle()">
+        <ng-container *ngIf="!isOpen; else openHeader">
+            <ng-content select="[closedHeader]"></ng-content>
+        </ng-container>
+        <ng-template #openHeader>
+            <ng-content select="[openHeader]"></ng-content>
+        </ng-template>
+        <span class="arrow">{{ isOpen ? '▲' : '▼' }}</span>
+    </div>
+    <div class="body" [ngClass]="{ 'expanded': isOpen }" [style.maxHeight]="isOpen ? '500px' : '0'">
+        <ng-content select="[body]"></ng-content>
+    </div>
+</div>
