@@ -3,17 +3,22 @@
         <p class="small">Available:</p>
         <strong>{{ balance.amount.formatted }} {{ balance.token.symbol }}</strong>
     </div>
+
     <div class="container-input">
-        <p class="small" for="recipient">Transfer to:</p>
+        <label class="small" for="recipient">Transfer to:</label>
+        <br><br>
         <input id="recipient" type="text" [(ngModel)]="recipient" placeholder="Enter user name" />
         <br>
-        <p class="small" for="amount">Amount:</p>
-        <input id="amount" [(ngModel)]="amount" placeholder="Enter amount" />
+        <br>
+        <label class="small" for="amount">Amount:</label>
+        <br><br>
+        <input id="amount" type="number" [(ngModel)]="amount" placeholder="Enter amount" min="0" />
     </div>
+
     <div class="container-transfer">
         <br>
-        <br>
-        <button class="btn2" (click)="transfer()" [disabled]="!recipient || !amount">Transfer</button>
-        <button class="btn2" >Cancel</button>
+        <button class="btn2" (click)="transfer()" [disabled]="!recipient || !amount || isLoading">
+            {{ isLoading ? 'Processing...' : 'Transfer' }}
+        </button>
     </div>
 </div>

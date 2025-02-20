@@ -92,6 +92,37 @@ export class TokenBalanceService {
         }
     }
 
+    async makeTokenTransaction(from: string, to: string, quantity: string, contract: string, memo: string = ''): Promise<void> {
+        const session = this.sessionService.currentSession;
+        if (!session) {
+            console.error('No active session. Please log in.');
+            throw new Error('No active session.');
+        }
+
+        try {
+            const action = {
+                account: contract,
+                name: 'transfer',
+                authorization: [{ actor: from, permission: 'active' }],
+                data: {
+                    from,
+                    to,
+                    quantity,
+                    memo,
+                },
+            };
+
+            console.log('Sending transaction:', action);
+            const result = await session.transact({ actions: [action] });
+            console.log('Transaction successful:', result);
+        } catch (error) {
+            console.error('Transaction failed:', error);
+            throw error;
+        }
+    }
+
+
+
     formatBalance(rawAmount: number, token: Token): string {
         const precision = token.precision;
         const factor = Math.pow(10, precision);
