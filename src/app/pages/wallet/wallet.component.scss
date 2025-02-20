@@ -8,3 +8,10 @@
 .refresh{
     color: var(--c-accent-0);
 }
+
+.balance-head{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
