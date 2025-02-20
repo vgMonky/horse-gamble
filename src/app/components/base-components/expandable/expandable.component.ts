@@ -9,11 +9,12 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
     styleUrl: './expandable.component.scss'
 })
 export class ExpandableComponent {
-    @Input() isOpen: boolean = false;  // Independent toggle state
-    @Output() toggleState = new EventEmitter<void>();
+    @Input() id!: number;
+    @Input() isOpen: boolean = false;
+    @Output() toggleState = new EventEmitter<{ id: number; isOpen: boolean }>();
 
     toggle(): void {
-        this.isOpen = !this.isOpen; // Self-toggle when outside group
-        this.toggleState.emit();    // Notify group if part of one
+        this.isOpen = !this.isOpen;
+        this.toggleState.emit({ id: this.id, isOpen: this.isOpen });
     }
 }

@@ -1,5 +1,6 @@
-import { Component, ContentChildren, QueryList, AfterContentInit } from '@angular/core';
+import { Component, ContentChildren, QueryList, AfterContentInit, AfterViewInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { ExpandableComponent } from '../expandable/expandable.component';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-expandable-group',
@@ -13,27 +14,56 @@ import { ExpandableComponent } from '../expandable/expandable.component';
         }
     `]
 })
-export class ExpandableGroupComponent implements AfterContentInit {
+export class ExpandableGroupComponent implements AfterContentInit, AfterViewInit, OnDestroy {
     @ContentChildren(ExpandableComponent) expandables!: QueryList<ExpandableComponent>;
-    private activeIndex: number | null = null;
+    private queryListSub!: Subscription;
+
+    constructor(private cdr: ChangeDetectorRef) {}
 
     ngAfterContentInit(): void {
-        this.expandables.forEach((expandable, index) => {
-            expandable.toggleState.subscribe(() => this.toggleExpandable(index));
+        this.setupExpandables();
+
+        // 🔑 Subscribe to QueryList changes (dynamic updates)
+        this.queryListSub = this.expandables.changes.subscribe(() => {
+            this.setupExpandables();
         });
     }
 
-    private toggleExpandable(index: number): void {
-        if (this.activeIndex === index) {
-            // Close if the same one is clicked again
-            this.expandables.get(index)!.isOpen = false;
-            this.activeIndex = null;
-        } else {
-            // Open the clicked one and close others
-            this.expandables.forEach((expandable, i) => {
-                expandable.isOpen = i === index;
-            });
-            this.activeIndex = index;
+    ngAfterViewInit(): void {
+        this.setupExpandables();
+        this.cdr.detectChanges();
+    }
+
+    private setupExpandables(): void {
+        if (!this.expandables?.length) {
+            return;
+        }
+
+        this.assignIds();
+        this.expandables.forEach((expandable) => {
+            expandable.toggleState.subscribe((event) => this.toggleExpandable(event.id, event.isOpen));
+        });
+
+        this.cdr.detectChanges();
+    }
+
+    private assignIds(): void {
+        this.expandables.forEach((expandable, index) => {
+            if (expandable.id === undefined) {
+                expandable.id = index;
+            }
+        });
+    }
+
+    private toggleExpandable(clickedId: number, isOpen: boolean): void {
+        this.expandables.forEach((expandable) => {
+            expandable.isOpen = expandable.id === clickedId ? isOpen : false;
+        });
+    }
+
+    ngOnDestroy(): void {
+        if (this.queryListSub) {
+            this.queryListSub.unsubscribe();
         }
     }
 }
