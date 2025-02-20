@@ -27,10 +27,10 @@
 :root,
 body.dark-theme {
     --c-background-0: hsl(var(--h0), 0%, 5%); // background dark 0
-    --c-background-1: hsl(var(--h0), 0%, 6%); // background dark 1
+    --c-background-1: hsl(var(--h0), 0%, 7%); // background dark 1
     --c-background-2: hsl(var(--h0), 0%, 9%); // background dark 2
     --c-background-3: hsl(var(--h0), 0%, 11%); // background dark 3
-    --c-background-4: hsl(var(--h0), 0%, 12%); // background dark 4
+    --c-background-4: hsl(var(--h0), 0%, 13%); // background dark 4
 
     --c-foreground-2: hsl(var(--h0), 0%, 55%); // foreground light 2
     --c-foreground-1: hsl(var(--h0), 0%, 75%); // foreground light 1
@@ -53,11 +53,11 @@ body.dark-theme {
 
 /* Light Theme */
 body.light-theme {
-    --c-background-0: hsl(var(--h0), 0%, 92%); // background light 0
-    --c-background-1: hsl(var(--h0), 0%, 91%); // background light 1
-    --c-background-2: hsl(var(--h0), 0%, 88%); // background light 2
-    --c-background-3: hsl(var(--h0), 0%, 87%); // background light 3
-    --c-background-4: hsl(var(--h0), 0%, 86%); // background light 4
+    --c-background-0: hsl(var(--h0), 0%, 93%); // background light 0
+    --c-background-1: hsl(var(--h0), 0%, 90%); // background light 1
+    --c-background-2: hsl(var(--h0), 0%, 87%); // background light 2
+    --c-background-3: hsl(var(--h0), 0%, 84%); // background light 3
+    --c-background-4: hsl(var(--h0), 0%, 81%); // background light 4
 
     --c-foreground-2: hsl(var(--h0), 0%, 50%); // foreground dark 2
     --c-foreground-1: hsl(var(--h0), 0%, 40%); // foreground dark 1
@@ -86,6 +86,22 @@ body {
     background-color: var(--c-background-0);
 }
 
+a {
+    text-decoration: none;
+    margin: 10px;
+    color: var(--c-foreground-2);
+    cursor: pointer;
+
+    &:hover {
+        color: var(--c-accent-0);
+    }
+}
+
+.small{
+    font-size: 14px;
+    color: var(--c-foreground-2);
+}
+
 .btn {
     font-size: 10pt;
     padding: 10px 20px;
@@ -103,15 +119,39 @@ body {
         box-shadow: var(--c-shadow-1);
     }
 }
-
-a {
-    text-decoration: none;
-    margin: 10px;
+.btn2 {
+    font-size: 10pt;
+    padding: 10px 20px;
     color: var(--c-foreground-2);
+    border: none;
+    background-color: var(--c-background-0);
+    border: 1px solid var(--c-background-4);
+    border-radius: 20px;
+    transition: 0.3s;
     cursor: pointer;
+    box-shadow: var(--c-shadow-0);
+    margin: 0;
+    outline: none;
 
-    &:hover {
+    &:hover,
+    &:focus{
         color: var(--c-accent-0);
+        border: 1px solid var(--c-accent-0);
+        box-shadow: var(--c-shadow-1);
+    }
+}
+
+input {
+    background-color: var(--c-background-0);
+    border: 1px solid var(--c-background-4);
+    border-radius: 20px;
+    padding: 10px 15px;
+    color: var(--c-foreground-1);
+    outline: none;
+
+    &:focus {
+        border-color: var(--c-accent-0);
+        box-shadow: 0 0 4px var(--c-accent-0); /* Optional: Add a subtle glow */
     }
 }
 
