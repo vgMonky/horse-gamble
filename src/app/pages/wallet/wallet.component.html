@@ -25,20 +25,7 @@
 
                 <!-- Expandable Body: Show Detailed Info -->
                 <div body>
-                    <p class="small">Available:</p>
-                    <strong> {{ balance.amount.formatted }} {{ balance.token.symbol }}</strong>
-                    <br>
-                    <br>
-                    <p class="small">Transfer to:</p>
-                    <input>
-                    <br>
-                    <p class="small">Amount:</p>
-                    <input>
-                    <br>
-                    <br>
-                    <br>
-                    <br>
-                    <button class="btn2">Transfer</button>
+                    <app-token-transfer-form [balance]="balance"></app-token-transfer-form>
                 </div>
             </app-expandable>
         </app-expandable-group>

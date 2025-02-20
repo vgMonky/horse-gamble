@@ -6,11 +6,17 @@ import { Subscription } from 'rxjs';
 import { Balance } from 'src/types';
 import { ExpandableComponent } from '@app/components/base-components/expandable/expandable.component';
 import { ExpandableGroupComponent } from '@app/components/base-components/expandable/expandable-group.component';
+import { TokenTransferFormComponent } from '@app/components/token-transfer-form/token-transfer-form.component';
 
 @Component({
     selector: 'app-wallet',
     standalone: true,
-    imports: [CommonModule, ExpandableComponent, ExpandableGroupComponent],
+    imports: [
+        CommonModule,
+        ExpandableComponent,
+        ExpandableGroupComponent,
+        TokenTransferFormComponent,
+    ],
     templateUrl: './wallet.component.html',
     styleUrls: ['./wallet.component.scss'],
 })
