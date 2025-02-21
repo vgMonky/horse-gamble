@@ -1,9 +1,9 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Balance } from 'src/types';
 import { TokenBalanceService } from '@app/services/token-balance.service';
-import { SessionService } from '@app/services/session-kit.service';  // 💡 Import SessionService
+import { SessionService } from '@app/services/session-kit.service';
 
 @Component({
     selector: 'app-token-transfer-form',
@@ -12,29 +12,53 @@ import { SessionService } from '@app/services/session-kit.service';  // 💡 Imp
     templateUrl: './token-transfer-form.component.html',
     styleUrl: './token-transfer-form.component.scss'
 })
-export class TokenTransferFormComponent {
+export class TokenTransferFormComponent implements OnInit {
     @Input() balance!: Balance;
     recipient: string = '';
     amount: number | null = null;
     isLoading: boolean = false;
+    isRecipientValid: boolean = false;
+    isAmountValid: boolean = false;
 
-    // 💡 Inject SessionService alongside TokenBalanceService
     constructor(
         private tokenBalanceService: TokenBalanceService,
         private sessionService: SessionService
     ) {}
 
-    async transfer(): Promise<void> {
-        if (!this.amount || !this.recipient) {
-            console.warn('Recipient and amount are required.');
-            return;
-        }
+    ngOnInit(): void {
+        this.validateInputs();
+    }
 
-        const formattedAmount = `${this.amount.toFixed(this.balance.token.precision)} ${this.balance.token.symbol}`;
+    validateRecipient(): void {
+        const eosioPattern = /^[a-z1-5]{1,12}$/;
+        this.isRecipientValid = eosioPattern.test(this.recipient);
+    }
+
+    validateAmount(): void {
+        const rawBalance = this.balance?.amount.raw ?? 0;
+
+        // Ensure the input is a valid positive whole number
+        const parsedAmount = this.amount !== null ? Math.floor(Number(this.amount)) : 0;
+
+        // Validate: Must be a positive integer and within balance
+        this.isAmountValid =
+            !isNaN(parsedAmount) &&
+            parsedAmount > 0 &&
+            parsedAmount * Math.pow(10, this.balance.token.precision) <= rawBalance;
+    }
+
+    validateInputs(): void {
+        this.validateRecipient();
+        this.validateAmount();
+    }
+
+    async transfer(): Promise<void> {
+        if (!this.isRecipientValid || !this.isAmountValid) return;
+
+        const formattedAmount = `${this.amount!.toFixed(this.balance.token.precision)} ${this.balance.token.symbol}`;
         const sender = this.sessionService.currentSession?.actor;
 
         if (!sender) {
-            console.error('No active session. Please log in.');
             alert('No active session. Please log in.');
             return;
         }
@@ -44,22 +68,19 @@ export class TokenTransferFormComponent {
             console.log(`Transferring ${formattedAmount} from ${sender} to ${this.recipient}`);
 
             await this.tokenBalanceService.makeTokenTransaction(
-                sender,                        // Sender from session
-                this.recipient,                // Recipient
-                formattedAmount,               // Amount with precision and symbol
-                this.balance.token.account,    // Token contract
-                `Transfer of ${formattedAmount}` // Memo
+                sender,
+                this.recipient,
+                formattedAmount,
+                this.balance.token.account,
+                `Transfer of ${formattedAmount}`
             );
 
-            console.log('Transfer successful!');
             alert(`Successfully transferred ${formattedAmount} to ${this.recipient}`);
-
-            // Refresh balances after transfer
             this.tokenBalanceService.refreshAllBalances();
 
-            // Reset form
             this.recipient = '';
             this.amount = null;
+            this.validateInputs();
         } catch (error) {
             console.error('Transfer failed:', error);
             alert(`Transfer failed: ${error}`);

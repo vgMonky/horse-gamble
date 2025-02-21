@@ -3,6 +3,7 @@ import { BehaviorSubject, combineLatest, firstValueFrom } from 'rxjs';
 import { SessionService } from '@app/services/session-kit.service';
 import { TokenListService } from '@app/services/token-list.service';
 import { Token, Balance } from 'src/types';
+import { ChainAPI } from '@wharfkit/session';
 
 @Injectable({
     providedIn: 'root'
@@ -55,7 +56,7 @@ export class TokenBalanceService {
         }
     }
 
-    async getTokenBalance(client: any, token: Token, account: string, get_zero_balance: boolean = false): Promise<Balance | undefined> {
+    async getTokenBalance(client: ChainAPI, token: Token, account: string, get_zero_balance: boolean = false): Promise<Balance | undefined> {
         try {
             const result = await client.get_currency_balance(token.account, account, token.symbol);
             console.log(`Balance result for ${token.symbol}:`, result);

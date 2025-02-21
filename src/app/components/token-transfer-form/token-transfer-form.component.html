@@ -1,4 +1,5 @@
 <div class="transfer-form">
+    <!-- Available Balance Display -->
     <div class="container-available">
         <p class="small">Available:</p>
         <strong>{{ balance.amount.formatted }} {{ balance.token.symbol }}</strong>
@@ -6,18 +7,41 @@
 
     <div class="container-input">
         <label class="small" for="recipient">Transfer to:</label>
-        <br><br>
-        <input id="recipient" type="text" [(ngModel)]="recipient" placeholder="Enter user name" />
-        <br>
-        <br>
+        <input
+            id="recipient"
+            type="text"
+            [(ngModel)]="recipient"
+            (input)="validateRecipient()"
+            placeholder="Enter EOSIO username"
+        />
+        <p *ngIf="recipient" class="small" [ngClass]="isRecipientValid ? 'valid' : 'invalid'">
+            {{ isRecipientValid ? '✅ Verified EOSIO pattern' : '❌ Invalid username (1-12 lowercase letters/numbers)' }}
+        </p>
+
         <label class="small" for="amount">Amount:</label>
-        <br><br>
-        <input id="amount" type="number" [(ngModel)]="amount" placeholder="Enter amount" min="0" />
+        <input
+            id="amount"
+            type="number"
+            [(ngModel)]="amount"
+            (input)="validateAmount()"
+            placeholder="Enter whole number"
+            min="0"
+            step="1"
+            autocomplete="off"
+        />
+        <p *ngIf="amount !== null" class="small" [ngClass]="isAmountValid ? 'valid' : 'invalid'">
+            {{ isAmountValid ? '✅ Amount is within balance' : '❌ Invalid amount'}}
+        </p>
     </div>
 
+    <!-- Transfer Button -->
     <div class="container-transfer">
         <br>
-        <button class="btn2" (click)="transfer()" [disabled]="!recipient || !amount || isLoading">
+        <button
+            [class]="isRecipientValid && isAmountValid ? 'btn2' : 'unable'"
+            (click)="transfer()"
+            [disabled]="!isRecipientValid || !isAmountValid || isLoading"
+        >
             {{ isLoading ? 'Processing...' : 'Transfer' }}
         </button>
     </div>
