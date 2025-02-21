@@ -34,17 +34,17 @@ body.dark-theme {
 
     --c-foreground-2: hsl(var(--h0), 0%, 55%); // foreground light 2
     --c-foreground-1: hsl(var(--h0), 0%, 75%); // foreground light 1
-    --c-foreground-0: hsl(var(--h0), 0%, 100%); // foreground light 0
+    --c-foreground-0: hsl(var(--h0), 0%, 98%); // foreground light 0
 
     --c-accent-0: hsl(var(--h0), 60%, 35%); // accent 0
-    --c-accent-1: hsl(var(--h0), 40%, 16%); // accent 1
+    --c-accent-1: hsl(var(--h0), 30%, 16%); // accent 1
     --c-accent-2: hsl(var(--h0), 30%, 8%); // accent 2
 
     --c-accent-0b: hsl(var(--h1), 60%, 40%);  // accent 0 b
     --c-accent-1b: hsl(var(--h1), 40%, 16%); // accent 1 b
     --c-accent-2b: hsl(var(--h1), 30%, 8%); // accent 2 b
 
-    --c-gradient-0: linear-gradient(30deg, var(--c-accent-0) 0%, var(--c-accent-0b) 100%);
+    --c-gradient-0: linear-gradient(30deg, var(--c-accent-0) 30%, var(--c-accent-0b) 100%);
     --c-gradient-1: linear-gradient(30deg, var(--c-accent-0b) 0%, var(--c-accent-0) 100%);
 
     --c-shadow-0: 2px 2px 10px hsla(var(--h0), 60%, 60%, 0.0);
@@ -64,17 +64,17 @@ body.light-theme {
     --c-foreground-0: hsl(var(--h0), 0%, 0%); // foreground dark 0
 
     --c-accent-0: hsl(var(--h0), 60%, 48%); // accent 0
-    --c-accent-1: hsl(var(--h0), 40%, 30%); // accent 1
+    --c-accent-1: hsl(var(--h0), 40%, 70%); // accent 1
     --c-accent-2: hsl(var(--h0), 30%, 8%); // accent 2
 
     --c-accent-0b: hsl(var(--h1), 60%, 45%);  // accent 0 b
-    --c-accent-1b: hsl(var(--h1), 40%, 16%); // accent 1 b
+    --c-accent-1b: hsl(var(--h1), 40%, 6%); // accent 1 b
     --c-accent-2b: hsl(var(--h1), 30%, 8%); // accent 2 b
 
     --c-gradient-0: linear-gradient(30deg, var(--c-accent-0) 0%, var(--c-accent-0b) 100%);
     --c-gradient-1: linear-gradient(30deg, var(--c-accent-0b) 0%, var(--c-accent-0) 100%);
 
-    --c-shadow-0: 0px 0px 1px hsla(var(--h0), 0%, 0%, 0.3);
+    --c-shadow-0: 0px 0px 1px hsla(var(--h0), 0%, 0%, 0.10);
     --c-shadow-1: 1px 2px 20px hsla(var(--h0), 0%, 0%, 0.08);
 }
 

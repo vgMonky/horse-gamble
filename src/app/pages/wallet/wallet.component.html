@@ -15,7 +15,7 @@
             <app-expandable *ngFor="let balance of balances">
                 <!-- Closed Header: Show Token Symbol and Balance -->
                 <div class="balance-head" closedHeader>
-                    <img src="{{ balance.token.logo }}"><p>{{ balance.amount.formatted }} {{ balance.token.symbol }}</p>
+                    <img src="{{ balance.token.logo }}"><p>{{ balance.amount.formatted }} <strong>{{ balance.token.symbol }}</strong></p>
                 </div>
 
                 <!-- Open Header: (Optional) Show Same or Different Info When Expanded -->
