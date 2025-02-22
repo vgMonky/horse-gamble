@@ -23,7 +23,7 @@ export class ExpandableGroupComponent implements AfterContentInit, AfterViewInit
     ngAfterContentInit(): void {
         this.setupExpandables();
 
-        // 🔄 Subscribe to QueryList changes (dynamic updates)
+        // Subscribe to QueryList changes (dynamic updates)
         this.queryListSub = this.expandables.changes.subscribe(() => {
             this.setupExpandables();
         });
@@ -49,6 +49,7 @@ export class ExpandableGroupComponent implements AfterContentInit, AfterViewInit
 
     private assignIds(): void {
         // Delay ID assignment to avoid ExpressionChangedAfterItHasBeenCheckedError.
+        // The code inside setTimeout is not executed immediately. Instead, it gets queued and runs after the current Angular change detection cycle completes.
         setTimeout(() => {
             this.expandables.forEach((expandable, index) => {
                 if (expandable.id === undefined) {
