@@ -56,7 +56,7 @@ export class TokenBalanceService {
         }
     }
 
-    async getTokenBalance(client: ChainAPI, token: Token, account: string, get_zero_balance: boolean = false): Promise<Balance | undefined> {
+    async getTokenBalance(client: ChainAPI, token: Token, account: string, get_zero_balance: boolean = true): Promise<Balance | undefined> {
         try {
             const result = await client.get_currency_balance(token.account, account, token.symbol);
             console.log(`Balance result for ${token.symbol}:`, result);
