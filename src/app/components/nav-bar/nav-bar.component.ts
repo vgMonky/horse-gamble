@@ -10,13 +10,13 @@ import { LoginComponent } from '@app/components/login/login.component';
 @Component({
     standalone: true,
     selector: 'app-nav-bar',
-imports: [
-    CommonModule,
-    RouterModule,
-    UserPreferencesComponent,
-    LoginComponent,
-    WindowContainerComponent,
-],
+    imports: [
+        CommonModule,
+        RouterModule,
+        UserPreferencesComponent,
+        LoginComponent,
+        WindowContainerComponent,
+    ],
     templateUrl: './nav-bar.component.html',
     styleUrls: ['./nav-bar.component.scss']
 })

@@ -59,7 +59,6 @@ export class TokenBalanceService {
     async getTokenBalance(client: ChainAPI, token: Token, account: string, get_zero_balance: boolean = true): Promise<Balance | undefined> {
         try {
             const result = await client.get_currency_balance(token.account, account, token.symbol);
-            console.log(`Balance result for ${token.symbol}:`, result);
 
             let rawAmount = 0;
             if (Array.isArray(result) && result.length > 0) {
@@ -67,12 +66,9 @@ export class TokenBalanceService {
 
                 if (typeof balanceEntry === 'object' && balanceEntry.units?.value?.words?.length > 0) {
                     rawAmount = balanceEntry.units.value.words[0];
-                    console.log(`Extracted raw balance for ${token.symbol}:`, rawAmount);
                 } else {
                     console.warn(`Unexpected balance format for ${token.symbol}:`, balanceEntry);
                 }
-            } else {
-                console.log(`No balance found for ${token.symbol}, fallback: 0`);
             }
 
             const formattedAmount = this.formatBalance(rawAmount, token);
@@ -113,9 +109,7 @@ export class TokenBalanceService {
                 },
             };
 
-            console.log('Sending transaction:', action);
             const result = await session.transact({ actions: [action] });
-            console.log('Transaction successful:', result);
         } catch (error) {
             console.error('Transaction failed:', error);
             throw error;

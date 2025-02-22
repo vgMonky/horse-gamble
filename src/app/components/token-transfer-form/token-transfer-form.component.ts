@@ -65,7 +65,6 @@ export class TokenTransferFormComponent implements OnInit {
 
         try {
             this.isLoading = true;
-            console.log(`Transferring ${formattedAmount} from ${sender} to ${this.recipient}`);
 
             await this.tokenBalanceService.makeTokenTransaction(
                 sender,

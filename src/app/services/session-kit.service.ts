@@ -51,7 +51,6 @@ export class SessionService {
             const actor = session?.actor;
             this.localStorageService.restoreUserPreferences(actor.toString());
 
-            console.log('Login successful:', session);
             this.router.navigate(['/wallet']);
 
             return session;
@@ -67,7 +66,6 @@ export class SessionService {
         if (currentSession) {
             await this.sessionKit.logout(currentSession);
             this.sessionSubject.next(undefined);  // Emit session cleared
-            console.log('Logout successful');
         }
         this.localStorageService.restoreUserPreferences(null);
     }
@@ -77,7 +75,6 @@ export class SessionService {
         const session = await this.sessionKit.restore();
         this.sessionSubject.next(session);  // Emit restored session
         if (session) {
-            console.log('Session restored:', session);
         }
         const actor = session?.actor || null;
         if (actor) {
