@@ -23,7 +23,7 @@ export class ExpandableGroupComponent implements AfterContentInit, AfterViewInit
     ngAfterContentInit(): void {
         this.setupExpandables();
 
-        // 🔑 Subscribe to QueryList changes (dynamic updates)
+        // 🔄 Subscribe to QueryList changes (dynamic updates)
         this.queryListSub = this.expandables.changes.subscribe(() => {
             this.setupExpandables();
         });
@@ -48,10 +48,14 @@ export class ExpandableGroupComponent implements AfterContentInit, AfterViewInit
     }
 
     private assignIds(): void {
-        this.expandables.forEach((expandable, index) => {
-            if (expandable.id === undefined) {
-                expandable.id = index;
-            }
+        // Delay ID assignment to avoid ExpressionChangedAfterItHasBeenCheckedError.
+        setTimeout(() => {
+            this.expandables.forEach((expandable, index) => {
+                if (expandable.id === undefined) {
+                    expandable.id = index;
+                }
+            });
+            this.cdr.detectChanges(); // Ensure Angular detects changes properly
         });
     }
 
