@@ -7,20 +7,6 @@
 :root{
     --h0: 160; // hue 0
     --h1: 230; // hue 1
-
-    //--HUE THEMES
-    //
-    //  default
-    //  h0: 160
-    //  h1: 230
-    //
-    //  candyflip
-    //  h0: 160
-    //  h1: 280
-    //
-    //  cryptonite
-    //  h0: 190
-    //  h1: 70
 }
 
 /* Dark Theme default*/
@@ -43,6 +29,9 @@ body.dark-theme {
     --c-accent-0b: hsl(var(--h1), 60%, 40%);  // accent 0 b
     --c-accent-1b: hsl(var(--h1), 40%, 16%); // accent 1 b
     --c-accent-2b: hsl(var(--h1), 30%, 8%); // accent 2 b
+
+    --c-alert-0: hsl( 0, 70%, 50%);
+    --c-success-0: hsl( 100, 60%, 40%);
 
     --c-gradient-0: linear-gradient(30deg, var(--c-accent-0) 30%, var(--c-accent-0b) 100%);
     --c-gradient-1: linear-gradient(30deg, var(--c-accent-0b) 0%, var(--c-accent-0) 100%);
@@ -70,6 +59,9 @@ body.light-theme {
     --c-accent-0b: hsl(var(--h1), 60%, 45%);  // accent 0 b
     --c-accent-1b: hsl(var(--h1), 40%, 6%); // accent 1 b
     --c-accent-2b: hsl(var(--h1), 30%, 8%); // accent 2 b
+
+    --c-alert-0: hsl( 0, 60%, 50%);
+    --c-success-0: hsl( 100, 60%, 40%);
 
     --c-gradient-0: linear-gradient(30deg, var(--c-accent-0) 0%, var(--c-accent-0b) 100%);
     --c-gradient-1: linear-gradient(30deg, var(--c-accent-0b) 0%, var(--c-accent-0) 100%);

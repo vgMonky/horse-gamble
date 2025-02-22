@@ -11,13 +11,13 @@
 }
 
 .valid {
-    color: #4caf50; /* Green for valid */
+    color: var(--c-success-0);
     font-size: 12px;
     margin-top: 4px;
 }
 
 .invalid {
-    color: #f44336; /* Red for invalid */
+    color: var(--c-alert-0);
     font-size: 12px;
     margin-top: 4px;
 }
