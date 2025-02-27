@@ -6,7 +6,7 @@ import { TokenBalanceService } from '@app/services/token-balance.service';
 import { SessionService } from '@app/services/session-kit.service';
 import { AccountKitService } from '@app/services/account-kit.service';
 import { Subject, Subscription } from 'rxjs';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, switchMap, takeUntil } from 'rxjs/operators';
 
 @Component({
     selector: 'app-token-transfer-form',
@@ -18,58 +18,64 @@ import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 export class TokenTransferFormComponent implements OnInit, OnDestroy {
     @Input() balance!: Balance;
 
-    // Form Fields
-    recipient: string = '';
-    amount: number | null = null;
-
-    // State Management
     isLoading = false;
-    private recipientSubject = new Subject<string>();
-    private lastAccountValidationRequest: Promise<void> | null = null;
-    private subscription!: Subscription;
+    private destroy$ = new Subject<void>();
 
-    // Validation States
+    // Recipient input
+    recipient: string = '';
     isRecipientValid = false;
-    isAmountValid = false;
     isCheckingRecipient = false;
     isRecipientPatternValid = false;
     isSelfTransfer = false;
-
-    // EOSIO username pattern (1-12 chars, a-z, 1-5)
+    private recipientSubject = new Subject<string>();
+    private lastAccountValidationRequest: Promise<void> | null = null;
     private readonly eosioPattern = /^[a-z1-5]{1,12}$/;
+
+    // Amount input
+    amount: number | null = null;
+    isAmountValid = false;
+    private amountSubject = new Subject<number | null>();
 
     constructor(
         private tokenBalanceService: TokenBalanceService,
         private sessionService: SessionService,
-        private accountKitService: AccountKitService // Injected service
+        private accountKitService: AccountKitService
     ) {}
 
     ngOnInit(): void {
-        this.subscription = this.recipientSubject.pipe(
+        // Recipient validation (debounced & async)
+        this.recipientSubject.pipe(
             debounceTime(500),
             distinctUntilChanged(),
-            switchMap((recipient) => this.validateRecipient(recipient))
+            switchMap((recipient) => this.validateRecipient(recipient)),
+            takeUntil(this.destroy$)
         ).subscribe();
+
+        // Amount validation (reactively)
+        this.amountSubject.pipe(
+            debounceTime(300),
+            distinctUntilChanged(),
+            takeUntil(this.destroy$)
+        ).subscribe((amount) => this.validateAmount(amount));
     }
 
     ngOnDestroy(): void {
-        this.recipientSubject.complete();
-        this.subscription.unsubscribe();
+        this.destroy$.next();
+        this.destroy$.complete();
     }
 
     get currentSession() {
         return this.sessionService.currentSession;
     }
 
+    // Triggers recipient validation
     onRecipientChange(): void {
         this.recipientSubject.next(this.recipient);
     }
 
     async validateRecipient(recipient: string): Promise<void> {
-        const currentUser = String(this.currentSession?.actor || '');
-
         this.isRecipientPatternValid = this.eosioPattern.test(recipient);
-        this.isSelfTransfer = recipient === currentUser;
+        this.isSelfTransfer = recipient === String(this.currentSession?.actor || '');
 
         if (!this.isRecipientPatternValid || this.isSelfTransfer) {
             this.isRecipientValid = false;
@@ -77,7 +83,6 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
             return;
         }
 
-        // Validate existence of recipient's account via service
         this.isCheckingRecipient = true;
         const validationPromise = this.accountKitService.validateAccount(recipient)
             .then((exists) => {
@@ -94,14 +99,24 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
         this.lastAccountValidationRequest = validationPromise;
     }
 
+    // Triggers amount validation
     onAmountChange(): void {
-        const rawBalance = this.balance?.amount.raw ?? 0;
-        const parsedAmount = this.amount !== null ? Math.floor(Number(this.amount)) : 0;
+        this.amountSubject.next(this.amount);
+    }
 
-        this.isAmountValid =
-            !isNaN(parsedAmount) &&
+    private validateAmount(amount: number | null): void {
+        if (amount === null) {
+            this.isAmountValid = false;
+            return;
+        }
+
+        const rawBalance = this.balance?.amount.raw ?? 0;
+        const precisionFactor = Math.pow(10, this.balance.token.precision);
+        const parsedAmount = Math.floor(amount);
+
+        this.isAmountValid = !isNaN(parsedAmount) &&
             parsedAmount > 0 &&
-            parsedAmount * Math.pow(10, this.balance.token.precision) <= rawBalance;
+            parsedAmount * precisionFactor <= rawBalance;
     }
 
     async transfer(): Promise<void> {
@@ -138,10 +153,12 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
     }
 
     private resetForm(): void {
-        this.recipient = '';
-        this.amount = null;
-        this.isRecipientValid = false;
-        this.isAmountValid = false;
-        this.isSelfTransfer = false;
+        Object.assign(this, {
+            recipient: '',
+            amount: null,
+            isRecipientValid: false,
+            isAmountValid: false,
+            isSelfTransfer: false
+        });
     }
 }
