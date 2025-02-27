@@ -16,8 +16,8 @@
         />
 
         <p *ngIf="recipient" class="small">
-            <span *ngIf="isRecipientDebouncing"> <!-- No message during debounce -->
-                &nbsp; <!-- Empty space to keep layout stable if needed -->
+            <span *ngIf="isRecipientDebouncing">
+                &nbsp;
             </span>
             <span *ngIf="!isRecipientDebouncing && !isCheckingRecipient && !isRecipientPatternValid" class="invalid">
                 ❌ Wrong EOSIO pattern, 1-12 characters (a-z, 1-5)
@@ -25,13 +25,13 @@
             <span *ngIf="!isRecipientDebouncing && !isCheckingRecipient && isRecipientPatternValid && isSelfTransfer" class="invalid">
                 ❌ Cannot send tokens to yourself
             </span>
-            <span *ngIf="!isRecipientDebouncing && isCheckingRecipient" class="checking">
+            <span *ngIf="!isRecipientDebouncing && isCheckingRecipient && isRecipientPatternValid && !isSelfTransfer " class="checking">
                 ⏳ Checking account...
             </span>
-            <span *ngIf="!isRecipientDebouncing && !isCheckingRecipient && isRecipientValid" class="valid">
+            <span *ngIf="!isRecipientDebouncing && !isCheckingRecipient && isRecipientPatternValid && !isSelfTransfer && isRecipientValid" class="valid">
                 ✅ Verified Account
             </span>
-            <span *ngIf="!isRecipientDebouncing && !isCheckingRecipient && !isRecipientValid && isRecipientPatternValid && !isSelfTransfer" class="invalid">
+            <span *ngIf="!isRecipientDebouncing && !isCheckingRecipient && isRecipientPatternValid && !isSelfTransfer && !isRecipientValid" class="invalid">
                 ❌ Account does not exist
             </span>
         </p>
@@ -48,7 +48,7 @@
         />
         <p *ngIf="amount !== null" class="small">
             <span *ngIf="isAmountDebouncing">
-                &nbsp; <!-- No message during debounce -->
+                &nbsp;
             </span>
             <span *ngIf="!isAmountDebouncing" [ngClass]="isAmountValid ? 'valid' : 'invalid'">
                 {{ isAmountValid ? '✅ Amount is within balance' : '❌ Invalid amount' }}
