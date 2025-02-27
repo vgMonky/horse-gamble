@@ -8,7 +8,7 @@ import { AccountKit } from "@wharfkit/account";
 import { APIClient } from "@wharfkit/antelope";
 import { Chains } from "@wharfkit/common";
 import { Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, switchMap, catchError } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 
 @Component({
     selector: 'app-token-transfer-form',
@@ -26,6 +26,7 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
     isAmountValid: boolean = false;
     isCheckingRecipient: boolean = false;
     isRecipientPatternValid: boolean = false;
+    isSelfTransfer: boolean = false; // New state for self-transfer detection
     private accountKit: AccountKit;
 
     private recipientSubject = new Subject<string>(); // Debounce handling
@@ -40,8 +41,6 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        this.validateInputs();
-
         // Debounce recipient validation
         this.recipientSubject.pipe(
             debounceTime(500), // Wait 500ms after the last keystroke
@@ -54,30 +53,36 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
         this.recipientSubject.complete(); // Cleanup
     }
 
-    validateInputs(): void {
-        this.validateAmount();
-    }
-
     get currentSession() {
         return this.sessionService.currentSession;
     }
 
     onRecipientChange(): void {
-        this.recipientSubject.next(this.recipient); // Emit input changes
+        this.recipientSubject.next(this.recipient); // Emit input changes for validation
     }
 
     async validateRecipient(recipient: string): Promise<void> {
         const eosioPattern = /^[a-z1-5]{1,12}$/;
-        const currentUser = this.currentSession?.actor;
+        const currentUser = String(this.currentSession?.actor || ''); // Ensure it's a string
 
         this.isRecipientPatternValid = eosioPattern.test(recipient);
+        this.isSelfTransfer = recipient === currentUser;
 
-        if (!this.isRecipientPatternValid || recipient === currentUser) {
+        // First, check pattern validity
+        if (!this.isRecipientPatternValid) {
             this.isRecipientValid = false;
             this.isCheckingRecipient = false;
             return;
         }
 
+        // Second, check if sending to self
+        if (this.isSelfTransfer) {
+            this.isRecipientValid = false;
+            this.isCheckingRecipient = false;
+            return;
+        }
+
+        // Finally, check if account exists
         this.isCheckingRecipient = true;
         const validationPromise = this.accountKit.load(recipient)
             .then(() => {
@@ -99,13 +104,10 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
         this.lastAccountValidationRequest = validationPromise;
     }
 
-    validateAmount(): void {
+    onAmountChange(): void {
         const rawBalance = this.balance?.amount.raw ?? 0;
-
-        // Ensure the input is a valid positive whole number
         const parsedAmount = this.amount !== null ? Math.floor(Number(this.amount)) : 0;
 
-        // Validate: Must be a positive integer and within balance
         this.isAmountValid =
             !isNaN(parsedAmount) &&
             parsedAmount > 0 &&
@@ -137,9 +139,12 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
             alert(`Successfully transferred ${formattedAmount} to ${this.recipient}`);
             this.tokenBalanceService.refreshAllBalances();
 
+            // Reset inputs
             this.recipient = '';
             this.amount = null;
-            this.validateInputs();
+            this.isRecipientValid = false;
+            this.isAmountValid = false;
+            this.isSelfTransfer = false;
         } catch (error) {
             console.error('Transfer failed:', error);
             alert(`Transfer failed: ${error}`);

@@ -21,8 +21,8 @@
                 ❌ Wrong EOSIO pattern, 1-12 characters (a-z, 1-5)
             </span>
 
-            <!-- Case 2: Sending to Self (Now using the public getter) -->
-            <span *ngIf="!isCheckingRecipient && isRecipientPatternValid && recipient === currentSession?.actor" class="invalid">
+            <!-- Case 2: Sending to Self -->
+            <span *ngIf="!isCheckingRecipient && isRecipientPatternValid && isSelfTransfer" class="invalid">
                 ❌ Cannot send tokens to yourself
             </span>
 
@@ -36,8 +36,8 @@
                 ✅ Verified Account
             </span>
 
-            <!-- Case 5: Account Not Found -->
-            <span *ngIf="!isCheckingRecipient && !isRecipientValid && isRecipientPatternValid" class="invalid">
+            <!-- Case 5: Account Not Found (Only show if it's NOT a self-transfer) -->
+            <span *ngIf="!isCheckingRecipient && !isRecipientValid && isRecipientPatternValid && !isSelfTransfer" class="invalid">
                 ❌ Account does not exist
             </span>
         </p>
@@ -47,7 +47,7 @@
             id="amount"
             type="number"
             [(ngModel)]="amount"
-            (input)="validateAmount()"
+            (input)="onAmountChange()"
             placeholder="Enter whole number"
             min="0"
             step="1"
