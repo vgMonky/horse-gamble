@@ -11,11 +11,35 @@
             id="recipient"
             type="text"
             [(ngModel)]="recipient"
-            (input)="validateRecipient()"
+            (input)="onRecipientChange()"
             placeholder="Enter EOSIO username"
         />
-        <p *ngIf="recipient" class="small" [ngClass]="isRecipientValid ? 'valid' : 'invalid'">
-            {{ isRecipientValid ? '✅ Verified EOSIO pattern' : '❌ Invalid username (1-12 lowercase letters/numbers)' }}
+
+        <p *ngIf="recipient" class="small">
+            <!-- Case 1: Pattern Mismatch -->
+            <span *ngIf="!isCheckingRecipient && !isRecipientPatternValid" class="invalid">
+                ❌ Wrong EOSIO pattern, 1-12 characters (a-z, 1-5)
+            </span>
+
+            <!-- Case 2: Sending to Self (Now using the public getter) -->
+            <span *ngIf="!isCheckingRecipient && isRecipientPatternValid && recipient === currentSession?.actor" class="invalid">
+                ❌ Cannot send tokens to yourself
+            </span>
+
+            <!-- Case 3: Checking if Account Exists -->
+            <span *ngIf="isCheckingRecipient" class="checking">
+                ⏳ Checking account...
+            </span>
+
+            <!-- Case 4: Verified Account -->
+            <span *ngIf="!isCheckingRecipient && isRecipientValid" class="valid">
+                ✅ Verified Account
+            </span>
+
+            <!-- Case 5: Account Not Found -->
+            <span *ngIf="!isCheckingRecipient && !isRecipientValid && isRecipientPatternValid" class="invalid">
+                ❌ Account does not exist
+            </span>
         </p>
 
         <label class="small" for="amount">Amount:</label>
