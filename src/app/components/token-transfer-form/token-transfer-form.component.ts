@@ -4,10 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { Balance } from 'src/types';
 import { TokenBalanceService } from '@app/services/token-balance.service';
 import { SessionService } from '@app/services/session-kit.service';
-import { AccountKit } from "@wharfkit/account";
-import { APIClient } from "@wharfkit/antelope";
-import { Chains } from "@wharfkit/common";
-import { Subject } from 'rxjs';
+import { AccountKitService } from '@app/services/account-kit.service';
+import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 
 @Component({
@@ -19,38 +17,44 @@ import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 })
 export class TokenTransferFormComponent implements OnInit, OnDestroy {
     @Input() balance!: Balance;
+
+    // Form Fields
     recipient: string = '';
     amount: number | null = null;
-    isLoading: boolean = false;
-    isRecipientValid: boolean = false;
-    isAmountValid: boolean = false;
-    isCheckingRecipient: boolean = false;
-    isRecipientPatternValid: boolean = false;
-    isSelfTransfer: boolean = false; // New state for self-transfer detection
-    private accountKit: AccountKit;
 
-    private recipientSubject = new Subject<string>(); // Debounce handling
+    // State Management
+    isLoading = false;
+    private recipientSubject = new Subject<string>();
     private lastAccountValidationRequest: Promise<void> | null = null;
+    private subscription!: Subscription;
+
+    // Validation States
+    isRecipientValid = false;
+    isAmountValid = false;
+    isCheckingRecipient = false;
+    isRecipientPatternValid = false;
+    isSelfTransfer = false;
+
+    // EOSIO username pattern (1-12 chars, a-z, 1-5)
+    private readonly eosioPattern = /^[a-z1-5]{1,12}$/;
 
     constructor(
         private tokenBalanceService: TokenBalanceService,
-        private sessionService: SessionService
-    ) {
-        const client = new APIClient({ url: "https://mainnet.telos.net" });
-        this.accountKit = new AccountKit(Chains.Telos, { client });
-    }
+        private sessionService: SessionService,
+        private accountKitService: AccountKitService // Injected service
+    ) {}
 
     ngOnInit(): void {
-        // Debounce recipient validation
-        this.recipientSubject.pipe(
-            debounceTime(500), // Wait 500ms after the last keystroke
-            distinctUntilChanged(), // Ignore if value hasn't changed
-            switchMap(recipient => this.validateRecipient(recipient))
+        this.subscription = this.recipientSubject.pipe(
+            debounceTime(500),
+            distinctUntilChanged(),
+            switchMap((recipient) => this.validateRecipient(recipient))
         ).subscribe();
     }
 
     ngOnDestroy(): void {
-        this.recipientSubject.complete(); // Cleanup
+        this.recipientSubject.complete();
+        this.subscription.unsubscribe();
     }
 
     get currentSession() {
@@ -58,41 +62,27 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
     }
 
     onRecipientChange(): void {
-        this.recipientSubject.next(this.recipient); // Emit input changes for validation
+        this.recipientSubject.next(this.recipient);
     }
 
     async validateRecipient(recipient: string): Promise<void> {
-        const eosioPattern = /^[a-z1-5]{1,12}$/;
-        const currentUser = String(this.currentSession?.actor || ''); // Ensure it's a string
+        const currentUser = String(this.currentSession?.actor || '');
 
-        this.isRecipientPatternValid = eosioPattern.test(recipient);
+        this.isRecipientPatternValid = this.eosioPattern.test(recipient);
         this.isSelfTransfer = recipient === currentUser;
 
-        // First, check pattern validity
-        if (!this.isRecipientPatternValid) {
+        if (!this.isRecipientPatternValid || this.isSelfTransfer) {
             this.isRecipientValid = false;
             this.isCheckingRecipient = false;
             return;
         }
 
-        // Second, check if sending to self
-        if (this.isSelfTransfer) {
-            this.isRecipientValid = false;
-            this.isCheckingRecipient = false;
-            return;
-        }
-
-        // Finally, check if account exists
+        // Validate existence of recipient's account via service
         this.isCheckingRecipient = true;
-        const validationPromise = this.accountKit.load(recipient)
-            .then(() => {
+        const validationPromise = this.accountKitService.validateAccount(recipient)
+            .then((exists) => {
                 if (this.lastAccountValidationRequest === validationPromise) {
-                    this.isRecipientValid = true;
-                }
-            })
-            .catch(() => {
-                if (this.lastAccountValidationRequest === validationPromise) {
-                    this.isRecipientValid = false;
+                    this.isRecipientValid = exists;
                 }
             })
             .finally(() => {
@@ -118,7 +108,7 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
         if (!this.isRecipientValid || !this.isAmountValid) return;
 
         const formattedAmount = `${this.amount!.toFixed(this.balance.token.precision)} ${this.balance.token.symbol}`;
-        const sender = this.sessionService.currentSession?.actor;
+        const sender = this.currentSession?.actor;
 
         if (!sender) {
             alert('No active session. Please log in.');
@@ -138,18 +128,20 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
 
             alert(`Successfully transferred ${formattedAmount} to ${this.recipient}`);
             this.tokenBalanceService.refreshAllBalances();
-
-            // Reset inputs
-            this.recipient = '';
-            this.amount = null;
-            this.isRecipientValid = false;
-            this.isAmountValid = false;
-            this.isSelfTransfer = false;
+            this.resetForm();
         } catch (error) {
             console.error('Transfer failed:', error);
             alert(`Transfer failed: ${error}`);
         } finally {
             this.isLoading = false;
         }
+    }
+
+    private resetForm(): void {
+        this.recipient = '';
+        this.amount = null;
+        this.isRecipientValid = false;
+        this.isAmountValid = false;
+        this.isSelfTransfer = false;
     }
 }
