@@ -16,45 +16,43 @@
         />
 
         <p *ngIf="recipient" class="small">
-            <!-- Case 1: Pattern Mismatch -->
-            <span *ngIf="!isCheckingRecipient && !isRecipientPatternValid" class="invalid">
+            <span *ngIf="isRecipientDebouncing"> <!-- No message during debounce -->
+                &nbsp; <!-- Empty space to keep layout stable if needed -->
+            </span>
+            <span *ngIf="!isRecipientDebouncing && !isCheckingRecipient && !isRecipientPatternValid" class="invalid">
                 ❌ Wrong EOSIO pattern, 1-12 characters (a-z, 1-5)
             </span>
-
-            <!-- Case 2: Sending to Self -->
-            <span *ngIf="!isCheckingRecipient && isRecipientPatternValid && isSelfTransfer" class="invalid">
+            <span *ngIf="!isRecipientDebouncing && !isCheckingRecipient && isRecipientPatternValid && isSelfTransfer" class="invalid">
                 ❌ Cannot send tokens to yourself
             </span>
-
-            <!-- Case 3: Checking if Account Exists -->
-            <span *ngIf="isCheckingRecipient" class="checking">
+            <span *ngIf="!isRecipientDebouncing && isCheckingRecipient" class="checking">
                 ⏳ Checking account...
             </span>
-
-            <!-- Case 4: Verified Account -->
-            <span *ngIf="!isCheckingRecipient && isRecipientValid" class="valid">
+            <span *ngIf="!isRecipientDebouncing && !isCheckingRecipient && isRecipientValid" class="valid">
                 ✅ Verified Account
             </span>
-
-            <!-- Case 5: Account Not Found (Only show if it's NOT a self-transfer) -->
-            <span *ngIf="!isCheckingRecipient && !isRecipientValid && isRecipientPatternValid && !isSelfTransfer" class="invalid">
+            <span *ngIf="!isRecipientDebouncing && !isCheckingRecipient && !isRecipientValid && isRecipientPatternValid && !isSelfTransfer" class="invalid">
                 ❌ Account does not exist
             </span>
         </p>
 
+
         <label class="small" for="amount">Amount:</label>
         <input
             id="amount"
-            type="number"
+            type="string"
             [(ngModel)]="amount"
             (input)="onAmountChange()"
             placeholder="Enter whole number"
-            min="0"
-            step="1"
             autocomplete="off"
         />
-        <p *ngIf="amount !== null" class="small" [ngClass]="isAmountValid ? 'valid' : 'invalid'">
-            {{ isAmountValid ? '✅ Amount is within balance' : '❌ Invalid amount'}}
+        <p *ngIf="amount !== null" class="small">
+            <span *ngIf="isAmountDebouncing">
+                &nbsp; <!-- No message during debounce -->
+            </span>
+            <span *ngIf="!isAmountDebouncing" [ngClass]="isAmountValid ? 'valid' : 'invalid'">
+                {{ isAmountValid ? '✅ Amount is within balance' : '❌ Invalid amount' }}
+            </span>
         </p>
     </div>
 

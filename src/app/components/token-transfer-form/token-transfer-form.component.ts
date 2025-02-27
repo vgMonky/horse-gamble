@@ -27,6 +27,8 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
     isCheckingRecipient = false;
     isRecipientPatternValid = false;
     isSelfTransfer = false;
+    hasTouchedRecipient = false;
+    isRecipientDebouncing = false;
     private recipientSubject = new Subject<string>();
     private lastAccountValidationRequest: Promise<void> | null = null;
     private readonly eosioPattern = /^[a-z1-5]{1,12}$/;
@@ -34,6 +36,8 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
     // Amount input
     amount: number | null = null;
     isAmountValid = false;
+    hasTouchedAmount = false;
+    isAmountDebouncing = false;
     private amountSubject = new Subject<number | null>();
 
     constructor(
@@ -43,20 +47,23 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit(): void {
-        // Recipient validation (debounced & async)
         this.recipientSubject.pipe(
-            debounceTime(500),
+            debounceTime(300),
             distinctUntilChanged(),
             switchMap((recipient) => this.validateRecipient(recipient)),
             takeUntil(this.destroy$)
-        ).subscribe();
+        ).subscribe(() => {
+            this.isRecipientDebouncing = false;
+        });
 
-        // Amount validation (reactively)
         this.amountSubject.pipe(
             debounceTime(300),
             distinctUntilChanged(),
             takeUntil(this.destroy$)
-        ).subscribe((amount) => this.validateAmount(amount));
+        ).subscribe((amount) => {
+            this.validateAmount(amount);
+            this.isAmountDebouncing = false;
+        });
     }
 
     ngOnDestroy(): void {
@@ -68,9 +75,17 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
         return this.sessionService.currentSession;
     }
 
-    // Triggers recipient validation
     onRecipientChange(): void {
+        this.clearRecipientValidation();
+        this.isRecipientDebouncing = true;
         this.recipientSubject.next(this.recipient);
+    }
+
+    private clearRecipientValidation(): void {
+        this.isRecipientValid = false;
+        this.isRecipientPatternValid = true;
+        this.isCheckingRecipient = false;
+        this.isSelfTransfer = false;
     }
 
     async validateRecipient(recipient: string): Promise<void> {
@@ -99,9 +114,14 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
         this.lastAccountValidationRequest = validationPromise;
     }
 
-    // Triggers amount validation
     onAmountChange(): void {
+        this.clearAmountValidation();
+        this.isAmountDebouncing = true;
         this.amountSubject.next(this.amount);
+    }
+
+    private clearAmountValidation(): void {
+        this.isAmountValid = true;
     }
 
     private validateAmount(amount: number | null): void {
@@ -153,12 +173,13 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
     }
 
     private resetForm(): void {
-        Object.assign(this, {
-            recipient: '',
-            amount: null,
-            isRecipientValid: false,
-            isAmountValid: false,
-            isSelfTransfer: false
-        });
+        this.recipient = '';
+        this.amount = null;
+
+        this.clearRecipientValidation();
+        this.clearAmountValidation();
+
+        this.isRecipientDebouncing = false;
+        this.isAmountDebouncing = false;
     }
 }
