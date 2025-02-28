@@ -32,12 +32,16 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
         this.form = this.fb.group({
             recipient: [
                 '',
-                [Validators.required, Validators.pattern(/^[a-z1-5]{1,12}$/)],
+                [
+                    Validators.required,
+                    Validators.pattern(/^[a-z1-5]{1,12}$/),
+                    this.selfTransferValidator()
+                ],
                 [this.accountValidator()]
             ],
             amount: [
                 null,
-                [Validators.required, Validators.min(1), this.amountWithinBalanceValidator()]
+                [Validators.required, Validators.min(1), this.amountValidator()]
             ]
         });
 
@@ -59,22 +63,33 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
         this.destroy$.complete();
     }
 
-    get currentSession() {
-        return this.sessionService.currentSession;
+    // ================================================
+    // Recipient Validation Methods
+
+    selfTransferValidator() {
+        return (control: any) => {
+            const sessionActor = this.sessionService.currentSession?.actor?.toString();
+            const isSelf = control.value === sessionActor;
+            if (isSelf) {
+                return { selfTransfer: true };
+            }
+            return null;
+        };
     }
+
 
     accountValidator(): AsyncValidatorFn {
         return (control) => {
-            if (control.value === this.currentSession?.actor) {
-                return Promise.resolve({ selfTransfer: true });
-            }
             return this.accountKitService.validateAccount(control.value).then(exists =>
                 exists ? null : { accountNotFound: true }
             );
         };
     }
 
-    amountWithinBalanceValidator() {
+    // ===============================================
+    // Amount Validation Methods
+
+    amountValidator() {
         return (control: any) => {
             if (!this.balance) return null;
 
@@ -92,12 +107,15 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
         };
     }
 
+    // ================================================
+    // Transfer Logic
+
     async transfer(): Promise<void> {
         if (this.form.invalid) return;
 
         const { recipient, amount } = this.form.value;
         const formattedAmount = `${amount.toFixed(this.balance.token.precision)} ${this.balance.token.symbol}`;
-        const sender = this.currentSession?.actor;
+        const sender = this.sessionService.currentSession?.actor;
 
         if (!sender) {
             alert('No active session. Please log in.');
