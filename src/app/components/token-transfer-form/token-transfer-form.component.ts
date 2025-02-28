@@ -1,11 +1,13 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, AsyncValidatorFn, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Balance } from 'src/types';
 import { TokenBalanceService } from '@app/services/token-balance.service';
 import { SessionService } from '@app/services/session-kit.service';
 import { AccountKitService } from '@app/services/account-kit.service';
 import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
+import { AbstractControl } from '@angular/forms';
+import { timer, of, catchError, map, switchMap } from 'rxjs';
 
 @Component({
     selector: 'app-token-transfer-form',
@@ -37,23 +39,13 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
                     Validators.pattern(/^[a-z1-5]{1,12}$/),
                     this.selfTransferValidator()
                 ],
-                [this.accountValidator()]
+                [this.accountValidator()]  // With debounce built-in!
             ],
             amount: [
                 null,
-                [
-                    Validators.required,
-                    Validators.min(1),
-                    this.amountValidator()
-                ]
+                [Validators.required, this.amountValidator()]
             ]
         });
-
-        this.form.get('recipient')?.valueChanges.pipe(
-            debounceTime(300),
-            distinctUntilChanged(),
-            takeUntil(this.destroy$)
-        ).subscribe();
 
         this.form.get('amount')?.valueChanges.pipe(
             debounceTime(300),
@@ -75,22 +67,27 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
     selfTransferValidator() {
         return (control: any) => {
             const sessionActor = this.sessionService.currentSession?.actor?.toString();
-            const isSelf = control.value === sessionActor;
-            if (isSelf) {
+            if (control.value === sessionActor) {
                 return { selfTransfer: true };
             }
             return null;
         };
     }
 
+    accountValidator() {
+        return (control: AbstractControl) => {
+            if (!control.value) {
+                return of(null); // Important: Must return an observable, not a promise!
+            }
 
-    accountValidator(): AsyncValidatorFn {
-        return (control) => {
-            return this.accountKitService.validateAccount(control.value).then(exists =>
-                exists ? null : { accountNotFound: true }
+            return timer(300).pipe( // Apply debounce directly inside the validator
+                switchMap(() => this.accountKitService.validateAccount(control.value)),
+                map(exists => exists ? null : { accountNotFound: true }),
+                catchError(() => of({ accountNotFound: true })) // Network error = treat as not found
             );
         };
     }
+
 
     // ===============================================
     // Amount Methods
