@@ -141,7 +141,14 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
         if (this.form.invalid) return;
 
         const { recipient, amount } = this.form.value;
-        const formattedAmount = `${amount.toFixed(this.balance.token.precision)} ${this.balance.token.symbol}`;
+
+        const numericAmount = parseFloat(amount);  // Convert string to number
+        if (isNaN(numericAmount) || numericAmount <= 0) {
+            alert('Invalid amount entered');
+            return;
+        }
+
+        const formattedAmount = `${numericAmount.toFixed(this.balance.token.precision)} ${this.balance.token.symbol}`;
         const sender = this.sessionService.currentSession?.actor;
 
         if (!sender) {
