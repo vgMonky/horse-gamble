@@ -21,7 +21,10 @@
 
         <!-- Amount Input -->
         <div class="container-input">
-            <label class="small" for="amount">Amount:</label>
+            <div class="bar">
+                <label class="small" for="amount">Amount:</label>
+                <a *ngIf="!isMaxAmount()" class="small max" (click)="useMax()">Use Max</a>
+            </div>
             <input id="amount" type="text" formControlName="amount" placeholder="Enter whole number" autocomplete="off" />
 
             <p *ngIf="form.get('amount')?.value !== null" class="small">

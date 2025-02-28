@@ -39,7 +39,7 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
                     Validators.pattern(/^[a-z1-5]{1,12}$/),
                     this.selfTransferValidator()
                 ],
-                [this.accountValidator()]  // With debounce built-in!
+                [this.accountValidator()]
             ],
             amount: [
                 null,
@@ -77,13 +77,13 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
     accountValidator() {
         return (control: AbstractControl) => {
             if (!control.value) {
-                return of(null); // Important: Must return an observable, not a promise!
+                return of(null);
             }
 
-            return timer(300).pipe( // Apply debounce directly inside the validator
+            return timer(300).pipe(
                 switchMap(() => this.accountKitService.validateAccount(control.value)),
                 map(exists => exists ? null : { accountNotFound: true }),
-                catchError(() => of({ accountNotFound: true })) // Network error = treat as not found
+                catchError(() => of({ accountNotFound: true }))
             );
         };
     }
@@ -131,6 +131,14 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
         this.form.get('amount')?.setValue(stringValue, { emitEvent: false });
     }
 
+    useMax(): void {
+        const maxAmount = this.balance.amount.formatted ;
+        this.form.get('amount')?.setValue(maxAmount);
+    }
+    isMaxAmount(): boolean {
+        return this.form.get('amount')?.value === this.balance.amount.formatted;
+    }
+
     // ================================================
     // Transfer Logic
 
@@ -139,7 +147,7 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
 
         const { recipient, amount } = this.form.value;
 
-        const numericAmount = parseFloat(amount);  // Convert string to number
+        const numericAmount = parseFloat(amount);
         if (isNaN(numericAmount) || numericAmount <= 0) {
             alert('Invalid amount entered');
             return;

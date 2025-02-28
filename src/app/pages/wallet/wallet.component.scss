@@ -7,6 +7,10 @@
 
 .refresh{
     color: var(--c-accent-0);
+
+    &:hover{
+        color: var(--c-foreground-2);
+    }
 }
 
 .balance-head{
