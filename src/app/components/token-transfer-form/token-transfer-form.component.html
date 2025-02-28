@@ -1,70 +1,42 @@
 <div class="transfer-form">
-    <!-- Available Balance Display -->
     <div class="container-available">
         <p class="small">Available:</p>
         <strong>{{ balance.amount.formatted }} {{ balance.token.symbol }}</strong>
     </div>
 
-    <div class="container-input">
-        <label class="small" for="recipient">Transfer to:</label>
-        <input
-            id="recipient"
-            type="text"
-            [(ngModel)]="recipient"
-            (input)="onRecipientChange()"
-            placeholder="Enter EOSIO username"
-        />
+    <form [formGroup]="form" (ngSubmit)="transfer()">
+        <!-- Recipient Input -->
+        <div class="container-input">
+            <label class="small" for="recipient">Transfer to:</label>
+            <input id="recipient" type="text" formControlName="recipient" placeholder="Enter EOSIO username" />
 
-        <p *ngIf="recipient" class="small">
-            <span *ngIf="isRecipientDebouncing">
-                &nbsp;
-            </span>
-            <span *ngIf="!isRecipientDebouncing && !isCheckingRecipient && !isRecipientPatternValid" class="invalid">
-                ❌ Wrong EOSIO pattern, 1-12 characters (a-z, 1-5)
-            </span>
-            <span *ngIf="!isRecipientDebouncing && !isCheckingRecipient && isRecipientPatternValid && isSelfTransfer" class="invalid">
-                ❌ Cannot send tokens to yourself
-            </span>
-            <span *ngIf="!isRecipientDebouncing && isCheckingRecipient && isRecipientPatternValid && !isSelfTransfer " class="checking">
-                ⏳ Checking account...
-            </span>
-            <span *ngIf="!isRecipientDebouncing && !isCheckingRecipient && isRecipientPatternValid && !isSelfTransfer && isRecipientValid" class="valid">
-                ✅ Verified Account
-            </span>
-            <span *ngIf="!isRecipientDebouncing && !isCheckingRecipient && isRecipientPatternValid && !isSelfTransfer && !isRecipientValid" class="invalid">
-                ❌ Account does not exist
-            </span>
-        </p>
+            <p *ngIf="form.get('recipient')?.value" class="small">
+                <span *ngIf="form.get('recipient')?.pending" class="checking">⏳ Checking account...</span>
+                <span *ngIf="form.get('recipient')?.errors?.['pattern']" class="invalid">❌ Wrong EOSIO pattern, 1-12 characters (a-z, 1-5)</span>
+                <span *ngIf="form.get('recipient')?.errors?.['selfTransfer']" class="invalid">❌ Cannot send tokens to yourself</span>
+                <span *ngIf="form.get('recipient')?.errors?.['accountNotFound']" class="invalid">❌ Account does not exist</span>
+                <span *ngIf="form.get('recipient')?.valid && !form.get('recipient')?.pending" class="valid">✅ Verified Account</span>
+            </p>
+        </div>
 
+        <!-- Amount Input -->
+        <div class="container-input">
+            <label class="small" for="amount">Amount:</label>
+            <input id="amount" type="number" formControlName="amount" placeholder="Enter whole number" autocomplete="off" />
 
-        <label class="small" for="amount">Amount:</label>
-        <input
-            id="amount"
-            type="number"
-            [(ngModel)]="amount"
-            (input)="onAmountChange()"
-            placeholder="Enter whole number"
-            autocomplete="off"
-        />
-        <p *ngIf="amount !== null" class="small">
-            <span *ngIf="isAmountDebouncing">
-                &nbsp;
-            </span>
-            <span *ngIf="!isAmountDebouncing" [ngClass]="isAmountValid ? 'valid' : 'invalid'">
-                {{ isAmountValid ? '✅ Amount is within balance' : '❌ Invalid amount' }}
-            </span>
-        </p>
-    </div>
+            <p *ngIf="form.get('amount')?.value !== null" class="small">
+                <span *ngIf="form.get('amount')?.errors?.['invalidAmount']" class="invalid">❌ Invalid amount</span>
+                <span *ngIf="form.get('amount')?.errors?.['outOfBalance']" class="invalid">❌ Amount exceeds balance</span>
+                <span *ngIf="form.get('amount')?.valid" class="valid">✅ Amount is within balance</span>
+            </p>
+        </div>
 
-    <!-- Transfer Button -->
-    <div class="container-transfer">
-        <br>
-        <button
-            [class]="isRecipientValid && isAmountValid ? 'btn2' : 'unable'"
-            (click)="transfer()"
-            [disabled]="!isRecipientValid || !isAmountValid || isLoading"
-        >
-            {{ isLoading ? 'Processing...' : 'Transfer' }}
-        </button>
-    </div>
+        <!-- Transfer Button -->
+        <div class="container-transfer">
+            <br>
+            <button [class]="form.valid ? 'btn2' : 'unable'" type="submit" [disabled]="form.invalid || isLoading">
+                {{ isLoading ? 'Processing...' : 'Transfer' }}
+            </button>
+        </div>
+    </form>
 </div>
