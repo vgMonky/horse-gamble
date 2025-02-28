@@ -22,7 +22,7 @@
         <!-- Amount Input -->
         <div class="container-input">
             <label class="small" for="amount">Amount:</label>
-            <input id="amount" type="number" formControlName="amount" placeholder="Enter whole number" autocomplete="off" />
+            <input id="amount" type="text" formControlName="amount" placeholder="Enter whole number" autocomplete="off" />
 
             <p *ngIf="form.get('amount')?.value !== null" class="small">
                 <span *ngIf="form.get('amount')?.errors?.['invalidAmount']" class="invalid">❌ Invalid amount</span>

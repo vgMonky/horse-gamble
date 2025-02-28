@@ -41,7 +41,11 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
             ],
             amount: [
                 null,
-                [Validators.required, Validators.min(1), this.amountValidator()]
+                [
+                    Validators.required,
+                    Validators.min(1),
+                    this.amountValidator()
+                ]
             ]
         });
 
@@ -55,7 +59,9 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
             debounceTime(300),
             distinctUntilChanged(),
             takeUntil(this.destroy$)
-        ).subscribe();
+        ).subscribe(value => {
+            this.enforceDecimalPrecision(value);
+        });
     }
 
     ngOnDestroy(): void {
@@ -64,7 +70,7 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
     }
 
     // ================================================
-    // Recipient Validation Methods
+    // Recipient Methods
 
     selfTransferValidator() {
         return (control: any) => {
@@ -87,24 +93,45 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
     }
 
     // ===============================================
-    // Amount Validation Methods
+    // Amount Methods
 
     amountValidator() {
         return (control: any) => {
             if (!this.balance) return null;
 
-            const amount = control.value;
-            if (amount === null || isNaN(amount)) return { invalidAmount: true };
+            const amount = parseFloat(control.value);
+            if (isNaN(amount) || amount <= 0) return { invalidAmount: true };
 
             const precisionFactor = Math.pow(10, this.balance.token.precision);
             const rawBalance = this.balance.amount.raw;
 
-            if (amount <= 0 || amount * precisionFactor > rawBalance) {
+            if (amount * precisionFactor > rawBalance) {
                 return { outOfBalance: true };
             }
 
             return null;
         };
+    }
+
+    private enforceDecimalPrecision(value: any): void {
+        if (value === null || value === undefined) return;
+
+        const precision = this.balance.token.precision;
+
+        let stringValue = value.toString();
+
+        if (stringValue.includes('.')) {
+            let [integerPart, decimalPart] = stringValue.split('.');
+
+            // Trim only if it's longer than precision
+            if (decimalPart.length > precision) {
+                decimalPart = decimalPart.slice(0, precision);
+            }
+
+            stringValue = `${integerPart}.${decimalPart}`;
+        }
+
+        this.form.get('amount')?.setValue(stringValue, { emitEvent: false });
     }
 
     // ================================================
