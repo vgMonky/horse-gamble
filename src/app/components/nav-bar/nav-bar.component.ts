@@ -1,38 +1,53 @@
-import { Component, Renderer2, Inject } from '@angular/core';
+import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
+import { DOCUMENT, CommonModule } from '@angular/common';
+import { Store } from '@ngrx/store';
+import { AppState } from '@app/store/app.state';
+import { user } from '@app/store/user';
 import { RouterModule } from '@angular/router';
-import { CommonModule } from '@angular/common';
 import { WindowContainerComponent } from '@app/components/window-container/window-container.component';
-import { UserPreferencesComponent } from '../user-preferences/user-preferences.component';
-import { DOCUMENT } from '@angular/common';
 import { LoginComponent } from '../login/login.component';
-
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
-    standalone: true,
     selector: 'app-nav-bar',
-imports: [
-    CommonModule,
-    RouterModule,
-    UserPreferencesComponent,
-    LoginComponent,
-    WindowContainerComponent,
-],
+    standalone: true,
+    imports: [CommonModule, RouterModule, LoginComponent, WindowContainerComponent],
     templateUrl: './nav-bar.component.html',
     styleUrls: ['./nav-bar.component.scss']
 })
-export class NavBarComponent {
+export class NavBarComponent implements OnInit, OnDestroy {
     isMenuOpen = false;
-    isSettingsOpen = false;
-    isWalletOpen = false;
-    isSearchOpen = false;
+    isDarkTheme = false; // track current theme locally
     menuId = 'mobile-menu';
 
-    constructor(private renderer: Renderer2, @Inject(DOCUMENT) private document: Document) {}
+    private destroy$ = new Subject<void>();
+
+    constructor(
+        private store: Store<AppState>,
+        @Inject(DOCUMENT) private document: Document
+    ) {}
+
+    ngOnInit() {
+        this.store.select(user.selectors.isDarkTheme)
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((isDark) => {
+                this.isDarkTheme = isDark;
+            });
+    }
 
     toggleMenu() {this.isMenuOpen = !this.isMenuOpen;}
     closeMenu() {this.isMenuOpen = false;}
 
-    toggleWallet() {this.isWalletOpen = !this.isWalletOpen;}
-    closeWallet() {this.isWalletOpen = false;}
+    toggleTheme() {
+        if (this.isDarkTheme) {
+            this.store.dispatch(user.actions.setLight());
+        } else {
+            this.store.dispatch(user.actions.setDark());
+        }
+    }
 
+    ngOnDestroy() {
+        this.destroy$.next();
+        this.destroy$.complete();
+    }
 }

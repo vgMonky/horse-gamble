@@ -37,7 +37,9 @@
 
     <!-- Right side: always visible -->
     <div class="nav-right">
-        <a style="font-size:26px">&#9728;</a>
+        <a (click)="toggleTheme()" class="theme-toggle" style="cursor: pointer; font-size:26px">
+            {{ isDarkTheme ? '&#9789;' : '&#9788;' }}
+        </a>
         <app-login></app-login>
     </div>
 </nav>
