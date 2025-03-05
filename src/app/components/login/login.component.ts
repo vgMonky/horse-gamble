@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { DropDownComponent } from '../drop-down/drop-down.component';
 import { RouterModule } from '@angular/router';
 import { SessionService } from '@app/services/session-kit.service';
+import { WindowContainerComponent } from '../window-container/window-container.component';
+import { UserPreferencesComponent } from '../user-preferences/user-preferences.component';
 
 @Component({
     selector: 'app-login',
@@ -11,11 +13,15 @@ import { SessionService } from '@app/services/session-kit.service';
         CommonModule,
         DropDownComponent,
         RouterModule,
+        WindowContainerComponent,
+        UserPreferencesComponent
     ],
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent {
+    isSettingsOpen = false;
+
 
     constructor(public sessionService: SessionService) {}
 
@@ -30,4 +36,8 @@ export class LoginComponent {
     async logout() {
         await this.sessionService.logout();
     }
+
+
+    toggleSettings() {this.isSettingsOpen = !this.isSettingsOpen;}
+    closeSettings() {this.isSettingsOpen = false;}
 }
