@@ -20,7 +20,7 @@ import { UserPreferencesComponent } from '../user-preferences/user-preferences.c
     styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent {
-    isSettingsOpen = false;
+    ispreferencesOpen = false;
 
 
     constructor(public sessionService: SessionService) {}
@@ -38,6 +38,6 @@ export class LoginComponent {
     }
 
 
-    toggleSettings() {this.isSettingsOpen = !this.isSettingsOpen;}
-    closeSettings() {this.isSettingsOpen = false;}
+    togglepreferences() {this.ispreferencesOpen = !this.ispreferencesOpen;}
+    closepreferences() {this.ispreferencesOpen = false;}
 }
