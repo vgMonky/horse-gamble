@@ -5,7 +5,7 @@ import { AppState } from '@app/store/app.state';
 import { user } from '@app/store/user';
 import { Observable, Subject } from 'rxjs';
 import { map, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
-import { ToggleComponent } from '../toggle/toggle.component';
+import { ToggleComponent } from '@app/components/base-components/toggle/toggle.component';
 
 @Component({
     selector: 'app-user-preferences',

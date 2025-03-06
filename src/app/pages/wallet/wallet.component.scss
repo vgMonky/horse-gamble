@@ -4,3 +4,18 @@
     padding: 5px 0;
     font-weight: bold;
 }
+
+.refresh{
+    color: var(--c-accent-0);
+
+    &:hover{
+        color: var(--c-foreground-2);
+    }
+}
+
+.balance-head{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}

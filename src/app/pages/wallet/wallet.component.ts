@@ -4,11 +4,19 @@ import { TokenBalanceService } from '@app/services/token-balance.service';
 import { SessionService } from '@app/services/session-kit.service';
 import { Subscription } from 'rxjs';
 import { Balance } from 'src/types';
+import { ExpandableComponent } from '@app/components/base-components/expandable/expandable.component';
+import { ExpandableGroupComponent } from '@app/components/base-components/expandable/expandable-group.component';
+import { TokenTransferFormComponent } from '@app/components/token-transfer-form/token-transfer-form.component';
 
 @Component({
     selector: 'app-wallet',
     standalone: true,
-    imports: [CommonModule],
+    imports: [
+        CommonModule,
+        ExpandableComponent,
+        ExpandableGroupComponent,
+        TokenTransferFormComponent,
+    ],
     templateUrl: './wallet.component.html',
     styleUrls: ['./wallet.component.scss'],
 })
