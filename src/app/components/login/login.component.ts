@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DropDownComponent } from '../drop-down/drop-down.component';
+import { DropDownComponent } from '@app/components/base-components/drop-down/drop-down.component';
 import { RouterModule } from '@angular/router';
 import { SessionService } from '@app/services/session-kit.service';
 import { WindowContainerComponent } from '../window-container/window-container.component';

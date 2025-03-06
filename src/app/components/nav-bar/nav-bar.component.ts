@@ -11,7 +11,13 @@ import { Subject, takeUntil } from 'rxjs';
 @Component({
     selector: 'app-nav-bar',
     standalone: true,
-    imports: [CommonModule, RouterModule, LoginComponent, WindowContainerComponent],
+    imports: [
+        CommonModule,
+        RouterModule,
+        LoginComponent,
+        WindowContainerComponent,
+    ],
+
     templateUrl: './nav-bar.component.html',
     styleUrls: ['./nav-bar.component.scss']
 })

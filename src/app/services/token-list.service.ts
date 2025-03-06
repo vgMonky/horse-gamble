@@ -17,7 +17,6 @@ export class TokenListService {
         this.http.get<Token[]>('assets/tokens_mainnet.json').subscribe({
             next: tokens => {
                 this.tokens$.next(tokens);
-                console.log('Loaded Tokens:', tokens);
             },
             error: err => console.error('Error loading token list:', err),
         });
