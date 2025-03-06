@@ -22,7 +22,7 @@ body.dark-theme {
     --c-foreground-1: hsl(var(--h0), 0%, 75%); // foreground light 1
     --c-foreground-0: hsl(var(--h0), 0%, 98%); // foreground light 0
 
-    --c-accent-0: hsl(var(--h0), 60%, 35%); // accent 0
+    --c-accent-0: hsl(var(--h0), 60%, 40%); // accent 0
     --c-accent-1: hsl(var(--h0), 30%, 16%); // accent 1
     --c-accent-2: hsl(var(--h0), 30%, 8%); // accent 2
 
@@ -52,8 +52,8 @@ body.light-theme {
     --c-foreground-1: hsl(var(--h0), 0%, 40%); // foreground dark 1
     --c-foreground-0: hsl(var(--h0), 0%, 0%); // foreground dark 0
 
-    --c-accent-0: hsl(var(--h0), 65%, 58%); // accent 0
-    --c-accent-1: hsl(var(--h0), 40%, 45%); // accent 1
+    --c-accent-0: hsl(var(--h0), 65%, 55%); // accent 0
+    --c-accent-1: hsl(var(--h0), 30%, 80%); // accent 1
     --c-accent-2: hsl(var(--h0), 30%, 8%); // accent 2
 
     --c-accent-0b: hsl(var(--h1), 60%, 55%);  // accent 0 b

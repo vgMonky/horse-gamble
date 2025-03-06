@@ -95,8 +95,8 @@ export class UserPreferencesComponent implements OnInit, OnDestroy {
 
         switch (theme) {
             case 'igneous':
-                h0 = 10;
-                h1 = 40;
+                h0 = 40;
+                h1 = 10;
                 break;
             case 'emerald':
                 h0 = 140;
