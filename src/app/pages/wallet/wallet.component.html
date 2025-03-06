@@ -12,7 +12,13 @@
 
     <ng-template #balanceList>
         <app-expandable-group>
-            <app-expandable *ngFor="let balance of balances">
+            <app-expandable
+                *ngFor="let balance of balances"
+                [isOpen]="balance.token.symbol === currentOpenTokenSymbol"
+                (toggleState)="toggleExpandable(balance.token.symbol, $event.isOpen)"
+            >
+
+                >
                 <!-- Closed Header: Show Token Symbol and Balance -->
                 <div class="balance-head" closedHeader>
                     <img src="{{ balance.token.logo }}"><p>{{ balance.amount.formatted }} <strong>{{ balance.token.symbol }}</strong></p>

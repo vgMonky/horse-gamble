@@ -24,6 +24,7 @@ export class WalletComponent implements OnInit, OnDestroy {
     balances: Balance[] = [];
     loading = false;  // Add loading state
     private balanceSubscription!: Subscription;
+    currentOpenTokenSymbol: string | null = null;
 
     constructor(
         private sessionService: SessionService,
@@ -49,5 +50,9 @@ export class WalletComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         if (this.balanceSubscription) this.balanceSubscription.unsubscribe();
+    }
+
+    toggleExpandable(symbol: string, isOpen: boolean) {
+        this.currentOpenTokenSymbol = isOpen ? symbol : null;
     }
 }
