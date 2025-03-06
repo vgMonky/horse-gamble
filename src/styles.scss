@@ -5,8 +5,8 @@
 // by using only this color variables components get styled in a global way by automatically
 // adapting to light/dark & Hue themeing, mantaining good visual contrast and consistency */
 :root{
-    --h0: 160; // hue 0
-    --h1: 230; // hue 1
+    --h0: 190; // hue 0
+    --h1: 220; // hue 1
 }
 
 /* Dark Theme default*/
@@ -22,7 +22,7 @@ body.dark-theme {
     --c-foreground-1: hsl(var(--h0), 0%, 75%); // foreground light 1
     --c-foreground-0: hsl(var(--h0), 0%, 98%); // foreground light 0
 
-    --c-accent-0: hsl(var(--h0), 60%, 35%); // accent 0
+    --c-accent-0: hsl(var(--h0), 60%, 40%); // accent 0
     --c-accent-1: hsl(var(--h0), 30%, 16%); // accent 1
     --c-accent-2: hsl(var(--h0), 30%, 8%); // accent 2
 
@@ -52,12 +52,12 @@ body.light-theme {
     --c-foreground-1: hsl(var(--h0), 0%, 40%); // foreground dark 1
     --c-foreground-0: hsl(var(--h0), 0%, 0%); // foreground dark 0
 
-    --c-accent-0: hsl(var(--h0), 60%, 48%); // accent 0
-    --c-accent-1: hsl(var(--h0), 40%, 70%); // accent 1
+    --c-accent-0: hsl(var(--h0), 65%, 55%); // accent 0
+    --c-accent-1: hsl(var(--h0), 30%, 80%); // accent 1
     --c-accent-2: hsl(var(--h0), 30%, 8%); // accent 2
 
-    --c-accent-0b: hsl(var(--h1), 60%, 45%);  // accent 0 b
-    --c-accent-1b: hsl(var(--h1), 40%, 6%); // accent 1 b
+    --c-accent-0b: hsl(var(--h1), 60%, 55%);  // accent 0 b
+    --c-accent-1b: hsl(var(--h1), 40%, 16%); // accent 1 b
     --c-accent-2b: hsl(var(--h1), 30%, 8%); // accent 2 b
 
     --c-alert-0: hsl( 0, 60%, 50%);

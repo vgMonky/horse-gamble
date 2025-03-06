@@ -74,37 +74,37 @@ export class UserPreferencesComponent implements OnInit, OnDestroy {
         }
     }
 
-    updateHue0(event: Event) {
-        const input = event.target as HTMLInputElement;
-        const h0 = Number(input.value);
-        if (h0 >= 0 && h0 <= 360) {
-            this.hue0Subject.next(h0);
-        }
-    }
+    // updateHue0(event: Event) {
+    //     const input = event.target as HTMLInputElement;
+    //     const h0 = Number(input.value);
+    //     if (h0 >= 0 && h0 <= 360) {
+    //         this.hue0Subject.next(h0);
+    //     }
+    // }
 
-    updateHue1(event: Event) {
-        const input = event.target as HTMLInputElement;
-        const h1 = Number(input.value);
-        if (h1 >= 0 && h1 <= 360) {
-            this.hue1Subject.next(h1);
-        }
-    }
+    // updateHue1(event: Event) {
+    //     const input = event.target as HTMLInputElement;
+    //     const h1 = Number(input.value);
+    //     if (h1 >= 0 && h1 <= 360) {
+    //         this.hue1Subject.next(h1);
+    //     }
+    // }
 
-    setHueTheme(theme: 'default' | 'candyflip' | 'cryptonite') {
+    setHueTheme(theme: 'default' | 'igneous' | 'emerald') {
         let h0, h1;
 
         switch (theme) {
-            case 'candyflip':
-                h0 = 160;
-                h1 = 280;
+            case 'igneous':
+                h0 = 40;
+                h1 = 10;
                 break;
-            case 'cryptonite':
-                h0 = 190;
-                h1 = 70;
+            case 'emerald':
+                h0 = 140;
+                h1 = 170;
                 break;
             default:
-                h0 = 160;
-                h1 = 230;
+                h0 = 190;
+                h1 = 220;
         }
 
         this.store.dispatch(user.actions.setHueTheme({ h0, h1 }));

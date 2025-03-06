@@ -29,8 +29,8 @@
 }
 
 .default-theme {
-    $start-color: hsl(160, 60%, 35%);
-    $end-color: hsl(230, 60%, 50%);
+    $start-color: hsl(190, 60%, 35%);
+    $end-color: hsl(220, 60%, 50%);
 
     color: var(--c-foreground-1);
     border: 1px solid var(--c-background-4);
@@ -43,9 +43,9 @@
     }
 }
 
-.candyflip-theme {
-    $start-color: hsl(160, 80%, 35%);
-    $end-color: hsl(280, 70%, 50%);
+.igneous-theme {
+    $start-color: hsl(40, 80%, 35%);
+    $end-color: hsl(10, 70%, 50%);
 
     color: var(--c-foreground-1);
     border: 1px solid var(--c-background-4);
@@ -58,9 +58,9 @@
     }
 }
 
-.cryptonite-theme {
-    $start-color: hsl(190, 75%, 35%);
-    $end-color: hsl(70, 65%, 50%);
+.emerald-theme {
+    $start-color: hsl(140, 75%, 35%);
+    $end-color: hsl(170, 65%, 50%);
 
     color: var(--c-foreground-1);
     border: 1px solid var(--c-background-4);
