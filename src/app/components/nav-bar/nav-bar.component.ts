@@ -4,9 +4,9 @@ import { Store } from '@ngrx/store';
 import { AppState } from '@app/store/app.state';
 import { user } from '@app/store/user';
 import { RouterModule } from '@angular/router';
-import { WindowContainerComponent } from '@app/components/window-container/window-container.component';
 import { LoginComponent } from '../login/login.component';
 import { Subject, takeUntil } from 'rxjs';
+import { WindowContainerComponent } from '@app/components/base-components/window-container/window-container.component';
 
 @Component({
     selector: 'app-nav-bar',
@@ -15,7 +15,7 @@ import { Subject, takeUntil } from 'rxjs';
         CommonModule,
         RouterModule,
         LoginComponent,
-        WindowContainerComponent,
+        WindowContainerComponent
     ],
 
     templateUrl: './nav-bar.component.html',
