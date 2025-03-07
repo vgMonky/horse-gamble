@@ -22,6 +22,7 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
     form!: FormGroup;
     isLoading = false;
     private destroy$ = new Subject<void>();
+    viewState: 'form' | 'success' | 'failure' = 'form';
 
     constructor(
         private fb: FormBuilder,
