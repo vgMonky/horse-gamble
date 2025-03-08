@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Balance } from 'src/types';
+import { Balance, TransferStatus } from 'src/types';
 import { TokenBalanceService } from '@app/services/token-balance.service';
 import { TokenTransferService } from '@app/services/token-transfer.service';
 import { SessionService } from '@app/services/session-kit.service';
@@ -24,7 +24,8 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
     form!: FormGroup;
     isLoading = false;
     private destroy$ = new Subject<void>();
-    viewState: 'none' | 'success' | 'failure' = 'none';
+
+    transferStatus: TransferStatus = { state: 'none' };
 
     constructor(
         private fb: FormBuilder,
@@ -38,8 +39,8 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
         // Subscribe to transfer status from the service
         this.tokenTransferService.getTransferStatus$(this.tokenSymbol)
         .pipe(takeUntil(this.destroy$))
-        .subscribe(state => {
-            this.viewState = state;
+        .subscribe(status => {
+            this.transferStatus = status;
         });
 
         // Initialize Form
@@ -88,10 +89,11 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
         this.destroy$.complete();
     }
 
-    // ✅ Method to update transfer state
+    // Method to update transfer view
     setViewState(state: 'none' | 'success' | 'failure') {
         this.tokenTransferService.setTransferStatus(this.tokenSymbol, state);
     }
+
 
     // ================================================
     // Recipient Methods
@@ -218,5 +220,7 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
     close(): void {
         this.tokenTransferService.resetTransferCycle(this.tokenSymbol);
         this.form.reset()
+        //expandableService.close() or something like that
+            //We need to make ExpandableService for this in another Branch later.
     }
 }

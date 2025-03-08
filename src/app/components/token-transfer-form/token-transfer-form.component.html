@@ -1,12 +1,12 @@
 <div class="transfer-form">
     <div class="simulation">
-        <button (click)="viewState = 'success'">Success</button>
-        <button (click)="viewState = 'failure'">Failure</button>
-        <button (click)="viewState = 'none'">Form</button>
+        <button (click)="setViewState('success')">Success</button>
+        <button (click)="setViewState('failure')">Failure</button>
+        <button (click)="setViewState('none')">Form</button>
     </div>
 
     <!-- Form View -->
-    <div *ngIf="viewState === 'none'">
+    <div *ngIf="transferStatus.state === 'none'">
         <div class="container-available">
             <p class="small">Available:</p>
             <strong *ngIf="balance; else loadingText">
@@ -59,26 +59,25 @@
     </div>
 
     <!-- Success View -->
-    <div *ngIf="viewState === 'success'" class="result-view success">
+    <div *ngIf="transferStatus.state === 'success'" class="result-view success">
         <p class="message">
-            <strong class="success-tranfer">
+            <strong class="success-transfer">
                 ✅ Successful Transfer
             </strong>
         </p>
-        <p class="summary">Transaction summary ...</p>
+        <p class="summary">{{ transferStatus.message }}</p>
 
         <button class="btn2" (click)="close()">Close</button>
     </div>
 
-
     <!-- Failure View -->
-    <div *ngIf="viewState === 'failure'" class="result-view failure">
+    <div *ngIf="transferStatus.state === 'failure'" class="result-view failure">
         <p class="message">
             <strong class="fail-transfer">
                 ❌ Transfer Failed
             </strong>
         </p>
-        <p class="error-message">wharfKit error message ...</p>
+        <p class="error-message">{{ transferStatus.message }}</p>
 
         <div class="button-group">
             <button class="btn2" (click)="retry()">Retry</button>
