@@ -7,24 +7,24 @@ import { TokenBalanceService } from '@app/services/token-balance.service';
     providedIn: 'root'
 })
 export class TokenTransferService {
-    private transferStatus$ = new BehaviorSubject<Map<string, 'form' | 'success' | 'failure'>>(new Map());
+    private transferStatus$ = new BehaviorSubject<Map<string, 'none' | 'success' | 'failure'>>(new Map());
 
     constructor(
         private sessionService: SessionService,
         private tokenBalanceService: TokenBalanceService
     ) {}
 
-    getTransferStatus(tokenSymbol: string): 'form' | 'success' | 'failure' {
-        return this.transferStatus$.getValue().get(tokenSymbol) || 'form';
+    getTransferStatus(tokenSymbol: string): 'none' | 'success' | 'failure' {
+        return this.transferStatus$.getValue().get(tokenSymbol) || 'none';
     }
 
     getTransferStatus$(tokenSymbol: string) {
         return this.transferStatus$.asObservable().pipe(
-            map(statusMap => statusMap.get(tokenSymbol) || 'form')
+            map(statusMap => statusMap.get(tokenSymbol) || 'none')
         );
     }
 
-    setTransferStatus(tokenSymbol: string, status: 'form' | 'success' | 'failure') {
+    setTransferStatus(tokenSymbol: string, status: 'none' | 'success' | 'failure') {
         const statusMap = this.transferStatus$.getValue();
         statusMap.set(tokenSymbol, status);
         this.transferStatus$.next(statusMap);

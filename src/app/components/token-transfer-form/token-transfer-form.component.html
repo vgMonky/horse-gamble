@@ -1,10 +1,12 @@
 <div class="transfer-form">
-    <button (click)="viewState = 'success'">Simulate Success</button>
-    <button (click)="viewState = 'failure'">Simulate Failure</button>
-    <button (click)="viewState = 'form'">Simulate Form</button>
+    <div class="simulation">
+        <button (click)="viewState = 'success'">Success</button>
+        <button (click)="viewState = 'failure'">Failure</button>
+        <button (click)="viewState = 'none'">Form</button>
+    </div>
 
     <!-- Form View -->
-    <div *ngIf="viewState === 'form'">
+    <div *ngIf="viewState === 'none'">
         <div class="container-available">
             <p class="small">Available:</p>
             <strong *ngIf="balance; else loadingText">
@@ -59,12 +61,12 @@
     <!-- Success View -->
     <div *ngIf="viewState === 'success'" class="result-view success">
         <p class="message">✅ Transfer Successful!</p>
-        <button (click)="viewState = 'form'">Back to Form</button>
+        <button (click)="viewState = 'none'">Back to Form</button>
     </div>
 
     <!-- Failure View -->
     <div *ngIf="viewState === 'failure'" class="result-view failure">
         <p class="message">❌ Transfer Failed</p>
-        <button (click)="viewState = 'form'">Back to Form</button>
+        <button (click)="viewState = 'none'">Back to Form</button>
     </div>
 </div>
