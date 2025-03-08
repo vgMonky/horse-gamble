@@ -36,11 +36,19 @@
     font-size: 12px;
     margin-top: 4px;
 }
-
 .invalid {
     color: var(--c-alert-0);
     font-size: 12px;
     margin-top: 4px;
+}
+
+.success-tranfer{
+    color: var(--c-success-0);
+    font-size: 18px;
+}
+.fail-transfer {
+    color: var(--c-alert-0);
+    font-size: 18px;
 }
 
 /* Disabled Button */

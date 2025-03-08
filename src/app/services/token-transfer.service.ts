@@ -24,6 +24,10 @@ export class TokenTransferService {
         );
     }
 
+    resetTransferCycle(tokenSymbol: string): void {
+        this.setTransferStatus(tokenSymbol, 'none');
+    }
+
     setTransferStatus(tokenSymbol: string, status: 'none' | 'success' | 'failure') {
         const statusMap = this.transferStatus$.getValue();
         statusMap.set(tokenSymbol, status);

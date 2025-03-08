@@ -171,7 +171,7 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
     }
 
     // ================================================
-    // Transfer Logic
+    // Transfer Methods
 
     async transfer(): Promise<void> {
         if (this.form.invalid) return;
@@ -209,5 +209,14 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
         } finally {
             this.isLoading = false;
         }
+    }
+
+    retry(): void {
+        this.tokenTransferService.resetTransferCycle(this.tokenSymbol);
+    }
+
+    close(): void {
+        this.tokenTransferService.resetTransferCycle(this.tokenSymbol);
+        this.form.reset()
     }
 }

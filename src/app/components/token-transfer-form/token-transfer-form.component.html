@@ -60,13 +60,30 @@
 
     <!-- Success View -->
     <div *ngIf="viewState === 'success'" class="result-view success">
-        <p class="message">✅ Transfer Successful!</p>
-        <button (click)="viewState = 'none'">Back to Form</button>
+        <p class="message">
+            <strong class="success-tranfer">
+                ✅ Successful Transfer
+            </strong>
+        </p>
+        <p class="summary">Transaction summary ...</p>
+
+        <button class="btn2" (click)="close()">Close</button>
     </div>
+
 
     <!-- Failure View -->
     <div *ngIf="viewState === 'failure'" class="result-view failure">
-        <p class="message">❌ Transfer Failed</p>
-        <button (click)="viewState = 'none'">Back to Form</button>
+        <p class="message">
+            <strong class="fail-transfer">
+                ❌ Transfer Failed
+            </strong>
+        </p>
+        <p class="error-message">wharfKit error message ...</p>
+
+        <div class="button-group">
+            <button class="btn2" (click)="retry()">Retry</button>
+            <button class="btn2" (click)="close()">Close</button>
+        </div>
     </div>
+
 </div>
