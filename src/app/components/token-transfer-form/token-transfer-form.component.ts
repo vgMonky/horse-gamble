@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Balance } from 'src/types';
 import { TokenBalanceService } from '@app/services/token-balance.service';
+import { TokenTransferService } from '@app/services/token-transfer.service';
 import { SessionService } from '@app/services/session-kit.service';
 import { AccountKitService } from '@app/services/account-kit.service';
 import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
@@ -28,12 +29,20 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
     constructor(
         private fb: FormBuilder,
         private tokenBalanceService: TokenBalanceService,
+        private tokenTransferService: TokenTransferService,
         private sessionService: SessionService,
         private accountKitService: AccountKitService
     ) {}
 
     ngOnInit(): void {
-        // Init Form
+        // Subscribe to transfer status from the service
+        this.tokenTransferService.getTransferStatus$(this.tokenSymbol)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(state => {
+            this.viewState = state;
+        });
+
+        // Initialize Form
         this.form = this.fb.group({
             recipient: [
                 '',
@@ -50,21 +59,21 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
             ]
         });
 
-        // Suscribe to balances$
+        // Subscribe to balances$
         this.tokenBalanceService.getAllBalances()
-        .pipe(
-            takeUntil(this.destroy$),
-            map(balances => balances.find(b => b.token.symbol === this.tokenSymbol)),
-            distinctUntilChanged() // Only trigger updates when the balance changes
-        )
-        .subscribe(balance => {
-            this.balance = balance || null;
-            if (this.balance) {
-                this.form.get('amount')?.updateValueAndValidity(); // Ensure validators run again
-            }
-        });
+            .pipe(
+                takeUntil(this.destroy$),
+                map(balances => balances.find(b => b.token.symbol === this.tokenSymbol)),
+                distinctUntilChanged()
+            )
+            .subscribe(balance => {
+                this.balance = balance || null;
+                if (this.balance) {
+                    this.form.get('amount')?.updateValueAndValidity();
+                }
+            });
 
-        // handle decimal precision
+        // ✅ Handle decimal precision
         this.form.get('amount')?.valueChanges.pipe(
             debounceTime(300),
             distinctUntilChanged(),
@@ -77,6 +86,11 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
     ngOnDestroy(): void {
         this.destroy$.next();
         this.destroy$.complete();
+    }
+
+    // ✅ Method to update transfer state
+    setViewState(state: 'form' | 'success' | 'failure') {
+        this.tokenTransferService.setTransferStatus(this.tokenSymbol, state);
     }
 
     // ================================================
@@ -106,7 +120,6 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
         };
     }
 
-
     // ===============================================
     // Amount Methods
 
@@ -129,7 +142,7 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
     }
 
     private enforceDecimalPrecision(value: any): void {
-        if (value === null || value === undefined || !this.balance) return; // Ensure balance exists
+        if (value === null || value === undefined || !this.balance) return;
 
         const precision = this.balance.token.precision;
 
@@ -138,7 +151,6 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
         if (stringValue.includes('.')) {
             let [integerPart, decimalPart] = stringValue.split('.');
 
-            // Trim only if it's longer than precision
             if (decimalPart.length > precision) {
                 decimalPart = decimalPart.slice(0, precision);
             }
@@ -168,36 +180,32 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
 
         const numericAmount = parseFloat(amount);
         if (isNaN(numericAmount) || numericAmount <= 0) {
-            alert('Invalid amount entered');
             return;
         }
 
         if (!this.balance) {
-            alert('Balance not available yet. Please wait and try again.');
             return;
         }
+
         const formattedAmount = `${numericAmount.toFixed(this.balance.token.precision)} ${this.balance.token.symbol}`;
         const sender = this.sessionService.currentSession?.actor;
 
         if (!sender) {
-            alert('No active session. Please log in.');
             return;
         }
 
         try {
             this.isLoading = true;
-            await this.tokenBalanceService.makeTokenTransaction(
+            await this.tokenTransferService.makeTokenTransaction(
                 sender,
                 recipient,
                 formattedAmount,
                 this.balance.token.account,
-                `Transfer of ${formattedAmount}`
+                `Transfer of ${formattedAmount}`,
+                this.tokenSymbol
             );
-            this.tokenBalanceService.refreshSingleBalance(this.tokenSymbol);
-            this.viewState = 'success';
         } catch (error) {
             console.error('Transfer failed:', error);
-            this.viewState = 'failure';
         } finally {
             this.isLoading = false;
         }

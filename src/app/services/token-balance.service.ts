@@ -79,7 +79,6 @@ export class TokenBalanceService {
         this.balances$.next(updatedBalances); // Emit only modified balances, no full re-render
     }
 
-
     async getTokenBalance(client: ChainAPI, token: Token, account: string, get_zero_balance: boolean = true): Promise<Balance | undefined> {
         try {
             const result = await client.get_currency_balance(token.account, account, token.symbol);
@@ -98,45 +97,16 @@ export class TokenBalanceService {
             const formattedAmount = this.formatBalance(rawAmount, token);
             let balanceData: Balance = { amount: { raw: rawAmount, formatted: formattedAmount }, token };
 
-            // filter out if zero unles its TLOS
+            // filter out if zero unless it's TLOS
             if (!get_zero_balance){
                 return this.isValid(balanceData) ? balanceData : undefined;
             } else {
                 return balanceData;
             }
 
-            return balanceData
-
         } catch (error) {
             console.error(`Error fetching balance for ${token.symbol}:`, error);
             return undefined;
-        }
-    }
-
-    async makeTokenTransaction(from: string, to: string, quantity: string, contract: string, memo: string = ''): Promise<void> {
-        const session = this.sessionService.currentSession;
-        if (!session) {
-            console.error('No active session. Please log in.');
-            throw new Error('No active session.');
-        }
-
-        try {
-            const action = {
-                account: contract,
-                name: 'transfer',
-                authorization: [{ actor: from, permission: 'active' }],
-                data: {
-                    from,
-                    to,
-                    quantity,
-                    memo,
-                },
-            };
-
-            const result = await session.transact({ actions: [action] });
-        } catch (error) {
-            console.error('Transaction failed:', error);
-            throw error;
         }
     }
 
