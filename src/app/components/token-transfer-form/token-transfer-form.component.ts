@@ -193,12 +193,11 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
                 this.balance.token.account,
                 `Transfer of ${formattedAmount}`
             );
-            alert(`Successfully transferred ${formattedAmount} to ${recipient}`);
-            this.tokenBalanceService.refreshAllBalances();
-            this.form.reset();
+            this.tokenBalanceService.refreshSingleBalance(this.tokenSymbol);
+            this.viewState = 'success';
         } catch (error) {
             console.error('Transfer failed:', error);
-            alert(`Transfer failed: ${error}`);
+            this.viewState = 'failure';
         } finally {
             this.isLoading = false;
         }

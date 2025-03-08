@@ -56,6 +56,30 @@ export class TokenBalanceService {
         }
     }
 
+    async refreshSingleBalance(tokenSymbol: string) {
+        const session = this.sessionService.currentSession;
+        if (!session?.actor) return;
+
+        const client = session.client.v1.chain;
+        if (!client) return;
+
+        const token = this.tokenListService.getTokensValue().find(t => t.symbol === tokenSymbol);
+        if (!token) return;
+
+        const updatedBalance = await this.getTokenBalance(client, token, session.actor);
+
+        if (!updatedBalance) return;
+
+        // Instead of replacing the whole array, update only the changed balance
+        const currentBalances = this.balances$.getValue();
+        const updatedBalances = currentBalances.map(balance =>
+            balance.token.symbol === tokenSymbol ? updatedBalance : balance
+        );
+
+        this.balances$.next(updatedBalances); // Emit only modified balances, no full re-render
+    }
+
+
     async getTokenBalance(client: ChainAPI, token: Token, account: string, get_zero_balance: boolean = true): Promise<Balance | undefined> {
         try {
             const result = await client.get_currency_balance(token.account, account, token.symbol);

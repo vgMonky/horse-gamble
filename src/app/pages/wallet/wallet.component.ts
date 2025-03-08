@@ -36,7 +36,6 @@ export class WalletComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.loading = true;
         this.balanceSubscription = this.tokenBalanceService.getAllBalances().subscribe(balances => {
             this.balances = balances;
             this.loading = false;
