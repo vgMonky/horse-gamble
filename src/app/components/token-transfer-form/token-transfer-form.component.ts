@@ -17,8 +17,9 @@ import { timer, of, catchError, map, switchMap } from 'rxjs';
     styleUrls: ['./token-transfer-form.component.scss']
 })
 export class TokenTransferFormComponent implements OnInit, OnDestroy {
-    @Input() balance!: Balance;
+    @Input() tokenSymbol!: string;
 
+    balance!: Balance | null;
     form!: FormGroup;
     isLoading = false;
     private destroy$ = new Subject<void>();
@@ -32,6 +33,7 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit(): void {
+        // Init Form
         this.form = this.fb.group({
             recipient: [
                 '',
@@ -48,6 +50,21 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
             ]
         });
 
+        // Suscribe to balances$
+        this.tokenBalanceService.getAllBalances()
+        .pipe(
+            takeUntil(this.destroy$),
+            map(balances => balances.find(b => b.token.symbol === this.tokenSymbol)),
+            distinctUntilChanged() // Only trigger updates when the balance changes
+        )
+        .subscribe(balance => {
+            this.balance = balance || null;
+            if (this.balance) {
+                this.form.get('amount')?.updateValueAndValidity(); // Ensure validators run again
+            }
+        });
+
+        // handle decimal precision
         this.form.get('amount')?.valueChanges.pipe(
             debounceTime(300),
             distinctUntilChanged(),
@@ -95,7 +112,7 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
 
     amountValidator() {
         return (control: any) => {
-            if (!this.balance) return null;
+            if (!this.balance || !this.balance.token) return { invalidAmount: true };
 
             const amount = parseFloat(control.value);
             if (isNaN(amount) || amount <= 0) return { invalidAmount: true };
@@ -112,7 +129,7 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
     }
 
     private enforceDecimalPrecision(value: any): void {
-        if (value === null || value === undefined) return;
+        if (value === null || value === undefined || !this.balance) return; // Ensure balance exists
 
         const precision = this.balance.token.precision;
 
@@ -133,11 +150,12 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
     }
 
     useMax(): void {
-        const maxAmount = this.balance.amount.formatted ;
+        if (!this.balance) return;
+        const maxAmount = this.balance.amount.formatted;
         this.form.get('amount')?.setValue(maxAmount);
     }
     isMaxAmount(): boolean {
-        return this.form.get('amount')?.value === this.balance.amount.formatted;
+        return this.balance ? this.form.get('amount')?.value === this.balance.amount.formatted : false;
     }
 
     // ================================================
@@ -154,6 +172,10 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
             return;
         }
 
+        if (!this.balance) {
+            alert('Balance not available yet. Please wait and try again.');
+            return;
+        }
         const formattedAmount = `${numericAmount.toFixed(this.balance.token.precision)} ${this.balance.token.symbol}`;
         const sender = this.sessionService.currentSession?.actor;
 

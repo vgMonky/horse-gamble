@@ -7,8 +7,14 @@
     <div *ngIf="viewState === 'form'">
         <div class="container-available">
             <p class="small">Available:</p>
-            <strong>{{ balance.amount.formatted }} {{ balance.token.symbol }}</strong>
+            <strong *ngIf="balance; else loadingText">
+                {{ balance.amount.formatted }} {{ balance.token.symbol }}
+            </strong>
+            <ng-template #loadingText>
+                <span>Loading balance...</span>
+            </ng-template>
         </div>
+        <br>
 
         <form [formGroup]="form" (ngSubmit)="transfer()">
             <!-- Recipient Input -->
