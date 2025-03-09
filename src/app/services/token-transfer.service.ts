@@ -59,11 +59,12 @@ export class TokenTransferService {
                 authorization: [{ actor: from, permission: 'active' }],
                 data: { from, to, quantity, memo },
             };
-
             const transactResult = await session.transact({ actions: [action] });
 
             const txId = transactResult.response?.transaction_id || 'Unknown TX';
             const sessionActor = session.actor.toString();
+
+            await this.tokenBalanceService.refreshSingleBalance(tokenSymbol);
 
             const summary: TransferSummary = {
                 from: sessionActor,
@@ -73,8 +74,6 @@ export class TokenTransferService {
             };
 
             this.setTransferStatus(tokenSymbol, 'success', `Transferred ${quantity} to ${to}. TX: ${txId.substring(0, 10)}`, summary);
-
-            this.tokenBalanceService.refreshSingleBalance(tokenSymbol);
         } catch (error) {
             console.error('Transaction failed:', error);
 
