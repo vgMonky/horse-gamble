@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, map } from 'rxjs';
 import { SessionService } from '@app/services/session-kit.service';
 import { TokenBalanceService } from '@app/services/token-balance.service';
-import { TransferStatus } from 'src/types';
+import { TransferStatus, TransferSummary } from 'src/types';
 
 @Injectable({
     providedIn: 'root'
@@ -25,18 +25,30 @@ export class TokenTransferService {
         this.setTransferStatus(tokenSymbol, 'none');
     }
 
-    setTransferStatus(tokenSymbol: string, state: 'none' | 'success' | 'failure', message?: string) {
+    setTransferStatus(
+        tokenSymbol: string,
+        state: 'none' | 'success' | 'failure',
+        message?: string,
+        summary: TransferSummary | null = null
+    ) {
         const statusMap = this.transferStatus$.getValue();
-        statusMap.set(tokenSymbol, { state, message });
+        statusMap.set(tokenSymbol, { state, message, summary });
         this.transferStatus$.next(statusMap);
         this.logStatus(tokenSymbol);
     }
 
-    async makeTokenTransaction(from: string, to: string, quantity: string, contract: string, memo: string = '', tokenSymbol: string): Promise<void> {
+    async makeTokenTransaction(
+        from: string,
+        to: string,
+        quantity: string,
+        contract: string,
+        memo: string = '',
+        tokenSymbol: string
+    ): Promise<void> {
         const session = this.sessionService.currentSession;
         if (!session) {
             console.error('No active session. Please log in.');
-            this.setTransferStatus(tokenSymbol, 'failure', 'No active session. Please log in.');
+            this.setTransferStatus(tokenSymbol, 'failure', 'No active session. Please log in.', null);
             return;
         }
 
@@ -48,15 +60,28 @@ export class TokenTransferService {
                 data: { from, to, quantity, memo },
             };
 
-            await session.transact({ actions: [action] });
+            const transactResult = await session.transact({ actions: [action] });
 
-            this.setTransferStatus(tokenSymbol, 'success', `Transferred ${quantity} to ${to}`);
+            const txId = transactResult.response?.transaction_id || 'Unknown TX';
+            const shortTxId = txId.substring(0, 10); // Shortened for display
+            const sessionActor = session.actor.toString(); // Ensure it's correctly set
+
+            const summary: TransferSummary = {
+                from: sessionActor,
+                to,
+                amount: quantity,
+                transaction: shortTxId
+            };
+
+            this.setTransferStatus(tokenSymbol, 'success', `Transferred ${quantity} to ${to}. TX: ${shortTxId}`, summary);
 
             this.tokenBalanceService.refreshSingleBalance(tokenSymbol);
         } catch (error) {
             console.error('Transaction failed:', error);
 
-            this.setTransferStatus(tokenSymbol, 'failure', `Transaction failed: (wharfkit error msg)`);
+            const errorMessage = error instanceof Error ? error.message : 'Transaction failed: Unknown error';
+
+            this.setTransferStatus(tokenSymbol, 'failure', errorMessage, null);
         }
     }
 

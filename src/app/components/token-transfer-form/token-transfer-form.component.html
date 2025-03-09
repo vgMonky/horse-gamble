@@ -56,14 +56,24 @@
     <!-- Success View -->
     <div *ngIf="transferStatus.state === 'success'" class="result-view success">
         <p class="message">
-            <strong class="success-transfer">
-                ✅ Successful Transfer
-            </strong>
+            <strong class="success-transfer">✅ Successful Transfer</strong>
         </p>
-        <p class="summary">{{ transferStatus.message }}</p>
+
+        <!-- Display transaction summary -->
+        <div class="summary-box" *ngIf="transferStatus.summary">
+            <p><strong>From:</strong> {{ transferStatus.summary.from }}</p>
+            <p><strong>To:</strong> {{ transferStatus.summary.to }}</p>
+            <p><strong>Amount:</strong> {{ transferStatus.summary.amount }}</p>
+            <p><strong>Transaction:</strong>
+                <a [href]="'https://explorer.telos.net/transaction/' + transferStatus.summary.transaction" target="_blank">
+                    {{ transferStatus.summary.transaction }}
+                </a>
+            </p>
+        </div>
 
         <button class="btn2" (click)="close()">Close</button>
     </div>
+
 
     <!-- Failure View -->
     <div *ngIf="transferStatus.state === 'failure'" class="result-view failure">
