@@ -63,17 +63,16 @@ export class TokenTransferService {
             const transactResult = await session.transact({ actions: [action] });
 
             const txId = transactResult.response?.transaction_id || 'Unknown TX';
-            const shortTxId = txId.substring(0, 10); // Shortened for display
-            const sessionActor = session.actor.toString(); // Ensure it's correctly set
+            const sessionActor = session.actor.toString();
 
             const summary: TransferSummary = {
                 from: sessionActor,
                 to,
                 amount: quantity,
-                transaction: shortTxId
+                transaction: txId
             };
 
-            this.setTransferStatus(tokenSymbol, 'success', `Transferred ${quantity} to ${to}. TX: ${shortTxId}`, summary);
+            this.setTransferStatus(tokenSymbol, 'success', `Transferred ${quantity} to ${to}. TX: ${txId.substring(0, 10)}`, summary);
 
             this.tokenBalanceService.refreshSingleBalance(tokenSymbol);
         } catch (error) {

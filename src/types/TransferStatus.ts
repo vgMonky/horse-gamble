@@ -8,5 +8,5 @@ export type TransferSummary = {
     from: string;
     to: string;
     amount: string;
-    transaction: string; // A short prefix of the transaction hash
+    transaction: string; // Transaction ID
 };
