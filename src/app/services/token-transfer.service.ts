@@ -15,10 +15,6 @@ export class TokenTransferService {
         private tokenBalanceService: TokenBalanceService
     ) {}
 
-    getTransferStatus(tokenSymbol: string): TransferStatus {
-        return this.transferStatus$.getValue().get(tokenSymbol) || { state: 'none' };
-    }
-
     getTransferStatus$(tokenSymbol: string) {
         return this.transferStatus$.asObservable().pipe(
             map(statusMap => statusMap.get(tokenSymbol) || ({ state: 'none' } as TransferStatus))
@@ -33,6 +29,7 @@ export class TokenTransferService {
         const statusMap = this.transferStatus$.getValue();
         statusMap.set(tokenSymbol, { state, message });
         this.transferStatus$.next(statusMap);
+        this.logStatus(tokenSymbol);
     }
 
     async makeTokenTransaction(from: string, to: string, quantity: string, contract: string, memo: string = '', tokenSymbol: string): Promise<void> {
@@ -62,4 +59,10 @@ export class TokenTransferService {
             this.setTransferStatus(tokenSymbol, 'failure', `Transaction failed: (wharfkit error msg)`);
         }
     }
+
+    private logStatus(tokenSymbol: string): void {
+        const status = this.transferStatus$.getValue().get(tokenSymbol) || { state: 'none' };
+        console.log(`[TokenTransferService] Status for ${tokenSymbol}:`, status);
+    }
 }
+
