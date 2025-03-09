@@ -1,9 +1,4 @@
 <div class="transfer-form">
-    <div class="simulation">
-        <button (click)="setViewState('success')">Success</button>
-        <button (click)="setViewState('failure')">Failure</button>
-        <button (click)="setViewState('none')">Form</button>
-    </div>
 
     <!-- Form View -->
     <div *ngIf="transferStatus.state === 'none'">

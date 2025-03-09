@@ -24,7 +24,6 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
     form!: FormGroup;
     isLoading = false;
     private destroy$ = new Subject<void>();
-
     transferStatus: TransferStatus = { state: 'none' };
 
     constructor(
@@ -88,12 +87,6 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
         this.destroy$.next();
         this.destroy$.complete();
     }
-
-    // Method to update transfer view
-    setViewState(state: 'none' | 'success' | 'failure') {
-        this.tokenTransferService.setTransferStatus(this.tokenSymbol, state);
-    }
-
 
     // ================================================
     // Recipient Methods
