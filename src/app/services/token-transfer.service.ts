@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, map } from 'rxjs';
 import { SessionService } from '@app/services/session-kit.service';
 import { TokenBalanceService } from '@app/services/token-balance.service';
+import { TokenListService } from './token-list.service';
 import { TransferStatus, TransferSummary } from 'src/types';
 
 @Injectable({
@@ -12,8 +13,16 @@ export class TokenTransferService {
 
     constructor(
         private sessionService: SessionService,
-        private tokenBalanceService: TokenBalanceService
-    ) {}
+        private tokenBalanceService: TokenBalanceService,
+        private tokenListService: TokenListService
+    ) {
+        // Subscribe to session$ to detect changes
+        this.sessionService.session$.subscribe(session => {
+            if (!session) {
+                this.resetAllTransfers(); // Clear all transfer statuses on logout
+            }
+        });
+    }
 
     getTransferStatus$(tokenSymbol: string) {
         return this.transferStatus$.asObservable().pipe(
@@ -23,6 +32,13 @@ export class TokenTransferService {
 
     resetTransferCycle(tokenSymbol: string): void {
         this.setTransferStatus(tokenSymbol, 'none');
+    }
+
+    resetAllTransfers(): void {
+        const tokens = this.tokenListService.getTokensValue();
+        tokens.forEach(token => {
+            this.resetTransferCycle(token.symbol);
+        });
     }
 
     setTransferStatus(
