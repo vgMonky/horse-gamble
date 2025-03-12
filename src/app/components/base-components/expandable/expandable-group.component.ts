@@ -30,8 +30,6 @@ export class ExpandableGroupComponent implements AfterViewInit {
             this.expandableManager.registerGroup(this.groupId, expandable.expandableId);
         });
 
-        console.log(`✅ Expandable Group Initialized: ${this.groupId}`, this.expandables.map(e => e.expandableId));
-
         this.cdr.detectChanges(); // Ensure Angular detects changes
     }
 }
