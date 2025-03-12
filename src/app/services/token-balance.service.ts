@@ -57,27 +57,63 @@ export class TokenBalanceService {
     }
 
     async refreshSingleBalance(tokenSymbol: string) {
+        console.log(`🔄 refreshSingleBalance called for: ${tokenSymbol}`);
+
         const session = this.sessionService.currentSession;
-        if (!session?.actor) return;
+        if (!session?.actor) {
+            console.warn('⚠️ No valid session or actor found.');
+            return;
+        }
+        console.log(`👤 Session actor: ${session.actor.toString()}`);
 
         const client = session.client.v1.chain;
-        if (!client) return;
+        if (!client) {
+            console.warn('⚠️ No valid client found.');
+            return;
+        }
 
         const token = this.tokenListService.getTokensValue().find(t => t.symbol === tokenSymbol);
-        if (!token) return;
+        if (!token) {
+            console.warn(`⚠️ Token not found in token list: ${tokenSymbol}`);
+            return;
+        }
+        console.log(`💰 Token found: ${JSON.stringify(token)}`);
 
+        // Get current balance before updating
+        const currentBalances = this.balances$.getValue();
+        const currentBalance = currentBalances.find(b => b.token.symbol === tokenSymbol);
+        if (currentBalance) {
+            console.log(`📌 Current balance before update: ${currentBalance.amount.formatted} ${tokenSymbol}`);
+        } else {
+            console.log(`📌 No existing balance found for ${tokenSymbol}, assuming zero.`);
+        }
+
+        console.log('🔍 Fetching updated balance...');
         const updatedBalance = await this.getTokenBalance(client, token, session.actor);
 
-        if (!updatedBalance) return;
+        if (!updatedBalance) {
+            console.warn(`⚠️ Failed to fetch balance for ${tokenSymbol}`);
+            return;
+        }
+        console.log(`✅ Updated balance fetched: ${updatedBalance.amount.formatted} ${tokenSymbol}`);
 
-        // Instead of replacing the whole array, update only the changed balance
-        const currentBalances = this.balances$.getValue();
+        // Compare and log if there's an actual change
+        if (currentBalance?.amount.raw === updatedBalance.amount.raw) {
+            console.log(`⚠️ No balance change detected for ${tokenSymbol}.`);
+            return;
+        } else {
+            console.log(`🔄 Balance change detected! ${currentBalance?.amount.formatted || '0.0000'} → ${updatedBalance.amount.formatted} ${tokenSymbol}`);
+        }
+
+        // Update only the modified balance
         const updatedBalances = currentBalances.map(balance =>
             balance.token.symbol === tokenSymbol ? updatedBalance : balance
         );
 
-        this.balances$.next(updatedBalances); // Emit only modified balances, no full re-render
+        this.balances$.next(updatedBalances);
+        console.log(`✅ Balance updated successfully for ${tokenSymbol}`);
     }
+
 
     async getTokenBalance(client: ChainAPI, token: Token, account: string, get_zero_balance: boolean = true): Promise<Balance | undefined> {
         try {
