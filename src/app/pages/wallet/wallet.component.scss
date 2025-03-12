@@ -19,3 +19,9 @@
     align-items: center;
     gap: 10px;
 }
+
+.expandable-group{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}

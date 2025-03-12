@@ -9,6 +9,7 @@ import { AccountKitService } from '@app/services/account-kit.service';
 import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
 import { AbstractControl } from '@angular/forms';
 import { timer, of, catchError, map, switchMap } from 'rxjs';
+import { ExpandableManagerService } from '@app/components/base-components/expandable/expandable-manager.service';
 
 @Component({
     selector: 'app-token-transfer-form',
@@ -31,7 +32,8 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
         private tokenBalanceService: TokenBalanceService,
         private tokenTransferService: TokenTransferService,
         private sessionService: SessionService,
-        private accountKitService: AccountKitService
+        private accountKitService: AccountKitService,
+        private expandableManager: ExpandableManagerService
     ) {}
 
     ngOnInit(): void {
@@ -213,7 +215,6 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
     close(): void {
         this.tokenTransferService.resetTransferCycle(this.tokenSymbol);
         this.form.reset()
-        //expandableService.close() or something like that
-            //We need to make ExpandableService for this in another Branch later.
+        this.expandableManager.close(`expandable-${this.tokenSymbol}`)
     }
 }

@@ -1,74 +1,37 @@
-import { Component, ContentChildren, QueryList, AfterContentInit, AfterViewInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
-import { ExpandableComponent } from '../expandable/expandable.component';
-import { Subscription } from 'rxjs';
+import { Component, ContentChildren, QueryList, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import { ExpandableComponent } from './expandable.component';
+import { ExpandableManagerService } from './expandable-manager.service';
 
 @Component({
     selector: 'app-expandable-group',
     standalone: true,
     template: `<ng-content></ng-content>`,
-    styles: [`
-        :host {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-    `]
 })
-export class ExpandableGroupComponent implements AfterContentInit, AfterViewInit, OnDestroy {
+export class ExpandableGroupComponent implements AfterViewInit {
     @ContentChildren(ExpandableComponent) expandables!: QueryList<ExpandableComponent>;
-    private queryListSub!: Subscription;
+    private groupId = `group-${Math.random().toString(36).substr(2, 9)}`;
 
-    constructor(private cdr: ChangeDetectorRef) {}
-
-    ngAfterContentInit(): void {
-        this.setupExpandables();
-
-        // Subscribe to QueryList changes (dynamic updates)
-        this.queryListSub = this.expandables.changes.subscribe(() => {
-            this.setupExpandables();
-        });
-    }
+    constructor(private expandableManager: ExpandableManagerService, private cdr: ChangeDetectorRef) {}
 
     ngAfterViewInit(): void {
-        this.setupExpandables();
-        this.cdr.detectChanges();
+        this.registerExpandables();
+
+        // Listen for QueryList updates (e.g., if expandables are added later)
+        this.expandables.changes.subscribe(() => {
+            this.registerExpandables();
+        });
     }
 
-    private setupExpandables(): void {
-        if (!this.expandables?.length) {
-            return;
-        }
+    private registerExpandables(): void {
+        if (!this.expandables || this.expandables.length === 0) return;
 
-        this.assignIds();
         this.expandables.forEach((expandable) => {
-            expandable.toggleState.subscribe((event) => this.toggleExpandable(event.id, event.isOpen));
+            expandable.groupId = this.groupId;
+            this.expandableManager.registerGroup(this.groupId, expandable.expandableId);
         });
 
-        this.cdr.detectChanges();
-    }
+        console.log(`✅ Expandable Group Initialized: ${this.groupId}`, this.expandables.map(e => e.expandableId));
 
-    private assignIds(): void {
-        // Delay ID assignment to avoid ExpressionChangedAfterItHasBeenCheckedError.
-        // The code inside setTimeout is not executed immediately. Instead, it gets queued and runs after the current Angular change detection cycle completes.
-        setTimeout(() => {
-            this.expandables.forEach((expandable, index) => {
-                if (expandable.id === undefined) {
-                    expandable.id = index;
-                }
-            });
-            this.cdr.detectChanges(); // Ensure Angular detects changes properly
-        });
-    }
-
-    private toggleExpandable(clickedId: number, isOpen: boolean): void {
-        this.expandables.forEach((expandable) => {
-            expandable.isOpen = expandable.id === clickedId ? isOpen : false;
-        });
-    }
-
-    ngOnDestroy(): void {
-        if (this.queryListSub) {
-            this.queryListSub.unsubscribe();
-        }
+        this.cdr.detectChanges(); // Ensure Angular detects changes
     }
 }

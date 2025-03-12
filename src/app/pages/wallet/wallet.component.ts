@@ -22,13 +22,12 @@ import { TokenTransferFormComponent } from '@app/components/token-transfer-form/
 })
 export class WalletComponent implements OnInit, OnDestroy {
     balances: Balance[] = [];
-    loading = false;  // Add loading state
+    loading = false;
     private balanceSubscription!: Subscription;
-    currentOpenTokenSymbol: string | null = null;
 
     constructor(
         private sessionService: SessionService,
-        private tokenBalanceService: TokenBalanceService
+        private tokenBalanceService: TokenBalanceService,
     ) {}
 
     get actor(): string | undefined {
@@ -49,9 +48,5 @@ export class WalletComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         if (this.balanceSubscription) this.balanceSubscription.unsubscribe();
-    }
-
-    toggleExpandable(symbol: string, isOpen: boolean) {
-        this.currentOpenTokenSymbol = isOpen ? symbol : null;
     }
 }
