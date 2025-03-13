@@ -61,10 +61,12 @@ export class TokenTransferService {
         memo: string = '',
         tokenSymbol: string
     ): Promise<void> {
+        console.log(`📤 Initiating token transaction: ${quantity} ${tokenSymbol} from ${from} to ${to}`);
+
         const session = this.sessionService.currentSession;
         if (!session) {
-            console.error('No active session. Please log in.');
-            this.setTransferStatus(tokenSymbol, 'failure', 'No active session. Please log in.', null);
+            console.error('❌ No active session. Please log in.');
+            this.setTransferStatus(tokenSymbol, 'failure', 'No active session.', null);
             return;
         }
 
@@ -75,23 +77,29 @@ export class TokenTransferService {
                 authorization: [{ actor: from, permission: 'active' }],
                 data: { from, to, quantity, memo },
             };
+
+            console.log(`⏳ Sending transaction...`);
             const transactResult = await session.transact({ actions: [action] });
 
             const txId = transactResult.response?.transaction_id || 'Unknown TX';
-            const sessionActor = session.actor.toString();
+            console.log(`✅ Transaction Successful: ${txId}`);
+
+            const summary: TransferSummary = {
+                from: session.actor.toString(),
+                to,
+                amount: quantity,
+                transaction: txId,
+            };
+
+            console.log(`🔄 Waiting for balance update for ${tokenSymbol}...`);
 
             await this.tokenBalanceService.refreshSingleBalance(tokenSymbol);
 
-            const summary: TransferSummary = {
-                from: sessionActor,
-                to,
-                amount: quantity,
-                transaction: txId
-            };
-
+            console.log(`🟢 Balance refresh requested for ${tokenSymbol}.`);
             this.setTransferStatus(tokenSymbol, 'success', `Transferred ${quantity} to ${to}. TX: ${txId.substring(0, 10)}`, summary);
+
         } catch (error) {
-            console.error('Transaction failed:', error);
+            console.error('❌ Transaction failed:', error);
 
             const errorMessage = error instanceof Error ? error.message : 'Transaction failed: Unknown error';
 

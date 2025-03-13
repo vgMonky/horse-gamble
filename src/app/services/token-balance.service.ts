@@ -57,6 +57,8 @@ export class TokenBalanceService {
     }
 
     async refreshSingleBalance(tokenSymbol: string) {
+        console.log(`🔄 Attempting to refresh balance for ${tokenSymbol}`);
+
         const session = this.sessionService.currentSession;
         if (!session?.actor) {
             console.warn('⚠️ No valid session or actor found.');
@@ -75,24 +77,53 @@ export class TokenBalanceService {
             return;
         }
 
-        const currentBalances = this.balances$.getValue();
-        const currentBalance = currentBalances.find(b => b.token.symbol === tokenSymbol);
+        console.log(`📡 Fetching balance from blockchain for ${tokenSymbol}...`);
 
-        const updatedBalance = await this.getTokenBalance(client, token, session.actor);
-        if (!updatedBalance) {
-            console.warn(`⚠️ Failed to fetch balance for ${tokenSymbol}`);
-            return;
+        try {
+            // Query `get_table_rows()` instead of `get_currency_balance`
+            const params = {
+                json: true,
+                code: token.account, // Token contract
+                scope: session.actor.toString(), // Account name
+                table: "accounts", // EOSIO token table
+                limit: 1,
+            };
+
+            const result = await client.get_table_rows(params);
+
+            if (!result || !result.rows || result.rows.length === 0) {
+                console.warn(`⚠️ No balance data found for ${tokenSymbol}`);
+                return;
+            }
+
+            console.log(`✅ Raw balance data for ${tokenSymbol}:`, result.rows[0]);
+
+            // Extract balance
+            const balanceEntry = result.rows[0].balance; // Expecting "amount SYMBOL"
+            const [amountStr, symbol] = balanceEntry.split(" "); // Example: "100.0000 TLOS"
+
+            if (symbol !== tokenSymbol) {
+                console.warn(`⚠️ Mismatch in token symbol. Expected ${tokenSymbol}, got ${symbol}`);
+                return;
+            }
+
+            const rawAmount = parseFloat(amountStr) * Math.pow(10, token.precision);
+            const formattedAmount = this.formatBalance(rawAmount, token);
+
+            // Update balance in BehaviorSubject
+            const updatedBalance: Balance = { amount: { raw: rawAmount, formatted: formattedAmount }, token };
+            const currentBalances = this.balances$.getValue();
+
+            const updatedBalances = currentBalances.map(balance =>
+                balance.token.symbol === tokenSymbol ? updatedBalance : balance
+            );
+
+            this.balances$.next(updatedBalances);
+            console.log(`✅ Successfully updated balance for ${tokenSymbol}: ${formattedAmount}`);
+
+        } catch (error) {
+            console.error(`❌ Error fetching balance for ${tokenSymbol}:`, error);
         }
-
-        if (currentBalance?.amount.raw === updatedBalance.amount.raw) {
-            return; // No change, no unnecessary updates
-        }
-
-        const updatedBalances = currentBalances.map(balance =>
-            balance.token.symbol === tokenSymbol ? updatedBalance : balance
-        );
-
-        this.balances$.next(updatedBalances);
     }
 
     async getTokenBalance(client: ChainAPI, token: Token, account: string, get_zero_balance: boolean = true): Promise<Balance | undefined> {
