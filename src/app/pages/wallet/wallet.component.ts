@@ -43,7 +43,7 @@ export class WalletComponent implements OnInit, OnDestroy {
 
     refreshBalances() {
         this.loading = true;
-        this.tokenBalanceService.refreshAllBalances();
+        this.tokenBalanceService.updateAllBalances();
     }
 
     ngOnDestroy() {

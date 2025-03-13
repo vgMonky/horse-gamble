@@ -191,6 +191,8 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
             return;
         }
 
+        const token = this.balance.token;
+
         try {
             this.isLoading = true;
             await this.tokenTransferService.makeTokenTransaction(
@@ -199,7 +201,7 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
                 formattedAmount,
                 this.balance.token.account,
                 `Transfer of ${formattedAmount}`,
-                this.tokenSymbol
+                token
             );
         } catch (error) {
             console.error('Transfer failed:', error);

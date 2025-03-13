@@ -3,7 +3,7 @@ import { BehaviorSubject, map } from 'rxjs';
 import { SessionService } from '@app/services/session-kit.service';
 import { TokenBalanceService } from '@app/services/token-balance.service';
 import { TokenListService } from './token-list.service';
-import { TransferStatus, TransferSummary } from 'src/types';
+import { Token, TransferStatus, TransferSummary } from 'src/types';
 
 @Injectable({
     providedIn: 'root'
@@ -59,14 +59,14 @@ export class TokenTransferService {
         quantity: string,
         contract: string,
         memo: string = '',
-        tokenSymbol: string
+        token: Token // Accept the whole Token object instead of just tokenSymbol
     ): Promise<void> {
-        console.log(`📤 Initiating token transaction: ${quantity} ${tokenSymbol} from ${from} to ${to}`);
+        console.log(`📤 Initiating token transaction: ${quantity} ${token.symbol} from ${from} to ${to}`);
 
         const session = this.sessionService.currentSession;
         if (!session) {
             console.error('❌ No active session. Please log in.');
-            this.setTransferStatus(tokenSymbol, 'failure', 'No active session.', null);
+            this.setTransferStatus(token.symbol, 'failure', 'No active session.', null);
             return;
         }
 
@@ -91,21 +91,22 @@ export class TokenTransferService {
                 transaction: txId,
             };
 
-            console.log(`🔄 Waiting for balance update for ${tokenSymbol}...`);
+            console.log(`🔄 Waiting for balance update for ${token.symbol}...`);
 
-            await this.tokenBalanceService.refreshSingleBalance(tokenSymbol);
+            await this.tokenBalanceService.updateSingleBalance(token);
 
-            console.log(`🟢 Balance refresh requested for ${tokenSymbol}.`);
-            this.setTransferStatus(tokenSymbol, 'success', `Transferred ${quantity} to ${to}. TX: ${txId.substring(0, 10)}`, summary);
+            console.log(`🟢 Balance refresh requested for ${token.symbol}.`);
+            this.setTransferStatus(token.symbol, 'success', `Transferred ${quantity} to ${to}. TX: ${txId.substring(0, 10)}`, summary);
 
         } catch (error) {
             console.error('❌ Transaction failed:', error);
 
             const errorMessage = error instanceof Error ? error.message : 'Transaction failed: Unknown error';
 
-            this.setTransferStatus(tokenSymbol, 'failure', errorMessage, null);
+            this.setTransferStatus(token.symbol, 'failure', errorMessage, null);
         }
     }
+
 
     private logStatus(tokenSymbol: string): void {
         const status = this.transferStatus$.getValue().get(tokenSymbol) || { state: 'none' };
