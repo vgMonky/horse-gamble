@@ -4,13 +4,13 @@
     gap: 40px;
 }
 
-.bar{
+.bar {
     display: flex;
     justify-content: space-between;
     align-items: end;
 }
 
-.max{
+.max {
     color: var(--c-accent-0);
 
     &:hover{
@@ -42,7 +42,7 @@
     margin-top: 4px;
 }
 
-.success-transfer{
+.success-transfer {
     color: var(--c-success-0);
     font-size: 18px;
 }
@@ -64,6 +64,11 @@
     box-shadow: none;
 }
 
-.simulation{
+.simulation {
     display: flex;
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
 }

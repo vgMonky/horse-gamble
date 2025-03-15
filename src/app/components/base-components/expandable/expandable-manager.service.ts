@@ -43,4 +43,20 @@ export class ExpandableManagerService {
         }
     }
 
+    closeGroup(groupId: string) {
+        const newState = { ...this.state.getValue() };
+
+        if (this.groupMap.has(groupId)) {
+            for (const expandable of this.groupMap.get(groupId)!) {
+                newState[expandable] = false;
+            }
+        }
+
+        this.state.next(newState);
+    }
+
+    closeAll() {
+        this.state.next({});
+    }
+
 }

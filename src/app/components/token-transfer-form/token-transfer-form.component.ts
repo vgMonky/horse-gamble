@@ -39,10 +39,10 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         // Subscribe to transfer status from the service
         this.tokenTransferService.getTransferStatus$(this.tokenSymbol)
-        .pipe(takeUntil(this.destroy$))
-        .subscribe(status => {
-            this.transferStatus = status;
-        });
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(status => {
+                this.transferStatus = status;
+            });
 
         // Initialize Form
         this.form = this.fb.group({
@@ -61,7 +61,7 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
             ]
         });
 
-        // Subscribe to balances$
+        // Subscribe to token balances
         this.tokenBalanceService.getAllBalances()
             .pipe(
                 takeUntil(this.destroy$),
@@ -75,7 +75,7 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
                 }
             });
 
-        // ✅ Handle decimal precision
+        // Handle decimal precision changes
         this.form.get('amount')?.valueChanges.pipe(
             debounceTime(300),
             distinctUntilChanged(),
@@ -83,6 +83,21 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
         ).subscribe(value => {
             this.enforceDecimalPrecision(value);
         });
+
+        // Subscribe to expandable state changes to reset form when expandable is closed
+        this.expandableManager.state$
+            .pipe(
+                takeUntil(this.destroy$),
+                map(state => state[`expandable-${this.tokenSymbol}`]),
+                distinctUntilChanged()
+            )
+            .subscribe(isOpen => {
+                if (isOpen === false) {
+                    setTimeout(() => {
+                        this.resetForm();
+                    }, 500);
+                }
+            });
     }
 
     ngOnDestroy(): void {
@@ -108,7 +123,6 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
             if (!control.value) {
                 return of(null);
             }
-
             return timer(300).pipe(
                 switchMap(() => this.accountKitService.validateAccount(control.value)),
                 map(exists => exists ? null : { accountNotFound: true }),
@@ -123,38 +137,28 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
     amountValidator() {
         return (control: any) => {
             if (!this.balance || !this.balance.token) return { invalidAmount: true };
-
             const amount = parseFloat(control.value);
             if (isNaN(amount) || amount <= 0) return { invalidAmount: true };
-
             const precisionFactor = Math.pow(10, this.balance.token.precision);
             const rawBalance = this.balance.amount.raw;
-
             if (amount * precisionFactor > rawBalance) {
                 return { outOfBalance: true };
             }
-
             return null;
         };
     }
 
     private enforceDecimalPrecision(value: any): void {
         if (value === null || value === undefined || !this.balance) return;
-
         const precision = this.balance.token.precision;
-
         let stringValue = value.toString();
-
         if (stringValue.includes('.')) {
             let [integerPart, decimalPart] = stringValue.split('.');
-
             if (decimalPart.length > precision) {
                 decimalPart = decimalPart.slice(0, precision);
             }
-
             stringValue = `${integerPart}.${decimalPart}`;
         }
-
         this.form.get('amount')?.setValue(stringValue, { emitEvent: false });
     }
 
@@ -163,6 +167,7 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
         const maxAmount = this.balance.amount.formatted;
         this.form.get('amount')?.setValue(maxAmount);
     }
+
     isMaxAmount(): boolean {
         return this.balance ? this.form.get('amount')?.value === this.balance.amount.formatted : false;
     }
@@ -172,27 +177,20 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
 
     async transfer(): Promise<void> {
         if (this.form.invalid) return;
-
         const { recipient, amount } = this.form.value;
-
         const numericAmount = parseFloat(amount);
         if (isNaN(numericAmount) || numericAmount <= 0) {
             return;
         }
-
         if (!this.balance) {
             return;
         }
-
         const formattedAmount = `${numericAmount.toFixed(this.balance.token.precision)} ${this.balance.token.symbol}`;
         const sender = this.sessionService.currentSession?.actor;
-
         if (!sender) {
             return;
         }
-
         const token = this.balance.token;
-
         try {
             this.isLoading = true;
             await this.tokenTransferService.makeTokenTransaction(
@@ -214,9 +212,13 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
         this.tokenTransferService.resetTransferCycle(this.tokenSymbol);
     }
 
+    // Updated close function: only instruct the expandable manager to close the expandable
     close(): void {
+        this.expandableManager.close(`expandable-${this.tokenSymbol}`);
+    }
+
+    resetForm() {
         this.tokenTransferService.resetTransferCycle(this.tokenSymbol);
-        this.form.reset()
-        this.expandableManager.close(`expandable-${this.tokenSymbol}`)
+        this.form.reset();
     }
 }

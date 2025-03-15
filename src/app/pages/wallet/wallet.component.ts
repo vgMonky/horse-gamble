@@ -7,6 +7,7 @@ import { Balance } from 'src/types';
 import { ExpandableComponent } from '@app/components/base-components/expandable/expandable.component';
 import { ExpandableGroupComponent } from '@app/components/base-components/expandable/expandable-group.component';
 import { TokenTransferFormComponent } from '@app/components/token-transfer-form/token-transfer-form.component';
+import { TokenTransferService } from '@app/services/token-transfer.service';
 
 @Component({
     selector: 'app-wallet',
@@ -28,6 +29,7 @@ export class WalletComponent implements OnInit, OnDestroy {
     constructor(
         private sessionService: SessionService,
         private tokenBalanceService: TokenBalanceService,
+        private tokenTransferService: TokenTransferService,
     ) {}
 
     get actor(): string | undefined {
