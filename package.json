@@ -27,6 +27,7 @@
         "@wharfkit/wallet-plugin-cleos": "^1.2.0",
         "@wharfkit/web-renderer": "^1.4.1",
         "esbuild": "^0.25.0",
+        "lucide-angular": "^0.482.0",
         "ngrx-store-localstorage": "^19.0.0",
         "rxjs": "~7.8.0",
         "tslib": "^2.3.0",
