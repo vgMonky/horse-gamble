@@ -125,7 +125,7 @@ export class TokenBalanceService {
         }
     }
 
-    /** Reimplemented fetchAllBalances to group queries by contract */
+    /** Fetches all token balances from blockchain */
     private async fetchAllBalances(): Promise<Balance[]> {
         console.log('🔄 Fetching all balances...');
 
