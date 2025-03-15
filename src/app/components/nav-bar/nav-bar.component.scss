@@ -9,10 +9,7 @@ nav {
         display: flex;
         flex-direction: row;
         align-items: center;
-    }
-
-    .icons{
-        stroke: var(--c-foreground-2);
+        gap: 15px;
     }
 }
 

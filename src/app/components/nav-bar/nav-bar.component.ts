@@ -7,6 +7,7 @@ import { RouterModule } from '@angular/router';
 import { LoginComponent } from '../login/login.component';
 import { Subject, takeUntil } from 'rxjs';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { LucideAngularModule, Menu, ScanQrCode, Sun, Moon} from 'lucide-angular'
 
 @Component({
     selector: 'app-nav-bar',
@@ -15,11 +16,17 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
         CommonModule,
         RouterModule,
         LoginComponent,
+        LucideAngularModule,
     ],
     templateUrl: './nav-bar.component.html',
     styleUrls: ['./nav-bar.component.scss']
 })
 export class NavBarComponent implements OnInit, OnDestroy {
+    readonly MenuIcon = Menu
+    readonly QrIcon = ScanQrCode
+    readonly SunIcon = Sun
+    readonly MoonIcon = Moon
+
     isDarkTheme = false;
     isMobileView = false;
     menuId = 'mobile-menu';
