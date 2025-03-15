@@ -37,12 +37,10 @@
 <!-- Mobile Navbar | whidth < 599px -->
 <ng-template #mobileNav>
     <nav class="mobile-nav">
-        <img src="/public/assets/icons/qr-code.png" alt="QR Code" width="40px"/>
+        <img class="qr-icon" src="assets/icons/qr-code.png" alt="QR Code" width="35px"/>
 
         <app-login></app-login>
 
-        <a class="hamburger" aria-label="Open menu">
-            &#9776;
-        </a>
+        <a class="hamburger" style="cursor: pointer; font-size:22px"> &#9776; </a>
     </nav>
 </ng-template>
