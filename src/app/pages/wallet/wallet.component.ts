@@ -28,7 +28,6 @@ export class WalletComponent implements OnInit, OnDestroy {
     constructor(
         private sessionService: SessionService,
         private tokenBalanceService: TokenBalanceService,
-        private tokenTransferService: TokenTransferService,
     ) {}
 
     get actor(): string | undefined {
