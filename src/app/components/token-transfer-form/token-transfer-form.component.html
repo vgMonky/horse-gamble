@@ -59,17 +59,17 @@
             <strong class="success-transfer">✅ Successful Transfer</strong>
         </p>
 
-    <!-- Display transaction summary -->
-    <div class="summary-box" *ngIf="transferStatus.summary">
-        <p><strong>From:</strong> {{ transferStatus.summary.from }}</p>
-        <p><strong>To:</strong> {{ transferStatus.summary.to }}</p>
-        <p><strong>Amount:</strong> {{ transferStatus.summary.amount }}</p>
-        <p><strong>Transaction:</strong>
-            <a [href]="'https://explorer.telos.net/transaction/' + transferStatus.summary.transaction" target="_blank">
-                {{ transferStatus.summary.transaction.substring(0, 10) }} <!-- ✅ Shorten only in UI -->
-            </a>
-        </p>
-    </div>
+        <!-- Display transaction summary -->
+        <div class="summary-box" *ngIf="transferStatus.summary">
+            <p><strong>From:</strong> {{ transferStatus.summary.from }}</p>
+            <p><strong>To:</strong> {{ transferStatus.summary.to }}</p>
+            <p><strong>Amount:</strong> {{ transferStatus.summary.amount }}</p>
+            <p><strong>Transaction:</strong>
+                <a [href]="'https://explorer.telos.net/transaction/' + transferStatus.summary.transaction" target="_blank">
+                    {{ transferStatus.summary.transaction.substring(0, 10) }} <!-- ✅ Shorten only in UI -->
+                </a>
+            </p>
+        </div>
 
         <button class="btn2" (click)="close()">Close</button>
     </div>

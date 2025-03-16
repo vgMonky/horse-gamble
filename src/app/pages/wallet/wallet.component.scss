@@ -13,11 +13,16 @@
     }
 }
 
-.balance-head{
+.balance-head {
     display: flex;
     flex-direction: row;
     align-items: center;
     gap: 10px;
+}
+
+.balance-icon {
+    height: 32px;
+    width: 32px;
 }
 
 .expandable-group{

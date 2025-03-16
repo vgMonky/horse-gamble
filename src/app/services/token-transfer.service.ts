@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, map } from 'rxjs';
+import { BehaviorSubject, map, Observable } from 'rxjs';
 import { SessionService } from '@app/services/session-kit.service';
 import { TokenBalanceService } from '@app/services/token-balance.service';
 import { TokenListService } from './token-list.service';
@@ -24,7 +24,7 @@ export class TokenTransferService {
         });
     }
 
-    getTransferStatus$(tokenSymbol: string) {
+    getTransferStatus$(tokenSymbol: string): Observable<TransferStatus> {
         return this.transferStatus$.asObservable().pipe(
             map(statusMap => statusMap.get(tokenSymbol) || ({ state: 'none' } as TransferStatus))
         );
@@ -50,7 +50,6 @@ export class TokenTransferService {
         const statusMap = this.transferStatus$.getValue();
         statusMap.set(tokenSymbol, { state, message, summary });
         this.transferStatus$.next(statusMap);
-        this.logStatus(tokenSymbol);
     }
 
     async makeTokenTransaction(
@@ -91,12 +90,13 @@ export class TokenTransferService {
                 transaction: txId,
             };
 
-            console.log(`🔄 Waiting for balance update for ${token.symbol}...`);
-
-            await this.tokenBalanceService.updateSingleBalance(token);
-
             console.log(`🟢 Balance refresh requested for ${token.symbol}.`);
             this.setTransferStatus(token.symbol, 'success', `Transferred ${quantity} to ${to}. TX: ${txId.substring(0, 10)}`, summary);
+
+            console.log(`🔄 Waiting for balance update for ${token.symbol}...`);
+            this.tokenBalanceService.waitUntilBalanceChanges(token)
+                .then(() => console.log(`✅ Balance updated for ${token.symbol}.`))
+                .catch(error => console.error(`❌ Error updating balance for ${token.symbol}:`, error));
 
         } catch (error) {
             console.error('❌ Transaction failed:', error);
@@ -105,12 +105,6 @@ export class TokenTransferService {
 
             this.setTransferStatus(token.symbol, 'failure', errorMessage, null);
         }
-    }
-
-
-    private logStatus(tokenSymbol: string): void {
-        const status = this.transferStatus$.getValue().get(tokenSymbol) || { state: 'none' };
-        console.log(`[TokenTransferService] Status for ${tokenSymbol}:`, status);
     }
 }
 

@@ -39,10 +39,10 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         // Subscribe to transfer status from the service
         this.tokenTransferService.getTransferStatus$(this.tokenSymbol)
-        .pipe(takeUntil(this.destroy$))
-        .subscribe(status => {
-            this.transferStatus = status;
-        });
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(status => {
+                this.transferStatus = status;
+            });
 
         // Initialize Form
         this.form = this.fb.group({
@@ -61,7 +61,7 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
             ]
         });
 
-        // Subscribe to balances$
+        // Subscribe to token balances
         this.tokenBalanceService.getAllBalances()
             .pipe(
                 takeUntil(this.destroy$),
@@ -75,7 +75,7 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
                 }
             });
 
-        // ✅ Handle decimal precision
+        // Handle decimal precision changes
         this.form.get('amount')?.valueChanges.pipe(
             debounceTime(300),
             distinctUntilChanged(),
@@ -83,6 +83,21 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
         ).subscribe(value => {
             this.enforceDecimalPrecision(value);
         });
+
+        // Subscribe to expandable state changes to reset form when expandable is closed
+        this.expandableManager.state$
+            .pipe(
+                takeUntil(this.destroy$),
+                map(state => state[`expandable-${this.tokenSymbol}`]),
+                distinctUntilChanged()
+            )
+            .subscribe(isOpen => {
+                if (isOpen === false) {
+                    setTimeout(() => {
+                        this.resetForm();
+                    }, 500);
+                }
+            });
     }
 
     ngOnDestroy(): void {
@@ -108,7 +123,6 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
             if (!control.value) {
                 return of(null);
             }
-
             return timer(300).pipe(
                 switchMap(() => this.accountKitService.validateAccount(control.value)),
                 map(exists => exists ? null : { accountNotFound: true }),
@@ -163,6 +177,7 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
         const maxAmount = this.balance.amount.formatted;
         this.form.get('amount')?.setValue(maxAmount);
     }
+
     isMaxAmount(): boolean {
         return this.balance ? this.form.get('amount')?.value === this.balance.amount.formatted : false;
     }
@@ -214,9 +229,13 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
         this.tokenTransferService.resetTransferCycle(this.tokenSymbol);
     }
 
+    // Updated close function: only instruct the expandable manager to close the expandable
     close(): void {
+        this.expandableManager.close(`expandable-${this.tokenSymbol}`);
+    }
+
+    resetForm() {
         this.tokenTransferService.resetTransferCycle(this.tokenSymbol);
-        this.form.reset()
-        this.expandableManager.close(`expandable-${this.tokenSymbol}`)
+        this.form.reset();
     }
 }

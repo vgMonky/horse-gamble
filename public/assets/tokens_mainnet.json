@@ -16,6 +16,14 @@
         "chain": "telos"
     },
     {
+        "name": "EOS",
+        "symbol": "EOS",
+        "account": "tokens.swaps",
+        "precision": 4,
+        "logo": "assets/logos/eos.png",
+        "chain": "telos"
+    },
+    {
         "name": "Acorn UBI",
         "symbol": "ACORN",
         "account": "acornaccount",
