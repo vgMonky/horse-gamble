@@ -1,5 +1,5 @@
-<div class="expandable-container" [ngClass]="{ 'expanded': isOpen }" [id]="'expandable-' + id">
-    <div class="header" (click)="toggle()">
+<div class="expandable-container" [ngClass]="{ 'expanded': isOpen }" [id]="'expandable-' + expandableId">
+    <div class="header" (click)="toggleComponent()">
         <ng-container *ngIf="!isOpen; else openHeader">
             <ng-content select="[closedHeader]"></ng-content>
             <span class="arrow">▼</span>

@@ -22,12 +22,12 @@ import { TokenTransferFormComponent } from '@app/components/token-transfer-form/
 })
 export class WalletComponent implements OnInit, OnDestroy {
     balances: Balance[] = [];
-    loading = false;  // Add loading state
+    loading = false;
     private balanceSubscription!: Subscription;
 
     constructor(
         private sessionService: SessionService,
-        private tokenBalanceService: TokenBalanceService
+        private tokenBalanceService: TokenBalanceService,
     ) {}
 
     get actor(): string | undefined {
@@ -35,7 +35,6 @@ export class WalletComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.loading = true;
         this.balanceSubscription = this.tokenBalanceService.getAllBalances().subscribe(balances => {
             this.balances = balances;
             this.loading = false;
@@ -44,7 +43,7 @@ export class WalletComponent implements OnInit, OnDestroy {
 
     refreshBalances() {
         this.loading = true;
-        this.tokenBalanceService.refreshAllBalances();
+        this.tokenBalanceService.updateAllBalances();
     }
 
     ngOnDestroy() {
