@@ -218,5 +218,4 @@ export class TokenBalanceService {
         const factor = Math.pow(10, precision);
         return (rawAmount / factor).toFixed(precision);
     }
-    
 }
