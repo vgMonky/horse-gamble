@@ -8,7 +8,7 @@ import { LoginComponent } from '../login/login.component';
 import { Subject, takeUntil } from 'rxjs';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { LucideAngularModule, Menu, ScanQrCode, Sun, Moon} from 'lucide-angular'
-import { BREALPOINT } from 'src/types';
+import { BREAKPOINT } from 'src/types';
 
 @Component({
     selector: 'app-nav-bar',
@@ -49,7 +49,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
             });
 
         // Detect viewport size
-        this.breakpointObserver.observe(BREALPOINT)
+        this.breakpointObserver.observe(BREAKPOINT)
             .pipe(takeUntil(this.destroy$))
             .subscribe(result => {
                 this.isMobileView = result.matches;
