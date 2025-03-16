@@ -9,7 +9,10 @@ import { Component } from '@angular/core';
         <p>Perform your trades here!</p>
     `,
     styles: [`
-
+        :host {
+            padding: 15px;
+            display: block;
+        }
     `]
 })
 export class TradeComponent {}

@@ -9,7 +9,10 @@ import { Component } from '@angular/core';
         <p>Discover new content here!</p>
     `,
     styles: [`
-
+        :host {
+            padding: 15px;
+            display: block;
+        }
     `]
 })
 export class ExploreComponent {}

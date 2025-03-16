@@ -48,7 +48,10 @@ export class NavBarComponent implements OnInit, OnDestroy {
             });
 
         // Detect viewport size
-        this.breakpointObserver.observe([Breakpoints.Handset])
+        this.breakpointObserver.observe([
+                '(max-width: 799px) and (orientation: portrait)',
+                '(max-width: 599px)'
+            ])
             .pipe(takeUntil(this.destroy$))
             .subscribe(result => {
                 this.isMobileView = result.matches;
