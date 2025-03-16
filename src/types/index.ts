@@ -1,3 +1,3 @@
 export * from './Token';
-export * from './Balance'
-// other exports
+export * from './Balance';
+export * from './Breakpoint';

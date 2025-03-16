@@ -1,54 +1,49 @@
-<nav>
-    <!-- Left side: DEX logo + Hamburger Icon (visible on small screens) -->
-    <div class="nav-left">
-        <a
-            routerLink="/"
-            routerLinkActive="active-link"
-            [routerLinkActiveOptions]="{ exact: true }"
-        >
-        <svg width="40" height="40" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-            <linearGradient id="gradientStroke" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stop-color="var(--c-accent-0)" />
-                <stop offset="100%" stop-color="var(--c-accent-0b)" />
-            </linearGradient>
-            </defs>
-            <circle cx="50" cy="50" r="40" stroke="url(#gradientStroke)" stroke-width="15" fill="none" />
-        </svg>
+<!-- Normal Navbar -->
+<ng-container *ngIf="!isMobileView; else mobileNav">
+    <nav>
+        <div class="row">
+            <a
+                routerLink="/"
+                routerLinkActive="active-link"
+                [routerLinkActiveOptions]="{ exact: true }"
+            >
+                <svg width="40" height="40" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="gradientStroke" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stop-color="var(--c-accent-0)" />
+                            <stop offset="100%" stop-color="var(--c-accent-0b)" />
+                        </linearGradient>
+                    </defs>
+                    <circle cx="50" cy="50" r="40" stroke="url(#gradientStroke)" stroke-width="15" fill="none" />
+                </svg>
+            </a>
 
-        </a>
-        <a
-            class="hamburger"
-            (click)="toggleMenu()"
-            aria-label="Toggle navigation menu"
-            [attr.aria-expanded]="isMenuOpen"
-            [attr.aria-controls]="menuId"
-        >
-            &#9776;
-        </a>
-
-        <!-- Center: Nav links (visible on large screens) -->
-        <div class="nav-center">
-            <a routerLink="/trade" routerLinkActive="active-link">Trade</a>
-            <a routerLink="/explore" routerLinkActive="active-link">Explore</a>
-            <a routerLink="/pool" routerLinkActive="active-link">Pool</a>
+            <div>
+                <a routerLink="/trade" routerLinkActive="active-link">Trade</a>
+                <a routerLink="/explore" routerLinkActive="active-link">Explore</a>
+                <a routerLink="/pool" routerLinkActive="active-link">Pool</a>
+            </div>
         </div>
-    </div>
 
-    <!-- Right side: always visible -->
-    <div class="nav-right">
-        <a (click)="toggleTheme()" class="theme-toggle" style="cursor: pointer; font-size:26px">
-            {{ isDarkTheme ? '&#9788;' : '&#9789;'}}
-        </a>
+        <div class="row">
+            <lucide-icon
+                [img]="isDarkTheme ? SunIcon : MoonIcon"
+                class="icon"
+                (click)="toggleTheme()"
+                style="margin-top: 6px;"
+            ></lucide-icon>
+            <app-login></app-login>
+        </div>
+    </nav>
+</ng-container>
+
+<!-- Mobile Navbar | whidth < 599px -->
+<ng-template #mobileNav>
+    <nav class="mobile-nav">
+        <lucide-icon [img]="QrIcon" class="icon"></lucide-icon>
+
         <app-login></app-login>
-    </div>
-</nav>
 
-<!-- Window Container for Navigation Links (visible on small screens when hamburger is clicked) -->
-<app-window-container *ngIf="isMenuOpen" (close)="closeMenu()">
-    <div class="menu-links">
-        <a routerLink="/trade" routerLinkActive="active-link" (click)="closeMenu()">Trade</a>
-        <a routerLink="/explore" routerLinkActive="active-link" (click)="closeMenu()">Explore</a>
-        <a routerLink="/pool" routerLinkActive="active-link" (click)="closeMenu()">Pool</a>
-    </div>
-</app-window-container>
+        <lucide-icon [img]="MenuIcon" class="icon"></lucide-icon>
+    </nav>
+</ng-template>

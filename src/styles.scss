@@ -70,6 +70,13 @@ body.light-theme {
     --c-shadow-1: 1px 2px 20px hsla(var(--h0), 0%, 0%, 0.08);
 }
 
+svg.icon {
+    color: var(--c-foreground-2);
+    stroke-width: 1.8;
+    width: 26px;
+    height: 26px;
+}
+
 /* Global base styles here */
 body {
     margin: 0;
