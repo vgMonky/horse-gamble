@@ -6,7 +6,7 @@ import { user } from '@app/store/user';
 import { RouterModule } from '@angular/router';
 import { LoginComponent } from '../login/login.component';
 import { Subject, takeUntil } from 'rxjs';
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { BreakpointObserver } from '@angular/cdk/layout';
 import { LucideAngularModule, Menu, ScanQrCode, Sun, Moon} from 'lucide-angular'
 import { BREALPOINT } from 'src/types';
 
