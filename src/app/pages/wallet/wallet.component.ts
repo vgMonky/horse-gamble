@@ -7,7 +7,6 @@ import { Balance } from 'src/types';
 import { ExpandableComponent } from '@app/components/base-components/expandable/expandable.component';
 import { ExpandableGroupComponent } from '@app/components/base-components/expandable/expandable-group.component';
 import { TokenTransferFormComponent } from '@app/components/token-transfer-form/token-transfer-form.component';
-import { TokenTransferService } from '@app/services/token-transfer.service';
 
 @Component({
     selector: 'app-wallet',
