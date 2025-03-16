@@ -106,6 +106,5 @@ export class TokenTransferService {
             this.setTransferStatus(token.symbol, 'failure', errorMessage, null);
         }
     }
-
 }
 
