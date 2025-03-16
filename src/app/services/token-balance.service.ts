@@ -75,8 +75,6 @@ export class TokenBalanceService {
 
     /** Fetches a specific token balance from the blockchain handling multiple tokens per contract */
     private async fetchSingleBalance(token: Token): Promise<Balance> {
-        console.log(`📡 Fetching balance for ${token.symbol}...`);
-
         const session = this.sessionService.currentSession;
         if (!session?.actor) throw new Error('No valid session.');
 
@@ -113,8 +111,6 @@ export class TokenBalanceService {
                 return { amount: { raw: 0, formatted: this.formatBalance(0, token) }, token };
             }
 
-            console.log(`✅ Raw balance data for ${token.symbol}:`, matchingRow.balance);
-
             const [amountStr, symbol] = matchingRow.balance.split(' ');
             const rawAmount = parseFloat(amountStr) * Math.pow(10, token.precision);
             return { amount: { raw: rawAmount, formatted: this.formatBalance(rawAmount, token) }, token };
@@ -127,8 +123,6 @@ export class TokenBalanceService {
 
     /** Fetches all token balances from blockchain */
     private async fetchAllBalances(): Promise<Balance[]> {
-        console.log('🔄 Fetching all balances...');
-
         const session = this.sessionService.currentSession;
         if (!session?.actor) throw new Error('No active session.');
 
@@ -171,7 +165,6 @@ export class TokenBalanceService {
                     console.warn(`⚠️ No balance found for ${token.symbol} in contract ${contract}. Returning zero balance.`);
                     return { amount: { raw: 0, formatted: this.formatBalance(0, token) }, token };
                 }
-                console.log(`✅ Raw balance data for ${token.symbol} from contract ${contract}:`, matchingRow.balance);
                 const [amountStr, symbol] = matchingRow.balance.split(' ');
                 const rawAmount = parseFloat(amountStr) * Math.pow(10, token.precision);
                 return { amount: { raw: rawAmount, formatted: this.formatBalance(rawAmount, token) }, token };
@@ -182,7 +175,6 @@ export class TokenBalanceService {
         const balancesGrouped = await Promise.all(contractQueries);
         const allBalances = balancesGrouped.flat();
 
-        console.log('✅ All balances fetched.');
         return allBalances;
     }
 
@@ -195,21 +187,18 @@ export class TokenBalanceService {
             if (currentBalances[index].amount.raw !== balance.amount.raw) {
                 currentBalances[index] = balance;
                 this.balances$.next([...currentBalances]); // Trigger UI update
-                console.log(`✅ Updated balance for ${balance.token.symbol}: ${balance.amount.formatted}`);
             } else {
                 console.log(`⚠️ No change detected in balance for ${balance.token.symbol}.`);
             }
         } else {
             currentBalances.push(balance);
             this.balances$.next([...currentBalances]); // Trigger UI update
-            console.log(`✅ Added new balance for ${balance.token.symbol}: ${balance.amount.formatted}`);
         }
     }
 
     /** Updates the entire balances$ state */
     private addAllBalancesToState(balances: Balance[]) {
         this.balances$.next(balances);
-        console.log('✅ All balances updated in state.');
     }
 
     /** Formats a raw balance amount into a readable string */
