@@ -26,12 +26,14 @@
         </div>
 
         <div class="row">
-            <lucide-icon
-                [img]="isDarkTheme ? SunIcon : MoonIcon"
-                class="icon"
-                (click)="toggleTheme()"
-                style="margin-top: 6px;"
-            ></lucide-icon>
+            <a>
+                <lucide-icon
+                    [img]="isDarkTheme ? SunIcon : MoonIcon"
+                    class="icon"
+                    (click)="toggleTheme()"
+                    style="margin-top: 6px;"
+                ></lucide-icon>
+            </a>
             <app-login></app-login>
         </div>
     </nav>
@@ -40,10 +42,10 @@
 <!-- Mobile Navbar | whidth < 599px -->
 <ng-template #mobileNav>
     <nav class="mobile-nav">
-        <lucide-icon [img]="QrIcon" class="icon"></lucide-icon>
+        <a><lucide-icon [img]="QrIcon" class="icon"></lucide-icon></a>
 
         <app-login></app-login>
 
-        <lucide-icon [img]="MenuIcon" class="icon" (click)="toggleMobileSideMenu()"></lucide-icon>
+        <a (click)="toggleMobileSideMenu()" class=""><lucide-icon [img]="MenuIcon" class="icon"></lucide-icon></a>
     </nav>
 </ng-template>

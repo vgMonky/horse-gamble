@@ -71,10 +71,12 @@ body.light-theme {
 }
 
 svg.icon {
-    color: var(--c-foreground-2);
-    stroke-width: 1.8;
+    stroke-width: 1.6;
     width: 26px;
     height: 26px;
+}
+body.light-theme svg.icon {
+    stroke-width: 1.4;
 }
 
 /* Global base styles here */

@@ -14,7 +14,7 @@ import { SideContainerComponent } from '@app/components/base-components/side-con
     ],
     template: `
         <app-nav-bar></app-nav-bar>
-        <app-side-container id="mobile-side-menu" side="left">
+        <app-side-container id="mobile-side-menu" side="right">
             <h2>Side Menu</h2>
             <p>Navigation links or other content can go here.</p>
         </app-side-container>
