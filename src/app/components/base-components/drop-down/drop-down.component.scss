@@ -25,5 +25,6 @@
         height: 100%;
         background-color: rgba(0, 0, 0, 0.5);  // Semi-transparent black
         z-index: 99;  // Below the dropdown, but above everything else
+        backdrop-filter: blur(3px);
     }
 }
