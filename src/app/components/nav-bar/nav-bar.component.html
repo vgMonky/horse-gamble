@@ -3,6 +3,7 @@
     <nav>
         <div class="row">
             <a
+                class="logo"
                 routerLink="/"
                 routerLinkActive="active-link"
                 [routerLinkActiveOptions]="{ exact: true }"
@@ -18,11 +19,9 @@
                 </svg>
             </a>
 
-            <div>
-                <a routerLink="/trade" routerLinkActive="active-link">Trade</a>
-                <a routerLink="/explore" routerLinkActive="active-link">Explore</a>
-                <a routerLink="/pool" routerLinkActive="active-link">Pool</a>
-            </div>
+            <a routerLink="/trade" routerLinkActive="active-link">Trade</a>
+            <a routerLink="/explore" routerLinkActive="active-link">Explore</a>
+            <a routerLink="/pool" routerLinkActive="active-link">Pool</a>
         </div>
 
         <div class="row">
