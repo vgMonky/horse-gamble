@@ -14,5 +14,5 @@ export const routes: Routes = [
     { path: 'explore', component: ExploreComponent },
     { path: 'pool', component: PoolComponent },
     { path: 'wallet', component: WalletComponent },
-    { path: 'preferneces', component: PreferencesComponent},
+    { path: 'preferences', component: PreferencesComponent},
 ];

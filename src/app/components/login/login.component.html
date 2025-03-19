@@ -4,7 +4,7 @@
     <div *ngIf="(sessionService.session$ | async) as session">
         <app-drop-down [buttonText]="session.actor">
             <a routerLink="/wallet"> Wallet</a>
-            <a routerLink="/preferneces"> Preferences </a>
+            <a routerLink="/preferences"> Preferences </a>
             <hr class="wide">
             <a (click)="logout()"> Logout</a>
         </app-drop-down>
