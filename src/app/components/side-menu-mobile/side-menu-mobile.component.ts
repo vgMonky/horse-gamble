@@ -8,6 +8,7 @@ import {
     Wallet,
     LogOut,
     ListTree,
+    Users
 } from 'lucide-angular';
 import { RouterModule } from '@angular/router';
 import { SessionService } from '@app/services/session-kit.service';
@@ -29,6 +30,7 @@ export class SideMenuMobileComponent {
     readonly WalletIcon = Wallet;
     readonly LogoutIcon = LogOut;
     readonly ListTreeIcon = ListTree;
+    readonly UsersIcon = Users
 
     constructor(
         public sessionService: SessionService

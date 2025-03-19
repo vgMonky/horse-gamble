@@ -29,5 +29,4 @@ export class LoginComponent {
     async logout() {
         await this.sessionService.logout();
     }
-
 }

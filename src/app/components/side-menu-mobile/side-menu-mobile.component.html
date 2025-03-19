@@ -2,6 +2,8 @@
 
     <p class="header">Mobile side-menu head</p>
 
+    <br>
+    <p class="small">DEX</p>
     <hr class="wide">
 
     <a class="option" routerLink="/trade" routerLinkActive="active-link">
@@ -17,16 +19,25 @@
         <p>Pool</p>
     </a>
 
+    <br>
+    <p class="small">User</p>
     <hr class="wide">
 
     <a class="option" routerLink="/wallet" routerLinkActive="active-link">
         <lucide-icon [img]="WalletIcon"></lucide-icon>
         <p>Wallet</p>
     </a>
+
     <a class="option" routerLink="/preferences" routerLinkActive="active-link">
         <lucide-icon [img]="ListChecksIcon"></lucide-icon>
         <p>Preferences</p>
     </a>
+
+    <a class="option" routerLink="/accounts" routerLinkActive="active-link">
+        <lucide-icon [img]="UsersIcon"></lucide-icon>
+        <p>Accounts</p>
+    </a>
+
     <a class="option" routerLink="/" routerLinkActive="active-link" (click)="logout()">
         <lucide-icon [img]="LogoutIcon"></lucide-icon>
         <p>Logout</p>
