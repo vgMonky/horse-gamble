@@ -1,26 +1,41 @@
 import { Component } from '@angular/core';
 import { SideContainerComponent } from '@app/components/base-components/side-container/side-container.component';
-import { LucideAngularModule, Omega, Users, Wallet, LogOut } from 'lucide-angular';
-import { SideContainerService } from '@app/components/base-components/side-container/side-container.service';
+import {
+    LucideAngularModule,
+    ChartCandlestick,
+    ListChecks,
+    Coins,
+    Wallet,
+    LogOut,
+    ListTree,
+} from 'lucide-angular';
+import { RouterModule } from '@angular/router';
+import { SessionService } from '@app/services/session-kit.service';
 
 @Component({
     selector: 'app-side-menu-mobile',
-    imports: [SideContainerComponent, LucideAngularModule],
+    imports: [
+        SideContainerComponent,
+        LucideAngularModule,
+        RouterModule,
+    ],
     templateUrl: './side-menu-mobile.component.html',
     styleUrl: './side-menu-mobile.component.scss'
 })
 export class SideMenuMobileComponent {
-    readonly OmegaIcon = Omega
-    readonly UsersIcon = Users
-    readonly WalletIcon = Wallet
-    readonly LogoutIcon = LogOut
+    readonly ChartCandlestickIcon = ChartCandlestick;
+    readonly ListChecksIcon = ListChecks;
+    readonly CoinsIcon = Coins;
+    readonly WalletIcon = Wallet;
+    readonly LogoutIcon = LogOut;
+    readonly ListTreeIcon = ListTree;
 
     constructor(
-        private sideContainerService: SideContainerService,
+        public sessionService: SessionService
     ) {}
 
-    close() {
-        this.sideContainerService.close('mobile-side-menu');
+    async logout() {
+        await this.sessionService.logout();
     }
 
 }

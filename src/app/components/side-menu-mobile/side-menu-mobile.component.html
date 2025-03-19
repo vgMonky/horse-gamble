@@ -1,21 +1,35 @@
 <app-side-container id="mobile-side-menu" side="right">
+
     <p class="header">Mobile side-menu head</p>
+
     <hr class="wide">
-    <a class="option" (click)="close()">
+
+    <a class="option" routerLink="/trade" routerLinkActive="active-link">
+        <lucide-icon [img]="ChartCandlestickIcon"></lucide-icon>
+        <p>Trade</p>
+    </a>
+    <a class="option" routerLink="/explore" routerLinkActive="active-link">
+        <lucide-icon [img]="ListTreeIcon"></lucide-icon>
+        <p>Explore</p>
+    </a>
+    <a class="option" routerLink="/pool" routerLinkActive="active-link">
+        <lucide-icon [img]="CoinsIcon"></lucide-icon>
+        <p>Pool</p>
+    </a>    
+
+    <hr class="wide">
+
+    <a class="option" routerLink="/wallet" routerLinkActive="active-link">
         <lucide-icon [img]="WalletIcon"></lucide-icon>
-        <p>option A</p>
-    </a>
-    <a class="option" (click)="close()">
-        <lucide-icon [img]="UsersIcon"></lucide-icon>
-        <p>option B</p>
-    </a>
-    <a class="option" (click)="close()">
-        <lucide-icon [img]="OmegaIcon"></lucide-icon>
-        <p>option C</p>
-    </a>
-    <hr class="wide">
-    <a class="option" (click)="close()">
+        <p>Wallet</p>
+    </a>    
+    <a class="option" routerLink="/preferences" routerLinkActive="active-link">
+        <lucide-icon [img]="ListChecksIcon"></lucide-icon>
+        <p>Preferences</p>
+    </a>    
+    <a class="option" routerLink="/" routerLinkActive="active-link" (click)="logout()">
         <lucide-icon [img]="LogoutIcon"></lucide-icon>
         <p>Logout</p>
     </a>
+
 </app-side-container>

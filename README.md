@@ -19,3 +19,11 @@ nvm use v22.12.0; rm .angular/ node_modules -fr; npm i; npx ng serve
 
 Implementation of the lucide icon library for Angular applications.
 https://lucide.dev/guide/packages/lucide-angular
+
+Icon list.
+https://lucide.dev/icons/
+
+```bash
+code node_modules/lucide-angular/icons/lucide-icons.d.ts
+```
+
