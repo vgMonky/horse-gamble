@@ -1,16 +1,23 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { NavBarComponent } from './components/nav-bar/nav-bar.component';
+import { NavBarComponent } from '@app/components/nav-bar/nav-bar.component';
+import { SideMenuMobileComponent } from '@app/components/side-menu-mobile/side-menu-mobile.component';
 
 @Component({
     selector: 'app-root',
     standalone: true,
-    imports: [RouterOutlet, NavBarComponent],
+    imports: [
+        RouterOutlet,
+        NavBarComponent,
+        SideMenuMobileComponent
+    ],
     template: `
         <app-nav-bar></app-nav-bar>
         <div class="view">
             <router-outlet></router-outlet>
         </div>
+        <app-side-menu-mobile></app-side-menu-mobile>
+
     `,
     styleUrls: ['./app.component.scss']
 })

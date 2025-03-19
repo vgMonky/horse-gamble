@@ -4,14 +4,9 @@
     <div *ngIf="(sessionService.session$ | async) as session">
         <app-drop-down [buttonText]="session.actor">
             <a routerLink="/wallet"> Wallet</a>
-            <a (click)="togglepreferences()"> Preferences </a>
+            <a routerLink="/preferences"> Preferences </a>
             <hr class="wide">
             <a (click)="logout()"> Logout</a>
         </app-drop-down>
     </div>
 </div>
-
-<!-- Window Container for preferences -->
-<app-window-container *ngIf="ispreferencesOpen" (close)="closepreferences()">
-    <app-user-preferences></app-user-preferences>
-</app-window-container>
