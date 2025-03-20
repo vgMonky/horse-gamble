@@ -3,10 +3,10 @@
 
     <ng-container *ngIf="sessionService.session$ | async as session; else loginTemplate">
         <p>Connected as: {{ session.actor }}</p>
+        <p class="small contained"> Accounts list goes here <br>-<br>-<br>-</p>
+        <a class="add">+ Add new account</a>
 
-        <div class="contained">
-            <p class="small"> Accounts list goes here . . .</p>
-        </div>
+
     </ng-container>
 
     <ng-template #loginTemplate>
