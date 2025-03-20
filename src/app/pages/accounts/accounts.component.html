@@ -1,5 +1,16 @@
 <div class="accountsContainer">
     <h2>Accounts</h2>
-    <p class="small">Please log in to continue</p>
-    <app-login></app-login>
+
+    <ng-container *ngIf="sessionService.session$ | async as session; else loginTemplate">
+        <p>Connected as: {{ session.actor }}</p>
+
+        <div class="contained">
+            <p class="small"> Accounts list goes here . . .</p>
+        </div>
+    </ng-container>
+
+    <ng-template #loginTemplate>
+        <p class="small">Please log in to continue</p>
+        <app-login></app-login>
+    </ng-template>
 </div>
