@@ -2,11 +2,8 @@
     position: relative;
     display: inline-block;
 
-    .dropdown-content {
-        display: flex;
-        flex-direction: column;
+    .dropdown-body {
         position: absolute;
-        gap: 12px;
         top: 50px;
         right: 0px;
         background-color: var(--c-background-0);
