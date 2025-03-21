@@ -18,12 +18,11 @@ import { RedirectService } from '@app/services/redirect.services';
             <router-outlet></router-outlet>
         </div>
         <app-side-menu-mobile></app-side-menu-mobile>
-
     `,
     styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
     title = 'my-angular-app';
 
-    constructor(private authRedirectService: RedirectService) {} // Instantiates service
+    constructor(private redirectService: RedirectService) {} // Instantiates service
 }
