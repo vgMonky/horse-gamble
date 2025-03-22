@@ -23,10 +23,17 @@
         <lucide-icon [img]="WalletIcon"></lucide-icon>
         <p>Wallet</p>
     </a>
+
     <a class="option" routerLink="/preferences" routerLinkActive="active-link">
-        <lucide-icon [img]="ListChecksIcon"></lucide-icon>
+        <lucide-icon [img]="SettingsIcon"></lucide-icon>
         <p>Preferences</p>
     </a>
+
+    <a class="option" routerLink="/accounts" routerLinkActive="active-link">
+        <lucide-icon [img]="UsersIcon"></lucide-icon>
+        <p>Accounts</p>
+    </a>
+
     <a class="option" routerLink="/" routerLinkActive="active-link" (click)="logout()">
         <lucide-icon [img]="LogoutIcon"></lucide-icon>
         <p>Logout</p>

@@ -2,11 +2,21 @@
     <button class="btn" (click)="login()" *ngIf="!(sessionService.session$ | async)">Login</button>
 
     <div *ngIf="(sessionService.session$ | async) as session">
-        <app-drop-down [buttonText]="session.actor">
-            <a routerLink="/wallet"> Wallet</a>
-            <a routerLink="/preferences"> Preferences </a>
-            <hr class="wide">
-            <a (click)="logout()"> Logout</a>
+        <app-drop-down>
+            <!-- Dropdown Button -->
+            <button dropdown-button class="btn2">
+                <lucide-icon [img]="UserIcon" size="18"></lucide-icon>
+                {{ session.actor }}
+            </button>
+
+            <!-- Dropdown Body -->
+            <div dropdown-body class="body">
+                <a routerLink="/wallet">Wallet</a>
+                <a routerLink="/accounts">Accounts</a>
+                <a routerLink="/preferences">Preferences</a>
+                <hr class="wide">
+                <a (click)="logout()">Logout</a>
+            </div>
         </app-drop-down>
     </div>
 </div>

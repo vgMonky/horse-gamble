@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
     selector: 'app-drop-down',
@@ -9,8 +9,6 @@ import { Component, Input } from '@angular/core';
     styleUrls: ['./drop-down.component.scss']
 })
 export class DropDownComponent {
-    @Input() buttonText: string = 'buttonText';  // Default text
-
     isOpen = false;
 
     toggleDropdown() {

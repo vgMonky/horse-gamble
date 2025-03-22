@@ -3,11 +3,12 @@ import { SideContainerComponent } from '@app/components/base-components/side-con
 import {
     LucideAngularModule,
     ChartCandlestick,
-    ListChecks,
+    Settings,
     Coins,
     Wallet,
     LogOut,
     ListTree,
+    Users
 } from 'lucide-angular';
 import { RouterModule } from '@angular/router';
 import { SessionService } from '@app/services/session-kit.service';
@@ -24,11 +25,12 @@ import { SessionService } from '@app/services/session-kit.service';
 })
 export class SideMenuMobileComponent {
     readonly ChartCandlestickIcon = ChartCandlestick;
-    readonly ListChecksIcon = ListChecks;
+    readonly SettingsIcon = Settings;
     readonly CoinsIcon = Coins;
     readonly WalletIcon = Wallet;
     readonly LogoutIcon = LogOut;
     readonly ListTreeIcon = ListTree;
+    readonly UsersIcon = Users
 
     constructor(
         public sessionService: SessionService
