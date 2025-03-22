@@ -1,12 +1,14 @@
 <div class="dropdown">
-    <div class="btn" (click)="toggleDropdown()">
-        {{ buttonText }}
+    <!-- Button Slot -->
+    <div (click)="toggleDropdown()">
+        <ng-content select="[dropdown-button]"></ng-content>
     </div>
 
-    <!-- Overlay that appears when the dropdown is open -->
+    <!-- Overlay -->
     <div *ngIf="isOpen" class="overlay" (click)="closeDropdown()"></div>
 
-    <div *ngIf="isOpen" class="dropdown-content">
-        <ng-content></ng-content>
+    <!-- Dropdown Body Slot -->
+    <div *ngIf="isOpen" class="dropdown-body">
+        <ng-content select="[dropdown-body]"></ng-content>
     </div>
 </div>

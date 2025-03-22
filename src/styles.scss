@@ -70,6 +70,15 @@ body.light-theme {
     --c-shadow-1: 1px 2px 20px hsla(var(--h0), 0%, 0%, 0.08);
 }
 
+svg.icon {
+    stroke-width: 1.6;
+    width: 26px;
+    height: 26px;
+}
+body.light-theme svg.icon {
+    stroke-width: 1.4;
+}
+
 /* Global base styles here */
 body {
     margin: 0;
@@ -80,7 +89,6 @@ body {
 
 a {
     text-decoration: none;
-    margin: 10px;
     color: var(--c-foreground-2);
     cursor: pointer;
 
@@ -96,6 +104,9 @@ a {
 }
 
 .btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     font-size: 10pt;
     padding: 10px 20px;
     color: var(--c-background-0);
@@ -113,6 +124,9 @@ a {
     }
 }
 .btn2 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     font-size: 10pt;
     padding: 10px 20px;
     color: var(--c-accent-0);

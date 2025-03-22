@@ -1,0 +1,10 @@
+<div class="side-container-overlay" (click)="close()" [class.open]="isOpen"></div>
+
+<div class="side-container"
+    [class.open]="isOpen"
+    [class.left]="side === 'left'"
+    [class.right]="side === 'right'"
+    (click)="close()"
+>
+    <ng-content></ng-content>
+</div>

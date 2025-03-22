@@ -1,65 +1,21 @@
 nav {
-    padding: 1rem 2rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
     background-color: var(--c-background-1);
-    position: relative; /* for absolutely-positioned nav links */
-}
+    padding: 1rem 2rem;
 
-/* Left side: Logo + Hamburger in a row */
-.nav-left {
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-}
-
-/* Center: Nav links for large screens */
-.nav-center {
-    display: flex;
-    gap: 1rem;
-}
-
-/* Right side: */
-.nav-right {
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-}
-
-/* Hamburger icon for smaller screens */
-.hamburger {
-    display: none;    /* hidden by default, shown in mobile */
-    font-size: 1.3rem;
-    cursor: pointer;
-}
-
-/* Active link style */
-.active-link {
-    color: var(--c-foreground-0);
-}
-
-/* Menu Links Inside Window Container */
-.menu-links {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-  /* -------- Responsive Rules -------- */
-@media (max-width: 600px) {
-    /* Hide center nav links on small screens */
-    .nav-center {
-        display: none;
-    }
-
-    /* Show hamburger on small screens */
-    .hamburger {
-        display: block;
-    }
-
-    /* Optionally, adjust nav padding */
-    nav {
-        padding: 0.5rem 1rem;
+    .row{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 3vw;
     }
 }
+
+/* Mobile Navigation */
+.mobile-nav {
+    padding: 1rem 1.5rem;
+}
+
+

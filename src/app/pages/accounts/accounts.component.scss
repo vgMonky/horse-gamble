@@ -1,0 +1,13 @@
+.accountsContainer{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.add{
+    color: var(--c-accent-0);
+
+    &:hover{
+        color: var(--c-foreground-2);
+    }
+}

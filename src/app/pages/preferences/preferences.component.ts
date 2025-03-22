@@ -8,13 +8,13 @@ import { map, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operato
 import { ToggleComponent } from '@app/components/base-components/toggle/toggle.component';
 
 @Component({
-    selector: 'app-user-preferences',
+    selector: 'app-preferences',
     standalone: true,
     imports: [CommonModule, ToggleComponent],
-    templateUrl: './user-preferences.component.html',
-    styleUrls: ['./user-preferences.component.scss']
+    templateUrl: './preferences.component.html',
+    styleUrls: ['./preferences.component.scss']
 })
-export class UserPreferencesComponent implements OnInit, OnDestroy {
+export class PreferencesComponent implements OnInit, OnDestroy {
     hue0$: Observable<number>;
     hue1$: Observable<number>;
     currentState$: Observable<number>;

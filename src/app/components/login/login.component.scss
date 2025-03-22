@@ -1,8 +1,14 @@
 hr.wide {
-    width: calc(100% - 20px);
-    margin: 10px 10px;
+    width: 100%;
     padding: 0px;
+    margin: 0px;
     border: 0;
-    background-color: var(--c-accent-0);
+    background-color: var(--c-background-4);
     height: 1px;
+}
+
+.body{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
