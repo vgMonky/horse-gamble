@@ -12,10 +12,10 @@ import { ExpandableComponent } from '@app/components/base-components/expandable/
 ```
 
 ### 2. Set the Component HTML
-Use the `<app-expandable>` tag with `closedHeader`, `openHeader`, and `body` content.
+Use the `<app-expandable>` tag with `expandableId`, `closedHeader`, `openHeader`, and `body` content.
 
 ```html
-<app-expandable>
+<app-expandable expandableId="A">
     <!-- Header when closed -->
     <div closedHeader>
         <h2>I'm closed</h2>
@@ -33,33 +33,45 @@ Use the `<app-expandable>` tag with `closedHeader`, `openHeader`, and `body` con
 </app-expandable>
 ```
 
-That's it! The component will handle the open/close behavior automatically. 🎉
+### 3. Controlling Expandables via Service
+To manually open, close, or toggle an expandable, use the `ExpandableManagerService`:
+
+```typescript
+import { ExpandableManagerService } from '@app/components/base-components/expandable-manager.service';
+
+constructor(private expandableManager: ExpandableManagerService) {}
+
+this.expandableManager.open('expandable-1'); // Open
+this.expandableManager.close('expandable-1'); // Close
+this.expandableManager.toggle('expandable-1'); // Toggle
+```
+
+---
 
 ## Expandable Group
 
-To manage multiple expandables together, use the `ExpandableGroupComponent`. It automatically assigns unique IDs to each `app-expandable` and ensures only one stays open at a time.
+To manage multiple expandables together, use the `ExpandableGroupComponent`. It ensures only one expandable stays open at a time within the group.
 
-### Usage Example
-
-First import the component.
+### 1. Import the Component
 ```typescript
 import { ExpandableGroupComponent } from '@app/components/base-components/expandable/expandable-group.component';
 ```
 
-Then set it up by wrapping the expandables.
-
+### 2. Wrap Expandables Inside the Group
 ```html
 <app-expandable-group>
-    <app-expandable>
+    <app-expandable expandableId="expandable-1">
         <div closedHeader>First Item</div>
         <div openHeader>First Item (Expanded)</div>
         <div body>Details for the first item.</div>
     </app-expandable>
 
-    <app-expandable>
+    <app-expandable expandableId="expandable-2">
         <div closedHeader>Second Item</div>
         <div openHeader>Second Item (Expanded)</div>
         <div body>Details for the second item.</div>
     </app-expandable>
 </app-expandable-group>
+```
 
+Now, when you open one expandable, any previously open expandable within the group will automatically close. 🎉
