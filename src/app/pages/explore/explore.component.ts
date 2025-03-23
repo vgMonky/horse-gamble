@@ -1,15 +1,16 @@
+// src/app/pages/explore/explore.component.ts
 import { Component } from '@angular/core';
+import { SharedModule } from '@app/shared/shared.module';
 
 @Component({
     standalone: true,
     selector: 'app-explore',
-    imports: [],
+    imports: [SharedModule],
     template: `
-        <h2>Explore Page</h2>
-        <p>Discover new content here!</p>
+        <h2>{{ 'PAGES.EXPLORE.TITLE' | translate }}</h2>
+        <p>{{ 'PAGES.EXPLORE.DESCRIPTION' | translate }}</p>
     `,
     styles: [`
-
     `]
 })
 export class ExploreComponent {}

@@ -1,0 +1,15 @@
+{
+    "PAGES": {
+        "HOME": {
+            "TITLE": "DEX",
+            "DESCRIPTION": "A peer-to-peer marketplace where transactions occur directly between crypto traders."
+        },
+        "EXPLORE": {
+            "TITLE": "Explore Page",
+            "DESCRIPTION": "Discover new content here!"
+        }
+    },
+    "COMPONENTS": {
+        
+    }
+}

@@ -1,15 +1,16 @@
+// src/app/pages/home/home.component.ts
 import { Component } from '@angular/core';
+import { SharedModule } from '@app/shared/shared.module';
 
 @Component({
     standalone: true,
     selector: 'app-home',
-    imports: [],
+    imports: [SharedModule],
     template: `
-        <h2>DEX</h2>
-        <p>A peer-to-peer marketplace where transactions occur directly between crypto traders.</p>
+        <h2>{{ 'PAGES.HOME.TITLE' | translate }}</h2>
+        <p>{{ 'PAGES.HOME.DESCRIPTION' | translate }}</p>
     `,
     styles: [`
-
     `]
 })
 export class HomeComponent {}
