@@ -3,9 +3,7 @@ import { CommonModule } from '@angular/common';
 import { DropDownComponent } from '@app/components/base-components/drop-down/drop-down.component';
 import { RouterModule } from '@angular/router';
 import { SessionService } from '@app/services/session-kit.service';
-import { LucideAngularModule, User, LogIn } from 'lucide-angular';
-import { UserPreferencesComponent } from '@app/components/user-preferences/user-preferences.component';
-import { WindowContainerComponent } from '@app/components/base-components/window-container/window-container.component';
+import { LucideAngularModule, User } from 'lucide-angular';
 import { ExpandableManagerService } from '../base-components/expandable/expandable-manager.service';
 
 @Component({
