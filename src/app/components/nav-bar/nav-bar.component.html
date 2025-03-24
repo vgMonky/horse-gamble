@@ -1,8 +1,9 @@
 <!-- Normal Navbar -->
 <ng-container *ngIf="!isMobileView; else mobileNav">
-    <nav>
-        <div class="row">
+    <nav class="c-nabvar">
+        <div class="c-nabvar__row">
             <a
+                class="c-nabvar__logo"
                 routerLink="/"
                 routerLinkActive="active-link"
                 [routerLinkActiveOptions]="{ exact: true }"
@@ -19,16 +20,16 @@
             </a>
 
             <div>
-                <a routerLink="/trade" routerLinkActive="active-link">Trade</a>
-                <a routerLink="/explore" routerLinkActive="active-link">Explore</a>
-                <a routerLink="/pool" routerLinkActive="active-link">Pool</a>
+                <a class="c-nabvar__button" routerLink="/trade" routerLinkActive="active-link">Trade</a>
+                <a class="c-nabvar__button" routerLink="/explore" routerLinkActive="active-link">Explore</a>
+                <a class="c-nabvar__button" routerLink="/pool" routerLinkActive="active-link">Pool</a>
             </div>
         </div>
 
-        <div class="row">
+        <div class="c-nabvar__row">
             <lucide-icon
                 [img]="isDarkTheme ? SunIcon : MoonIcon"
-                class="icon"
+                class="c-nabvar__icon"
                 (click)="toggleTheme()"
                 style="margin-top: 6px;"
             ></lucide-icon>
@@ -39,11 +40,11 @@
 
 <!-- Mobile Navbar | whidth < 599px -->
 <ng-template #mobileNav>
-    <nav class="mobile-nav">
-        <lucide-icon [img]="QrIcon" class="icon"></lucide-icon>
+    <nav class="c-nabvar--mobile">
+        <lucide-icon [img]="QrIcon" class="c-nabvar__icon"></lucide-icon>
 
         <app-login></app-login>
 
-        <lucide-icon [img]="MenuIcon" class="icon"></lucide-icon>
+        <lucide-icon [img]="MenuIcon" class="c-nabvar__icon"></lucide-icon>
     </nav>
 </ng-template>

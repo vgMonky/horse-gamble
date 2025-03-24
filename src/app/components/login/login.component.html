@@ -1,12 +1,12 @@
-<div class="wallet-container">
-    <button class="btn" (click)="login()" *ngIf="!(sessionService.session$ | async)">Login</button>
+<div class="c-login">
+    <button class="c-login__btn" (click)="login()" *ngIf="!(sessionService.session$ | async)">Login</button>
 
-    <div *ngIf="(sessionService.session$ | async) as session">
+    <div class="c-login__menu" *ngIf="(sessionService.session$ | async) as session">
         <app-drop-down [buttonText]="session.actor">
-            <a routerLink="/wallet"> Wallet</a>
-            <a (click)="togglepreferences()"> Preferences </a>
-            <hr class="wide">
-            <a (click)="logout()"> Logout</a>
+            <a class="c-login__menu-option"routerLink="/wallet"> Wallet</a>
+            <a class="c-login__menu-option"(click)="togglepreferences()"> Preferences </a>
+            <hr class="c-login__menu-separator">
+            <a class="c-login__menu-option"(click)="logout()"> Logout</a>
         </app-drop-down>
     </div>
 </div>

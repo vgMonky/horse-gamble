@@ -1,8 +1,14 @@
-.dropdown {
+@use 'mixin' as *;
+
+.c-dropdown {
     position: relative;
     display: inline-block;
 
-    .dropdown-content {
+    &__btn {
+        @include button-1;
+    }
+
+    &__content {
         display: flex;
         flex-direction: column;
         position: absolute;
@@ -16,7 +22,7 @@
         border-radius: 8px;
     }
 
-    .overlay {
+    &__overlay {
         position: fixed;
         top: 0;
         left: 0;

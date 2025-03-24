@@ -9,9 +9,10 @@ import { Component } from '@angular/core';
         <p>Discover new content here!</p>
     `,
     styles: [`
+        @use 'mixin' as *;
+
         :host {
-            padding: 15px;
-            display: block;
+            @include page;
         }
     `]
 })

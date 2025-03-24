@@ -7,9 +7,10 @@ import { Component } from '@angular/core';
         <h2>Pool Page</h2>
     `,
     styles: [`
+        @use 'mixin' as *;
+
         :host {
-            padding: 15px;
-            display: block;
+            @include page;
         }
     `]
 })

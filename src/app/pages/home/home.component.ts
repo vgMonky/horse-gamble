@@ -9,9 +9,10 @@ import { Component } from '@angular/core';
         <p>A peer-to-peer marketplace where transactions occur directly between crypto traders.</p>
     `,
     styles: [`
+        @use 'mixin' as *;
+
         :host {
-            padding: 15px;
-            display: block;
+            @include page;
         }
     `]
 })

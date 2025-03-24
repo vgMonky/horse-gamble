@@ -1,75 +1,58 @@
-.preferences-container {
+@use 'mixin' as *;
+
+.c-preferences {
     display: flex;
     flex-direction: column;
     gap: 20px;
     padding: 20px;
     border-radius: 10px;
-}
 
-.input-group {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-top: 15px;
-}
+    &__btn-default-theme {
+        @include button-1;
+        $start-color: hsl(190, 60%, 35%);
+        $end-color: hsl(220, 60%, 50%);
 
-.input-group label {
-    width: 100px;
-}
+        color: var(--c-foreground-1);
+        border: 1px solid var(--c-background-4);
+        background-image: var(--c-background-0) ;
 
-.input-group input[type="range"] {
-    flex: 1;
-}
-
-.color-display {
-    width: 25px;
-    height: 25px;
-    border-radius: 50%;
-    border: 1px solid var(--c-background-0);
-}
-
-.default-theme {
-    $start-color: hsl(190, 60%, 35%);
-    $end-color: hsl(220, 60%, 50%);
-
-    color: var(--c-foreground-1);
-    border: 1px solid var(--c-background-4);
-    background-image: var(--c-background-0) ;
-
-    &:hover {
-        border: 1px solid var(--c-background-0);
-        color: var(--c-background-0);
-        background-image: linear-gradient(30deg, $end-color 0%, $start-color 100%);
+        &:hover {
+            border: 1px solid var(--c-background-0);
+            color: var(--c-background-0);
+            background-image: linear-gradient(30deg, $end-color 0%, $start-color 100%);
+        }
     }
-}
 
-.igneous-theme {
-    $start-color: hsl(40, 80%, 35%);
-    $end-color: hsl(10, 70%, 50%);
+    &__btn-igneous-theme {
+        @include button-1;
+        $start-color: hsl(40, 80%, 35%);
+        $end-color: hsl(10, 70%, 50%);
 
-    color: var(--c-foreground-1);
-    border: 1px solid var(--c-background-4);
-    background-image: var(--c-background-0) ;
+        color: var(--c-foreground-1);
+        border: 1px solid var(--c-background-4);
+        background-image: var(--c-background-0) ;
 
-    &:hover {
-        border: 1px solid var(--c-background-0);
-        color: var(--c-background-0);
-        background-image: linear-gradient(30deg, $end-color 0%, $start-color 100%);
+        &:hover {
+            border: 1px solid var(--c-background-0);
+            color: var(--c-background-0);
+            background-image: linear-gradient(30deg, $end-color 0%, $start-color 100%);
+        }
     }
-}
 
-.emerald-theme {
-    $start-color: hsl(140, 75%, 35%);
-    $end-color: hsl(170, 65%, 50%);
+    &__btn-emerald-theme {
+        @include button-1;
+        $start-color: hsl(140, 75%, 35%);
+        $end-color: hsl(170, 65%, 50%);
 
-    color: var(--c-foreground-1);
-    border: 1px solid var(--c-background-4);
-    background-image: var(--c-background-0) ;
-    // background-image: linear-gradient(30deg, $end-color 0%, $end-color 100%);
+        color: var(--c-foreground-1);
+        border: 1px solid var(--c-background-4);
+        background-image: var(--c-background-0) ;
 
-    &:hover {
-        border: 1px solid var(--c-background-0);
-        color: var(--c-background-0);
-        background-image: linear-gradient(30deg, $end-color 0%, $start-color 100%);
+        &:hover {
+            border: 1px solid var(--c-background-0);
+            color: var(--c-background-0);
+            background-image: linear-gradient(30deg, $end-color 0%, $start-color 100%);
+        }
     }
+
 }

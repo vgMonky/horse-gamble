@@ -1,43 +1,50 @@
-<div class="transfer-form">
-    <div class="container-available">
-        <p class="small">Available:</p>
-        <strong>{{ balance.amount.formatted }} {{ balance.token.symbol }}</strong>
+<div class="c-token-transfer">
+    <div class="c-token-transfer__header">
+        <p class="c-token-transfer__header-text">Available:</p>
+        <p class="c-token-transfer__header-balance">{{ balance.amount.formatted }} {{ balance.token.symbol }}</p>
     </div>
 
-    <form [formGroup]="form" (ngSubmit)="transfer()">
+    <form class="c-token-transfer__form" [formGroup]="form" (ngSubmit)="transfer()">
         <!-- Recipient Input -->
-        <div class="container-input">
-            <label class="small" for="recipient">Transfer to:</label>
-            <input id="recipient" type="text" formControlName="recipient" placeholder="Enter EOSIO username" />
+        <div class="c-token-transfer__input-container">
+            <label class="c-token-transfer__form-title" for="recipient">Transfer to:</label>
+            <input class="c-token-transfer__form-input" id="recipient" type="text" formControlName="recipient" placeholder="Enter destiny username" />
 
-            <p *ngIf="form.get('recipient')?.value" class="small">
-                <span *ngIf="form.get('recipient')?.pending" class="checking">⏳ Checking account...</span>
-                <span *ngIf="form.get('recipient')?.errors?.['pattern']" class="invalid">❌ Wrong EOSIO pattern, 1-12 characters (a-z, 1-5)</span>
-                <span *ngIf="form.get('recipient')?.errors?.['selfTransfer']" class="invalid">❌ Cannot send tokens to yourself</span>
-                <span *ngIf="form.get('recipient')?.errors?.['accountNotFound']" class="invalid">❌ Account does not exist</span>
-                <span *ngIf="form.get('recipient')?.valid && !form.get('recipient')?.pending" class="valid">✅ Verified Account</span>
+            <p *ngIf="form.get('recipient')?.value" class="c-token-transfer__status">
+                <span *ngIf="form.get('recipient')?.pending" class="c-token-transfer__status-checking">⏳ Checking account...</span>
+                <span *ngIf="form.get('recipient')?.errors?.['pattern']" class="c-token-transfer__status-invalid">❌ Wrong EOSIO pattern, 1-12 characters (a-z, 1-5)</span>
+                <span *ngIf="form.get('recipient')?.errors?.['selfTransfer']" class="c-token-transfer__status-invalid">❌ Cannot send tokens to yourself</span>
+                <span *ngIf="form.get('recipient')?.errors?.['accountNotFound']" class="c-token-transfer__status-invalid">❌ Account does not exist</span>
+                <span *ngIf="form.get('recipient')?.valid && !form.get('recipient')?.pending" class="c-token-transfer__status-valid">✅ Verified Account</span>
             </p>
         </div>
 
         <!-- Amount Input -->
-        <div class="container-input">
-            <div class="bar">
-                <label class="small" for="amount">Amount:</label>
-                <a *ngIf="!isMaxAmount()" class="small max" (click)="useMax()">Use Max</a>
+        <div class="c-token-transfer__input-container">
+            <div class="c-token-transfer__input-container-bar">
+                <label class="c-token-transfer__form-title" for="amount">Amount:</label>
+                <a *ngIf="!isMaxAmount()" class="c-token-transfer__form-max" (click)="useMax()">Use Max</a>
             </div>
-            <input id="amount" type="text" formControlName="amount" placeholder="Enter whole number" autocomplete="off" />
+            <input class="c-token-transfer__form-input" id="amount" type="text" formControlName="amount" placeholder="Enter whole number" autocomplete="off" />
 
-            <p *ngIf="form.get('amount')?.value !== null" class="small">
-                <span *ngIf="form.get('amount')?.errors?.['invalidAmount']" class="invalid">❌ Invalid amount</span>
-                <span *ngIf="form.get('amount')?.errors?.['outOfBalance']" class="invalid">❌ Amount exceeds balance</span>
-                <span *ngIf="form.get('amount')?.valid" class="valid">✅ Amount is within balance</span>
+            <p *ngIf="form.get('amount')?.value !== null" class="c-token-transfer__status">
+                <span *ngIf="form.get('amount')?.errors?.['invalidAmount']" class="c-token-transfer__status-invalid">❌ Invalid amount</span>
+                <span *ngIf="form.get('amount')?.errors?.['outOfBalance']" class="c-token-transfer__status-invalid">❌ Amount exceeds balance</span>
+                <span *ngIf="form.get('amount')?.valid" class="c-token-transfer__status-valid">✅ Amount is within balance</span>
             </p>
         </div>
 
         <!-- Transfer Button -->
-        <div class="container-transfer">
-            <br>
-            <button [class]="form.valid ? 'btn2' : 'unable'" type="submit" [disabled]="form.invalid || isLoading">
+        <div class="c-token-transfer__input-buttons">
+            <button
+                [class]="{
+                    'c-token-transfer__form-button': true,
+                    'c-token-transfer__form-button--available': form.valid,
+                    'c-token-transfer__form-button--unavailable': !form.valid
+                }"
+                type="submit"
+                [disabled]="form.invalid || isLoading"
+            >
                 {{ isLoading ? 'Processing...' : 'Transfer' }}
             </button>
         </div>
