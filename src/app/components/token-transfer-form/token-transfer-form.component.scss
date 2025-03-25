@@ -1,9 +1,12 @@
 @use 'mixin' as *;
 
 .c-token-transfer {
-    display: flex;
-    flex-direction: column;
-    gap: 40px;
+    &__container {
+        display: flex;
+        flex-direction: column;
+        gap: 40px;
+    }
+
     &__header {
         display: flex;
         flex-direction: column;
@@ -33,6 +36,7 @@
         }
         &-max {
             color: var(--c-accent-0);
+            cursor: pointer;
 
             &:hover{
                 color: var(--c-foreground-2);
@@ -74,10 +78,3 @@
         }
     }
 }
-
-.bar{
-    display: flex;
-    justify-content: space-between;
-    align-items: end;
-}
-

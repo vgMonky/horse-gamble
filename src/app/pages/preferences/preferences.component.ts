@@ -8,13 +8,13 @@ import { map, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operato
 import { ToggleComponent } from '@app/components/base-components/toggle/toggle.component';
 
 @Component({
-    selector: 'app-user-preferences',
+    selector: 'app-preferences',
     standalone: true,
     imports: [CommonModule, ToggleComponent],
-    templateUrl: './user-preferences.component.html',
-    styleUrls: ['./user-preferences.component.scss']
+    templateUrl: './preferences.component.html',
+    styleUrls: ['./preferences.component.scss']
 })
-export class UserPreferencesComponent implements OnInit, OnDestroy {
+export class PreferencesComponent implements OnInit, OnDestroy {
     hue0$: Observable<number>;
     hue1$: Observable<number>;
     currentState$: Observable<number>;
@@ -73,22 +73,6 @@ export class UserPreferencesComponent implements OnInit, OnDestroy {
                 break;
         }
     }
-
-    // updateHue0(event: Event) {
-    //     const input = event.target as HTMLInputElement;
-    //     const h0 = Number(input.value);
-    //     if (h0 >= 0 && h0 <= 360) {
-    //         this.hue0Subject.next(h0);
-    //     }
-    // }
-
-    // updateHue1(event: Event) {
-    //     const input = event.target as HTMLInputElement;
-    //     const h1 = Number(input.value);
-    //     if (h1 >= 0 && h1 <= 360) {
-    //         this.hue1Subject.next(h1);
-    //     }
-    // }
 
     setHueTheme(theme: 'default' | 'igneous' | 'emerald') {
         let h0, h1;

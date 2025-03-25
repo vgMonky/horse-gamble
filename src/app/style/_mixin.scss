@@ -22,7 +22,6 @@
 
 @mixin hyperlink {
     text-decoration: none;
-    margin: 10px;
     color: var(--c-foreground-2);
     cursor: pointer;
 
@@ -40,10 +39,9 @@
     outline: none;
 }
 
-@mixin hr-wide($horizontal-margin: 20px) {
-    // Subtract the margin from the total width
-    width: calc(100% - #{$horizontal-margin});
-    margin: 10px 10px;
+@mixin hr-separator($horizontal-margin: 20px) {
+    width: calc(100% - #{$horizontal-margin * 2});
+    margin: 10px $horizontal-margin;
     padding: 0px;
     border: 0;
     background-color: var(--c-accent-0);
@@ -52,15 +50,15 @@
 
 
 @mixin text-title {
-    font-size: 20px;
-    color: var(--c-foreground-2);
-    margin: 2px 0;
+    font-size: 24px;
+    color: var(--c-foreground-0);
+    margin: 20px 0;
 }
 
 @mixin text-subtitle {
     font-size: 17px;
     color: var(--c-foreground-2);
-    margin: 2px 0;
+    margin: 5px 0;
 }
 
 @mixin text-small {
@@ -75,6 +73,9 @@
 }
 
 @mixin button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     font-size: 10pt;
     padding: 10px 20px;
     border-radius: 20px;
@@ -111,7 +112,7 @@
     color: var(--c-accent-0);
     border: 1px solid var(--c-accent-0);
     background-color: var(--c-background-0);
-    margin: 0px;
+    margin: 0;
     outline: none;
     &:hover,
     &:focus {

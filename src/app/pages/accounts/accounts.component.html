@@ -1,0 +1,14 @@
+<div class="p-accounts">
+    <div class="p-accounts__title">Accounts</div>
+
+    <ng-container *ngIf="sessionService.session$ | async as session; else loginTemplate">
+        <p class="p-accounts__subtitle">Connected as: {{ session.actor }}</p>
+        <p class="p-accounts__contained"> Accounts list goes here <br>-<br>-<br>-</p>
+        <a class="p-accounts__add">+ Add new account</a>
+    </ng-container>
+
+    <ng-template #loginTemplate>
+        <p class="p-accounts__subtitle">Please log in to continue</p>
+        <app-login></app-login>
+    </ng-template>
+</div>

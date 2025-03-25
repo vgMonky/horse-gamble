@@ -5,15 +5,11 @@ import { Component } from '@angular/core';
     selector: 'app-trade',
     imports: [],
     template: `
-        <h2>Trade Page</h2>
-        <p>Perform your trades here!</p>
+        <div class="p-trade">
+            <div class="p-trade__title">Trade Page</div>
+            <p class="p-trade__subtitle">Perform your trades here!</p>
+        </div>
     `,
-    styles: [`
-        @use 'mixin' as *;
-
-        :host {
-            @include page;
-        }
-    `]
+    styleUrls: ['./trade.component.scss']
 })
 export class TradeComponent {}

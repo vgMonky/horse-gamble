@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { DropDownComponent } from '@app/components/base-components/drop-down/drop-down.component';
 import { RouterModule } from '@angular/router';
 import { SessionService } from '@app/services/session-kit.service';
-import { UserPreferencesComponent } from '@app/components/user-preferences/user-preferences.component';
-import { WindowContainerComponent } from '@app/components/base-components/window-container/window-container.component';
+import { LucideAngularModule, User } from 'lucide-angular';
+import { ExpandableManagerService } from '../base-components/expandable/expandable-manager.service';
 
 @Component({
     selector: 'app-login',
@@ -13,17 +13,18 @@ import { WindowContainerComponent } from '@app/components/base-components/window
         CommonModule,
         DropDownComponent,
         RouterModule,
-        WindowContainerComponent,
-        UserPreferencesComponent
+        LucideAngularModule
     ],
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent {
-    ispreferencesOpen = false;
+    readonly UserIcon = User
 
-
-    constructor(public sessionService: SessionService) {}
+    constructor(
+        public sessionService: SessionService,
+        public expandibles: ExpandableManagerService,
+    ) {}
 
     async login() {
         try {
@@ -35,9 +36,6 @@ export class LoginComponent {
 
     async logout() {
         await this.sessionService.logout();
+        this.expandibles.closeAll();
     }
-
-
-    togglepreferences() {this.ispreferencesOpen = !this.ispreferencesOpen;}
-    closepreferences() {this.ispreferencesOpen = false;}
 }

@@ -36,11 +36,10 @@ export class WalletComponent implements OnInit, OnDestroy {
     }
 
     get actor(): string | undefined {
-        return this.sessionService.currentSession?.actor;
+        return this.sessionService.currentSession?.actor.toString();
     }
 
     ngOnInit() {
-        this.loading = true;
         this.balanceSubscription = this.tokenBalanceService.getAllBalances().subscribe(balances => {
             this.balances = balances;
             this.loading = false;
@@ -55,7 +54,7 @@ export class WalletComponent implements OnInit, OnDestroy {
 
     refreshBalances() {
         this.loading = true;
-        this.tokenBalanceService.refreshAllBalances();
+        this.tokenBalanceService.updateAllBalances();
     }
 
     ngOnDestroy() {

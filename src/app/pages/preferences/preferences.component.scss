@@ -1,10 +1,13 @@
 @use 'mixin' as *;
 
+:host {
+    @include page;
+}
+
 .c-preferences {
     display: flex;
     flex-direction: column;
     gap: 20px;
-    padding: 20px;
     border-radius: 10px;
 
     &__btn-default-theme {

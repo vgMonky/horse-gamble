@@ -1,5 +1,5 @@
-<div class="c-expandable" [ngClass]="{ 'c-expandable--expanded': isOpen }" [id]="'expandable-' + id">
-    <div class="c-expandable__header" [ngClass]="{ 'c-expandable--expanded': isOpen }" (click)="toggle()">
+<div class="c-expandable" [ngClass]="{ 'c-expandable--expanded': isOpen }" [id]="'expandable-' + expandableId">
+    <div class="c-expandable__header" [ngClass]="{ 'c-expandable__header--expanded': isOpen }" (click)="toggleComponent()">
         <ng-container *ngIf="!isOpen; else openHeader">
             <ng-content select="[closedHeader]"></ng-content>
             <span class="c-expandable__header-arrow">▼</span>

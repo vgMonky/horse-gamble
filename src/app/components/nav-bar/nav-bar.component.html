@@ -1,4 +1,5 @@
 <!-- Normal Navbar -->
+<!-- [ngIf]="!isMobileView; else mobileNav" -->
 <ng-container *ngIf="!isMobileView; else mobileNav">
     <nav class="c-nabvar">
         <div class="c-nabvar__row">
@@ -19,11 +20,10 @@
                 </svg>
             </a>
 
-            <div>
-                <a class="c-nabvar__button" routerLink="/trade" routerLinkActive="active-link">Trade</a>
-                <a class="c-nabvar__button" routerLink="/explore" routerLinkActive="active-link">Explore</a>
-                <a class="c-nabvar__button" routerLink="/pool" routerLinkActive="active-link">Pool</a>
-            </div>
+            <a class="c-nabvar__button" routerLink="/trade" routerLinkActive="active-link">Trade</a>
+            <a class="c-nabvar__button" routerLink="/explore" routerLinkActive="active-link">Explore</a>
+            <a class="c-nabvar__button" routerLink="/pool" routerLinkActive="active-link">Pool</a>
+
         </div>
 
         <div class="c-nabvar__row">
@@ -31,7 +31,6 @@
                 [img]="isDarkTheme ? SunIcon : MoonIcon"
                 class="c-nabvar__icon"
                 (click)="toggleTheme()"
-                style="margin-top: 6px;"
             ></lucide-icon>
             <app-login></app-login>
         </div>
@@ -39,12 +38,16 @@
 </ng-container>
 
 <!-- Mobile Navbar | whidth < 599px -->
+
 <ng-template #mobileNav>
-    <nav class="c-nabvar--mobile">
-        <lucide-icon [img]="QrIcon" class="c-nabvar__icon"></lucide-icon>
+    <nav class="c-nabvar">
+        <div class="c-nabvar__row c-nabvar__row--mobile">
+            <lucide-icon [img]="QrIcon" class="c-nabvar__icon c-nabvar__icon--btn"></lucide-icon>
 
-        <app-login></app-login>
+            <app-login></app-login>
 
-        <lucide-icon [img]="MenuIcon" class="c-nabvar__icon"></lucide-icon>
+            <lucide-icon [img]="MenuIcon" class="c-nabvar__icon c-nabvar__icon--btn" (click)="toggleMobileSideMenu()"></lucide-icon>
+        </div>
     </nav>
 </ng-template>
+<!-- -->

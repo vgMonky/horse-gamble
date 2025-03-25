@@ -2,14 +2,20 @@
 
 .c-login {
     &__btn {
-        @include button-1;
+        @include button-2;
     }
     &__menu {
+        &-body {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding: 10px;
+        }
         &-option {
             @include hyperlink;
         }
         &-separator {
-            @include hr-wide(20px);
+            @include hr-separator(0px);
         }
     }
 }

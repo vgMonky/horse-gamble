@@ -5,15 +5,11 @@ import { Component } from '@angular/core';
     selector: 'app-explore',
     imports: [],
     template: `
-        <h2>Explore Page</h2>
-        <p>Discover new content here!</p>
+        <div class="p-explore">
+            <div class="p-explore__title">Explore Page</div>
+            <p class="p-explore__subtitle">Discover new content here!</p>
+        </div>
     `,
-    styles: [`
-        @use 'mixin' as *;
-
-        :host {
-            @include page;
-        }
-    `]
+    styleUrls: ['./explore.component.scss']
 })
 export class ExploreComponent {}

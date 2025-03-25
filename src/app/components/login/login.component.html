@@ -2,16 +2,21 @@
     <button class="c-login__btn" (click)="login()" *ngIf="!(sessionService.session$ | async)">Login</button>
 
     <div class="c-login__menu" *ngIf="(sessionService.session$ | async) as session">
-        <app-drop-down [buttonText]="session.actor">
-            <a class="c-login__menu-option"routerLink="/wallet"> Wallet</a>
-            <a class="c-login__menu-option"(click)="togglepreferences()"> Preferences </a>
-            <hr class="c-login__menu-separator">
-            <a class="c-login__menu-option"(click)="logout()"> Logout</a>
+        <app-drop-down>
+            <!-- Dropdown Button -->
+            <button dropdown-button class="c-login__btn">
+                <lucide-icon [img]="UserIcon" size="18"></lucide-icon>
+                {{ session.actor }}
+            </button>
+
+            <!-- Dropdown Body -->
+            <div dropdown-body class="c-login__menu-body">
+                <a class="c-login__menu-option" routerLink="/wallet">Wallet</a>
+                <a class="c-login__menu-option" routerLink="/accounts">Accounts</a>
+                <a class="c-login__menu-option" routerLink="/preferences">Preferences</a>
+                <hr class="c-login__menu-separator">
+                <a class="c-login__menu-option" (click)="logout()">Logout</a>
+            </div>
         </app-drop-down>
     </div>
 </div>
-
-<!-- Window Container for preferences -->
-<app-window-container *ngIf="ispreferencesOpen" (close)="closepreferences()">
-    <app-user-preferences></app-user-preferences>
-</app-window-container>

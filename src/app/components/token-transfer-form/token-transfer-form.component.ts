@@ -1,13 +1,15 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Balance } from 'src/types';
+import { Balance, TransferStatus } from 'src/types';
 import { TokenBalanceService } from '@app/services/token-balance.service';
+import { TokenTransferService } from '@app/services/token-transfer.service';
 import { SessionService } from '@app/services/session-kit.service';
 import { AccountKitService } from '@app/services/account-kit.service';
 import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
 import { AbstractControl } from '@angular/forms';
 import { timer, of, catchError, map, switchMap } from 'rxjs';
+import { ExpandableManagerService } from '@app/components/base-components/expandable/expandable-manager.service';
 
 @Component({
     selector: 'app-token-transfer-form',
@@ -17,20 +19,32 @@ import { timer, of, catchError, map, switchMap } from 'rxjs';
     styleUrls: ['./token-transfer-form.component.scss']
 })
 export class TokenTransferFormComponent implements OnInit, OnDestroy {
-    @Input() balance!: Balance;
+    @Input() tokenSymbol!: string;
 
+    balance!: Balance | null;
     form!: FormGroup;
     isLoading = false;
     private destroy$ = new Subject<void>();
+    transferStatus: TransferStatus = { state: 'none' };
 
     constructor(
         private fb: FormBuilder,
         private tokenBalanceService: TokenBalanceService,
+        private tokenTransferService: TokenTransferService,
         private sessionService: SessionService,
-        private accountKitService: AccountKitService
+        private accountKitService: AccountKitService,
+        private expandableManager: ExpandableManagerService
     ) {}
 
     ngOnInit(): void {
+        // Subscribe to transfer status from the service
+        this.tokenTransferService.getTransferStatus$(this.tokenSymbol)
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(status => {
+                this.transferStatus = status;
+            });
+
+        // Initialize Form
         this.form = this.fb.group({
             recipient: [
                 '',
@@ -47,6 +61,21 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
             ]
         });
 
+        // Subscribe to token balances
+        this.tokenBalanceService.getAllBalances()
+            .pipe(
+                takeUntil(this.destroy$),
+                map(balances => balances.find(b => b.token.symbol === this.tokenSymbol)),
+                distinctUntilChanged()
+            )
+            .subscribe(balance => {
+                this.balance = balance || null;
+                if (this.balance) {
+                    this.form.get('amount')?.updateValueAndValidity();
+                }
+            });
+
+        // Handle decimal precision changes
         this.form.get('amount')?.valueChanges.pipe(
             debounceTime(300),
             distinctUntilChanged(),
@@ -54,6 +83,21 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
         ).subscribe(value => {
             this.enforceDecimalPrecision(value);
         });
+
+        // Subscribe to expandable state changes to reset form when expandable is closed
+        this.expandableManager.state$
+            .pipe(
+                takeUntil(this.destroy$),
+                map(state => state[`expandable-${this.tokenSymbol}`]),
+                distinctUntilChanged()
+            )
+            .subscribe(isOpen => {
+                if (isOpen === false) {
+                    setTimeout(() => {
+                        this.resetForm();
+                    }, 500);
+                }
+            });
     }
 
     ngOnDestroy(): void {
@@ -79,7 +123,6 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
             if (!control.value) {
                 return of(null);
             }
-
             return timer(300).pipe(
                 switchMap(() => this.accountKitService.validateAccount(control.value)),
                 map(exists => exists ? null : { accountNotFound: true }),
@@ -88,13 +131,12 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
         };
     }
 
-
     // ===============================================
     // Amount Methods
 
     amountValidator() {
         return (control: any) => {
-            if (!this.balance) return null;
+            if (!this.balance || !this.balance.token) return { invalidAmount: true };
 
             const amount = parseFloat(control.value);
             if (isNaN(amount) || amount <= 0) return { invalidAmount: true };
@@ -111,7 +153,7 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
     }
 
     private enforceDecimalPrecision(value: any): void {
-        if (value === null || value === undefined) return;
+        if (value === null || value === undefined || !this.balance) return;
 
         const precision = this.balance.token.precision;
 
@@ -120,7 +162,6 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
         if (stringValue.includes('.')) {
             let [integerPart, decimalPart] = stringValue.split('.');
 
-            // Trim only if it's longer than precision
             if (decimalPart.length > precision) {
                 decimalPart = decimalPart.slice(0, precision);
             }
@@ -132,15 +173,17 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
     }
 
     useMax(): void {
-        const maxAmount = this.balance.amount.formatted ;
+        if (!this.balance) return;
+        const maxAmount = this.balance.amount.formatted;
         this.form.get('amount')?.setValue(maxAmount);
     }
+
     isMaxAmount(): boolean {
-        return this.form.get('amount')?.value === this.balance.amount.formatted;
+        return this.balance ? this.form.get('amount')?.value === this.balance.amount.formatted : false;
     }
 
     // ================================================
-    // Transfer Logic
+    // Transfer Methods
 
     async transfer(): Promise<void> {
         if (this.form.invalid) return;
@@ -149,7 +192,10 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
 
         const numericAmount = parseFloat(amount);
         if (isNaN(numericAmount) || numericAmount <= 0) {
-            alert('Invalid amount entered');
+            return;
+        }
+
+        if (!this.balance) {
             return;
         }
 
@@ -157,27 +203,39 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
         const sender = this.sessionService.currentSession?.actor;
 
         if (!sender) {
-            alert('No active session. Please log in.');
             return;
         }
 
+        const token = this.balance.token;
+
         try {
             this.isLoading = true;
-            await this.tokenBalanceService.makeTokenTransaction(
-                sender,
+            await this.tokenTransferService.makeTokenTransaction(
+                sender.toString(),
                 recipient,
                 formattedAmount,
                 this.balance.token.account,
-                `Transfer of ${formattedAmount}`
+                `Transfer of ${formattedAmount}`,
+                token
             );
-            alert(`Successfully transferred ${formattedAmount} to ${recipient}`);
-            this.tokenBalanceService.refreshAllBalances();
-            this.form.reset();
         } catch (error) {
             console.error('Transfer failed:', error);
-            alert(`Transfer failed: ${error}`);
         } finally {
             this.isLoading = false;
         }
+    }
+
+    retry(): void {
+        this.tokenTransferService.resetTransferCycle(this.tokenSymbol);
+    }
+
+    // Updated close function: only instruct the expandable manager to close the expandable
+    close(): void {
+        this.expandableManager.close(`expandable-${this.tokenSymbol}`);
+    }
+
+    resetForm() {
+        this.tokenTransferService.resetTransferCycle(this.tokenSymbol);
+        this.form.reset();
     }
 }

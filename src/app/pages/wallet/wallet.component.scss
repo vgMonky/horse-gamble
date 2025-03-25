@@ -32,6 +32,11 @@
     }
 
     &__balance {
+        &-icon {
+            height: 32px;
+            width: 32px;
+            border-radius: 50%;
+        }
         &-head {
             display: flex;
             flex-direction: row;
