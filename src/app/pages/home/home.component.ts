@@ -5,11 +5,11 @@ import { Component } from '@angular/core';
     selector: 'app-home',
     imports: [],
     template: `
-        <h2>DEX</h2>
-        <p>A peer-to-peer marketplace where transactions occur directly between crypto traders.</p>
+        <div class="p-home">
+            <div class="p-home__title">VortDEX</div>
+            <p class="p-home__subtitle">A peer-to-peer marketplace where transactions occur directly between crypto traders.</p>
+        </div>
     `,
-    styles: [`
-
-    `]
+    styleUrls: ['./home.component.scss']
 })
 export class HomeComponent {}

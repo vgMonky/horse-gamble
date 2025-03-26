@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Router } from '@angular/router';
-import { SessionKit } from '@wharfkit/session';
+import { Session, SessionKit } from '@wharfkit/session';
 import { WebRenderer } from '@wharfkit/web-renderer';
 import { WalletPluginAnchor } from '@wharfkit/wallet-plugin-anchor';
 import { WalletPluginCleos } from '@wharfkit/wallet-plugin-cleos';
@@ -15,8 +15,8 @@ export class SessionService {
 
 
     // BehaviorSubject to store and emit session changes
-    private sessionSubject = new BehaviorSubject<any>(undefined);
-    session$: Observable<any> = this.sessionSubject.asObservable();
+    private sessionSubject = new BehaviorSubject<Session | undefined>(undefined);
+    session$: Observable<Session | undefined> = this.sessionSubject.asObservable();
 
     constructor(
         private router: Router // inject the Router

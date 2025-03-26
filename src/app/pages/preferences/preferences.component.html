@@ -1,6 +1,6 @@
-<div class="preferences-container">
+<div class="c-preferences">
     <h2>User Preferences</h2>
-    <div class="contained">
+    <div class="c-preferences__section">
         <h3>Mode</h3>
         <app-toggle [currentState]="(currentState$ | async) ?? 0" (stateChange)="onStateChange($event)">
             <ng-template #stateContent>
@@ -11,40 +11,12 @@
             </ng-template>
         </app-toggle>
     </div>
-    <div class="contained">
+    <div class="c-preferences__section">
         <h3>Hue</h3>
-        <div class="theme-selector">
-            <p class="btn default-theme" (click)="setHueTheme('default')">Default</p>
-            <p class="btn igneous-theme" (click)="setHueTheme('igneous')">Igneous</p>
-            <p class="btn emerald-theme" (click)="setHueTheme('emerald')">Emerald</p>
+        <div class="c-preferences__theme-selector">
+            <p class="c-preferences__btn-default-theme" (click)="setHueTheme('default')">Default</p>
+            <p class="c-preferences__btn-igneous-theme" (click)="setHueTheme('igneous')">Igneous</p>
+            <p class="c-preferences__btn-emerald-theme" (click)="setHueTheme('emerald')">Emerald</p>
         </div>
-        <br>
-        <!-- Hue Slider -->
-        <!-- <div class="input-group">
-            <label for="hue0">Hue0: {{ (hue0$ | async) }}</label>
-            <input
-                type="range"
-                id="hue0"
-                [value]="(hue0$ | async)"
-                (input)="updateHue0($event)"
-                min="0"
-                max="360"
-            />
-            <div class="color-display" [style.backgroundColor]="'hsl(' + (hue0$ | async) + ', 50%, 50%)'"></div>
-        </div> -->
-
-        <!-- Hue1 Slider -->
-        <!-- <div class="input-group">
-            <label for="hue1">Hue1: {{ (hue1$ | async) }}</label>
-            <input
-                type="range"
-                id="hue1"
-                [value]="(hue1$ | async)"
-                (input)="updateHue1($event)"
-                min="0"
-                max="360"
-            />
-            <div class="color-display" [style.backgroundColor]="'hsl(' + (hue1$ | async) + ', 50%, 50%)'"></div>
-        </div> -->
     </div>
 </div>

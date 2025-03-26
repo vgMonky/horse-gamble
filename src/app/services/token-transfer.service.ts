@@ -80,7 +80,7 @@ export class TokenTransferService {
             console.log(`⏳ Sending transaction...`);
             const transactResult = await session.transact({ actions: [action] });
 
-            const txId = transactResult.response?.transaction_id || 'Unknown TX';
+            const txId = transactResult.response?.['transaction_id'] as string|| 'Unknown TX';
             console.log(`✅ Transaction Successful: ${txId}`);
 
             const summary: TransferSummary = {

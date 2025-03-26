@@ -1,10 +1,10 @@
-.toggle-group {
+.c-toggle {
     display: flex;
     gap: 5px;
     border-radius: 8px;
     padding: 5px 5px;
 
-    .toggle-btn {
+    &__button {
         background-color: var(--c-background-1);
         color: var(--c-foreground-2);
         border: 1px solid var(--c-background-4);
@@ -15,12 +15,12 @@
         justify-content: center;
         align-items: center;
 
-        &:hover {
-            //border-color: var(--c-accent-1);
+        &:hover,
+        &:active {
             box-shadow: var(--c-shadow-1);
         }
 
-        &.active {
+        &--active {
             color: var(--c-foreground-2);
             background-color: var(--c-background-3);
             border: 1px solid var(--c-background-4);

@@ -38,7 +38,7 @@ export class UserEffects {
             ),
             withLatestFrom(this.store.select((state) => state.user)),
             tap(([_, userState]) => {
-                const actor = this.sessionService.currentSession?.actor ?? null;
+                const actor = this.sessionService.currentSession?.actor.toString() ?? null;
                 this.localStorageService.saveUserPreferences(actor, userState);
             })
         ),

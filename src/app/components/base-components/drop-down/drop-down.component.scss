@@ -1,8 +1,8 @@
-.dropdown {
+.c-dropdown {
     position: relative;
     display: inline-block;
 
-    .dropdown-body {
+    &__content {
         position: absolute;
         top: 50px;
         right: 0px;
@@ -14,7 +14,7 @@
         border-radius: 8px;
     }
 
-    .overlay {
+    &__overlay {
         position: fixed;
         top: 0;
         left: 0;

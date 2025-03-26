@@ -1,21 +1,25 @@
-<div class="wallet-container">
-    <button class="btn" (click)="login()" *ngIf="!(sessionService.session$ | async)">Login</button>
+<div class="c-login">
+    <button
+        class="c-login__btn"
+        (click)="login()"
+        *ngIf="!(sessionService.session$ | async)"
+    >Login</button>
 
-    <div *ngIf="(sessionService.session$ | async) as session">
+    <div class="c-login__menu" *ngIf="(sessionService.session$ | async) as session">
         <app-drop-down>
             <!-- Dropdown Button -->
-            <button dropdown-button class="btn2">
+            <button dropdown-button class="c-login__btn--active">
                 <lucide-icon [img]="UserIcon" size="18"></lucide-icon>
                 {{ session.actor }}
             </button>
 
             <!-- Dropdown Body -->
-            <div dropdown-body class="body">
-                <a routerLink="/wallet">Wallet</a>
-                <a routerLink="/accounts">Accounts</a>
-                <a routerLink="/preferences">Preferences</a>
-                <hr class="wide">
-                <a (click)="logout()">Logout</a>
+            <div dropdown-body class="c-login__menu-body">
+                <a class="c-login__menu-option" routerLink="/wallet">Wallet</a>
+                <a class="c-login__menu-option" routerLink="/accounts">Accounts</a>
+                <a class="c-login__menu-option" routerLink="/preferences">Preferences</a>
+                <hr class="c-login__menu-separator">
+                <a class="c-login__menu-option" (click)="logout()">Logout</a>
             </div>
         </app-drop-down>
     </div>
