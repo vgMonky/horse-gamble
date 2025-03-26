@@ -8,9 +8,9 @@ import { CommonModule } from '@angular/common';
     selector: 'app-window-container',
     imports: [CommonModule],
     template: `
-        <div class="overlay" (click)="onOverlayClick()">
-            <div class="window" (click)="$event.stopPropagation()" tabindex="0">
-                <button class="close-button" (click)="onCloseClick()" aria-label="Close window">&times;</button>
+        <div class="c-window" (click)="onOverlayClick()">
+            <div class="c-window__content" (click)="$event.stopPropagation()" tabindex="0">
+                <button class="c-window__close-button" (click)="onCloseClick()" aria-label="Close window">&times;</button>
                 <ng-content></ng-content>
             </div>
         </div>

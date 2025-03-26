@@ -74,22 +74,6 @@ export class PreferencesComponent implements OnInit, OnDestroy {
         }
     }
 
-    // updateHue0(event: Event) {
-    //     const input = event.target as HTMLInputElement;
-    //     const h0 = Number(input.value);
-    //     if (h0 >= 0 && h0 <= 360) {
-    //         this.hue0Subject.next(h0);
-    //     }
-    // }
-
-    // updateHue1(event: Event) {
-    //     const input = event.target as HTMLInputElement;
-    //     const h1 = Number(input.value);
-    //     if (h1 >= 0 && h1 <= 360) {
-    //         this.hue1Subject.next(h1);
-    //     }
-    // }
-
     setHueTheme(theme: 'default' | 'igneous' | 'emerald') {
         let h0, h1;
 

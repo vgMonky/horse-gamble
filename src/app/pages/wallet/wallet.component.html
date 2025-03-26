@@ -1,44 +1,54 @@
-<div *ngIf="actor; else noSession">
-    <br>
-    <br>
-    <p class="small">Wallet Owner</p>
-    <h2>{{ actor }}</h2>
-    <br>
-    <p class="small">Balances</p>
-    <div *ngIf="loading; else balanceList">
+<div
+    *ngIf="actor; else noSession"
+    [class.mobile]="isMobileView"
+    class="p-wallet"
+>
+    <div class="p-wallet__header">
+        <div class="p-wallet__header-title">
+            Wallet
+        </div>
+        <div class="p-wallet__header-subtitle">
+            Balance of your tokens
+        </div>
+    </div>
+
+    <div class="p-wallet__loading" *ngIf="loading; else balanceList">
         <p>[ Loading... ]</p>
     </div>
 
     <ng-template #balanceList>
-        <app-expandable-group class="expandable-group">
+        <app-expandable-group class="p-wallet__group">
             <app-expandable
+                class="p-wallet__group-expandible"
                 *ngFor="let balance of balances"
                 [expandableId]="'expandable-' + balance.token.symbol"
             >
-                <!-- Closed Header -->
-                <div class="balance-head" closedHeader>
-                    <img class="balance-icon" src="{{ balance.token.logo }}">
+                <!-- Closed Header: Show Token Symbol and Balance -->
+                <div class="p-wallet__balance-head p-wallet__balance-head--closed" closedHeader>
+                    <img class="p-wallet__balance-icon" src="{{ balance.token.logo }}">
                     <p>{{ balance.amount.formatted }} <strong>{{ balance.token.symbol }}</strong></p>
                 </div>
 
-                <!-- Open Header -->
-                <div class="balance-head" openHeader>
-                    <img src="{{ balance.token.logo }}">
+                <!-- Open Header: (Optional) Show Same or Different Info When Expanded -->
+                <div class="p-wallet__balance-head p-wallet__balance-head--open" openHeader>
+                    <img class="p-wallet__balance-icon" src="{{ balance.token.logo }}">
                     <p>Transfer {{ balance.token.symbol }}</p>
                 </div>
 
-                <!-- Expandable Body -->
-                <div body>
+                <!-- Expandable Body: Show Detailed Info -->
+                <div class="p-wallet__balance-body" body>
                     <app-token-transfer-form [tokenSymbol]="balance.token.symbol"></app-token-transfer-form>
                 </div>
             </app-expandable>
         </app-expandable-group>
+        <a class="p-wallet__refresh" (click)="refreshBalances()">&#x21bb; Refresh Balances </a>
     </ng-template>
-    <br>
-    <br>
-    <a class="refresh" (click)="refreshBalances()">&#x21bb; Refresh Balances </a>
 </div>
 
 <ng-template #noSession>
-    <p>No active session. Please log in first.</p>
+    <div class="p-wallet">
+        <div class="p-wallet__header-subtitle">
+            No active session. Please log in first.
+        </div>
+    </div>
 </ng-template>

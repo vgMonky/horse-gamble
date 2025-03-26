@@ -1,32 +1,74 @@
-.token-balance {
-    display: flex;
-    align-items: center;
-    padding: 5px 0;
-    font-weight: bold;
+@use 'mixin' as *;
+
+:host {
+    @include page;
 }
 
-.refresh{
-    color: var(--c-accent-0);
-
-    &:hover{
-        color: var(--c-foreground-2);
-    }
-}
-
-.balance-head {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 10px;
-}
-
-.balance-icon {
-    height: 32px;
-    width: 32px;
-}
-
-.expandable-group{
+.p-wallet {
+    width: 100%;
+    max-width: 770px;
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 20px;
+
+    &.mobile{
+        max-width: 570px
+    }
+
+    &__header {
+        @include page-header;
+        &-title {
+            @include text-title;
+        }
+        &-subtitle {
+            @include text-subtitle;
+        }
+    }
+    &__loading {
+        @include text-subtitle;
+        color: var(--c-accent-0);
+    }
+    &__group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        &-expandible {
+
+        }
+    }
+
+    &__balance {
+        &-icon {
+            height: 32px;
+            width: 32px;
+            border-radius: 50%;
+        }
+        &-head {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 10px;
+
+            &--closed {
+
+            }
+
+            &--open {
+
+            }
+        }
+        &-body {
+
+        }
+    }
+
+    &__refresh {
+        @include hyperlink;
+        margin-top: 15px;
+        color: var(--c-accent-0);
+        &:hover,
+        &:active {
+            color: var(--c-foreground-2);
+        }
+    }
 }

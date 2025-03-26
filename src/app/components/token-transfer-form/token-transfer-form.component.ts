@@ -211,7 +211,7 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
         try {
             this.isLoading = true;
             await this.tokenTransferService.makeTokenTransaction(
-                sender,
+                sender.toString(),
                 recipient,
                 formattedAmount,
                 this.balance.token.account,

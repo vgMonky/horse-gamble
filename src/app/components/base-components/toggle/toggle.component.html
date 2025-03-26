@@ -1,9 +1,9 @@
-<div class="toggle-group">
+<div class="c-toggle">
     <button
         *ngFor="let content of projectedContents; let i = index"
         (click)="setState(i)"
-        class="toggle-btn"
-        [class.active]="currentState === i"
+        class="c-toggle__button"
+        [ngClass]="{ 'c-toggle__button--active': currentState === i }"
     >
         <ng-template [ngTemplateOutlet]="content"></ng-template>
     </button>

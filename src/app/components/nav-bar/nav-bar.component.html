@@ -1,9 +1,10 @@
 <!-- Normal Navbar -->
+<!-- [ngIf]="!isMobileView; else mobileNav" -->
 <ng-container *ngIf="!isMobileView; else mobileNav">
-    <nav>
-        <div class="row">
+    <nav class="c-nabvar">
+        <div class="c-nabvar__row">
             <a
-                class="logo"
+                class="c-nabvar__logo"
                 routerLink="/"
                 routerLinkActive="active-link"
                 [routerLinkActiveOptions]="{ exact: true }"
@@ -19,32 +20,34 @@
                 </svg>
             </a>
 
-            <a routerLink="/trade" routerLinkActive="active-link">Trade</a>
-            <a routerLink="/explore" routerLinkActive="active-link">Explore</a>
-            <a routerLink="/pool" routerLinkActive="active-link">Pool</a>
+            <a class="c-nabvar__button" routerLink="/trade" routerLinkActive="active-link">Trade</a>
+            <a class="c-nabvar__button" routerLink="/explore" routerLinkActive="active-link">Explore</a>
+            <a class="c-nabvar__button" routerLink="/pool" routerLinkActive="active-link">Pool</a>
+
         </div>
 
-        <div class="row">
-            <a>
-                <lucide-icon
-                    [img]="isDarkTheme ? SunIcon : MoonIcon"
-                    class="icon"
-                    (click)="toggleTheme()"
-                    style="margin-top: 6px;"
-                ></lucide-icon>
-            </a>
+        <div class="c-nabvar__row">
+            <lucide-icon
+                [img]="isDarkTheme ? SunIcon : MoonIcon"
+                class="c-nabvar__icon"
+                (click)="toggleTheme()"
+            ></lucide-icon>
             <app-login></app-login>
         </div>
     </nav>
 </ng-container>
 
 <!-- Mobile Navbar | whidth < 599px -->
+
 <ng-template #mobileNav>
-    <nav class="mobile-nav">
-        <a><lucide-icon [img]="QrIcon" class="icon"></lucide-icon></a>
+    <nav class="c-nabvar">
+        <div class="c-nabvar__row c-nabvar__row--mobile">
+            <lucide-icon [img]="QrIcon" class="c-nabvar__icon c-nabvar__icon--btn"></lucide-icon>
 
-        <app-login></app-login>
+            <app-login></app-login>
 
-        <a (click)="toggleMobileSideMenu()" class=""><lucide-icon [img]="MenuIcon" class="icon"></lucide-icon></a>
+            <lucide-icon [img]="MenuIcon" class="c-nabvar__icon c-nabvar__icon--btn" (click)="toggleMobileSideMenu()"></lucide-icon>
+        </div>
     </nav>
 </ng-template>
+<!-- -->

@@ -7,10 +7,11 @@ import { SharedModule } from '@app/shared/shared.module';
     selector: 'app-home',
     imports: [SharedModule],
     template: `
-        <h2>{{ 'PAGES.HOME.TITLE' | translate }}</h2>
-        <p>{{ 'PAGES.HOME.DESCRIPTION' | translate }}</p>
+        <div class="p-home">
+            <div class="p-home__title">{{ 'PAGES.HOME.TITLE' | translate }}</div>
+            <p class="p-home__subtitle">{{ 'PAGES.HOME.DESCRIPTION' | translate }}</p>
+        </div>
     `,
-    styles: [`
-    `]
+    styleUrls: ['./home.component.scss']
 })
 export class HomeComponent {}

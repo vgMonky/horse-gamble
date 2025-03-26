@@ -7,10 +7,11 @@ import { SharedModule } from '@app/shared/shared.module';
     selector: 'app-explore',
     imports: [SharedModule],
     template: `
-        <h2>{{ 'PAGES.EXPLORE.TITLE' | translate }}</h2>
-        <p>{{ 'PAGES.EXPLORE.DESCRIPTION' | translate }}</p>
+        <div class="p-explore">
+            <div class="p-explore__title">{{ 'PAGES.EXPLORE.TITLE' | translate }}</div>
+            <p class="p-explore__subtitle">{{ 'PAGES.EXPLORE.DESCRIPTION' | translate }}</p>
+        </div>
     `,
-    styles: [`
-    `]
+    styleUrls: ['./explore.component.scss']
 })
 export class ExploreComponent {}

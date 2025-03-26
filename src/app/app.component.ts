@@ -16,8 +16,8 @@ import { TranslateService } from '@ngx-translate/core';
         SharedModule
     ],
     template: `
-        <app-nav-bar></app-nav-bar>
-        <div class="view">
+        <app-nav-bar class='navbar'></app-nav-bar>
+        <div class='view'>
             <router-outlet></router-outlet>
         </div>
         <app-side-menu-mobile></app-side-menu-mobile>

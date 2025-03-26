@@ -1,5 +1,5 @@
-import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
-import { DOCUMENT, CommonModule } from '@angular/common';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Store } from '@ngrx/store';
 import { AppState } from '@app/store/app.state';
 import { user } from '@app/store/user';
@@ -37,7 +37,6 @@ export class NavBarComponent implements OnInit, OnDestroy {
 
     constructor(
         private store: Store<AppState>,
-        @Inject(DOCUMENT) private document: Document,
         private breakpointObserver: BreakpointObserver,
         private sideContainerService: SideContainerService,
     ) {}
