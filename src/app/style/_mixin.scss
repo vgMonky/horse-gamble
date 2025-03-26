@@ -44,10 +44,9 @@
     margin: 10px $horizontal-margin;
     padding: 0px;
     border: 0;
-    background-color: var(--c-accent-0);
+    background-color: var(--c-background-4);
     height: 1px;
 }
-
 
 @mixin text-title {
     font-size: 24px;
@@ -131,7 +130,7 @@
 
     &:focus {
         border-color: var(--c-accent-0);
-        box-shadow: 0 0 4px var(--c-accent-0); // Optional: Add a subtle glow
+        box-shadow: 0 0 4px var(--c-accent-0); // Add a subtle glow
     }
 }
 

@@ -1,5 +1,9 @@
 <div class="c-login">
-    <button class="c-login__btn" (click)="login()" *ngIf="!(sessionService.session$ | async)">Login</button>
+    <button
+        class="c-login__btn"
+        (click)="login()"
+        *ngIf="!(sessionService.session$ | async)"
+    >Login</button>
 
     <div class="c-login__menu" *ngIf="(sessionService.session$ | async) as session">
         <app-drop-down>
