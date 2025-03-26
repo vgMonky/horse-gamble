@@ -28,17 +28,18 @@
         }
         &-button {
             &--available {
-                @include button-2;
+                @include button-1;
             }
             &--unavailable {
-                @include button-0;
+                @include button-unable-0;
             }
         }
         &-max {
             color: var(--c-accent-0);
             cursor: pointer;
 
-            &:hover{
+            &:hover,
+            &:active {
                 color: var(--c-foreground-2);
             }
 

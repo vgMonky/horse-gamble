@@ -29,7 +29,6 @@
 
     &__separator {
         @include hr-separator(0px);
-        background-color: var(--c-background-4);
     }
 
 }

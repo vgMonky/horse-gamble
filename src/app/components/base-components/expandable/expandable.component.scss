@@ -1,10 +1,8 @@
-@use 'mixin' as *;
-
 .c-expandable {
     border: 1px solid var(--c-background-3);
     border-radius: 8px;
     overflow: hidden;
-    min-width: 350px;
+    min-width: 290px;
     margin: auto;
     transition: all 0.2s;
 
@@ -24,8 +22,9 @@
         cursor: pointer;
         user-select: none;
         transition: background-color 0.2s ease;
-    
-        &:hover {
+
+        &:hover,
+        &:active {
             background-color: var(--c-background-1);
             color: var(--c-accent-0);
             #{$header}-arrow {
@@ -33,7 +32,7 @@
             }
         }
 
-        &--expanded {   
+        &--expanded {
             background-color: var(--c-background-1);
             color: var(--c-accent-0);
             font-weight: bold;
@@ -42,7 +41,7 @@
         &-arrow {
             font-size: 14px;
             color: var(--c-foreground-1);
-        }        
+        }
     }
 
     &__body {
@@ -51,12 +50,12 @@
         border-top: 1px solid var(--c-background-3);
         padding: 0px 20px;
         transition: 0.3s ease;
-    
+
         &--expanded {
             padding: 20px 20px 40px 20px;
         }
     }
-    
+
 }
 
 

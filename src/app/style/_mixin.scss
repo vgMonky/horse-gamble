@@ -25,7 +25,8 @@
     color: var(--c-foreground-2);
     cursor: pointer;
 
-    &:hover {
+    &:hover,
+    &:active {
         color: var(--c-accent-0);
     }
 }
@@ -44,10 +45,9 @@
     margin: 10px $horizontal-margin;
     padding: 0px;
     border: 0;
-    background-color: var(--c-accent-0);
+    background-color: var(--c-background-4);
     height: 1px;
 }
-
 
 @mixin text-title {
     font-size: 24px;
@@ -72,7 +72,7 @@
     margin: 2px 0;
 }
 
-@mixin button {
+@mixin button-base-0 {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -82,13 +82,14 @@
     transition: 0.3s;
     cursor: pointer;
     box-shadow: var(--c-shadow-0);
-    &:hover {
+    &:hover,
+    &:active {
         box-shadow: var(--c-shadow-1);
     }
 }
 
-@mixin button-0 {
-    @include button;
+@mixin button-unable-0 {
+    @include button-base-0;
     color: var(--c-foreground-2);
     border: none;
     background-color: var(--c-background-2);
@@ -97,24 +98,26 @@
     box-shadow: none;
 }
 
-@mixin button-1 {
-    @include button;
+@mixin button-0 {
+    @include button-base-0;
     color: var(--c-background-0);
     border: none;
     background: var(--c-gradient-0);
-    &:hover {
+    &:hover,
+    &:active {
         background: var(--c-gradient-1);
     }
 }
 
-@mixin button-2 {
-    @include button;
+@mixin button-1 {
+    @include button-base-0;
     color: var(--c-accent-0);
     border: 1px solid var(--c-accent-0);
     background-color: var(--c-background-0);
     margin: 0;
     outline: none;
     &:hover,
+    &:active,
     &:focus {
         color: var(--c-background-0);
         background-color: var(--c-accent-0);
@@ -131,7 +134,7 @@
 
     &:focus {
         border-color: var(--c-accent-0);
-        box-shadow: 0 0 4px var(--c-accent-0); // Optional: Add a subtle glow
+        box-shadow: 0 0 4px var(--c-accent-0); // Add a subtle glow
     }
 }
 
