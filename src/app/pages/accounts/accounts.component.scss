@@ -29,7 +29,8 @@
         @include hyperlink;
         color: var(--c-accent-0);
 
-        &:hover {
+        &:hover,
+        &:active {
             color: var(--c-foreground-2);
         }
     }

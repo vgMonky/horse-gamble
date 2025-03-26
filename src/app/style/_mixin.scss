@@ -25,7 +25,8 @@
     color: var(--c-foreground-2);
     cursor: pointer;
 
-    &:hover {
+    &:hover,
+    &:active {
         color: var(--c-accent-0);
     }
 }
@@ -81,7 +82,8 @@
     transition: 0.3s;
     cursor: pointer;
     box-shadow: var(--c-shadow-0);
-    &:hover {
+    &:hover,
+    &:active {
         box-shadow: var(--c-shadow-1);
     }
 }
@@ -101,7 +103,8 @@
     color: var(--c-background-0);
     border: none;
     background: var(--c-gradient-0);
-    &:hover {
+    &:hover,
+    &:active {
         background: var(--c-gradient-1);
     }
 }
@@ -114,6 +117,7 @@
     margin: 0;
     outline: none;
     &:hover,
+    &:active,
     &:focus {
         color: var(--c-background-0);
         background-color: var(--c-accent-0);

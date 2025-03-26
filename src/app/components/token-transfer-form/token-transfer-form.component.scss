@@ -38,7 +38,8 @@
             color: var(--c-accent-0);
             cursor: pointer;
 
-            &:hover{
+            &:hover,
+            &:active {
                 color: var(--c-foreground-2);
             }
 

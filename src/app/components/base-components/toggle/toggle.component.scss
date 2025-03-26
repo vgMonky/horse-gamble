@@ -15,7 +15,8 @@
         justify-content: center;
         align-items: center;
 
-        &:hover {
+        &:hover,
+        &:active {
             box-shadow: var(--c-shadow-1);
         }
 
