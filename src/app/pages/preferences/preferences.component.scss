@@ -11,7 +11,7 @@
     border-radius: 10px;
 
     &__btn-default-theme {
-        @include button-1;
+        @include button-0;
         $start-color: hsl(190, 60%, 35%);
         $end-color: hsl(220, 60%, 50%);
 
@@ -28,7 +28,7 @@
     }
 
     &__btn-igneous-theme {
-        @include button-1;
+        @include button-0;
         $start-color: hsl(40, 80%, 35%);
         $end-color: hsl(10, 70%, 50%);
 
@@ -45,7 +45,7 @@
     }
 
     &__btn-emerald-theme {
-        @include button-1;
+        @include button-0;
         $start-color: hsl(140, 75%, 35%);
         $end-color: hsl(170, 65%, 50%);
 

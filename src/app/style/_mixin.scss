@@ -72,7 +72,7 @@
     margin: 2px 0;
 }
 
-@mixin button {
+@mixin button-base-0 {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -88,8 +88,8 @@
     }
 }
 
-@mixin button-0 {
-    @include button;
+@mixin button-unable-0 {
+    @include button-base-0;
     color: var(--c-foreground-2);
     border: none;
     background-color: var(--c-background-2);
@@ -98,8 +98,8 @@
     box-shadow: none;
 }
 
-@mixin button-1 {
-    @include button;
+@mixin button-0 {
+    @include button-base-0;
     color: var(--c-background-0);
     border: none;
     background: var(--c-gradient-0);
@@ -109,8 +109,8 @@
     }
 }
 
-@mixin button-2 {
-    @include button;
+@mixin button-1 {
+    @include button-base-0;
     color: var(--c-accent-0);
     border: 1px solid var(--c-accent-0);
     background-color: var(--c-background-0);
