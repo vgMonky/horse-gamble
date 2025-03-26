@@ -1,13 +1,15 @@
+// src/app/pages/home/home.component.ts
 import { Component } from '@angular/core';
+import { SharedModule } from '@app/shared/shared.module';
 
 @Component({
     standalone: true,
     selector: 'app-home',
-    imports: [],
+    imports: [SharedModule],
     template: `
         <div class="p-home">
-            <div class="p-home__title">VortDEX</div>
-            <p class="p-home__subtitle">A peer-to-peer marketplace where transactions occur directly between crypto traders.</p>
+            <div class="p-home__title">{{ 'PAGES.HOME.TITLE' | translate }}</div>
+            <p class="p-home__subtitle">{{ 'PAGES.HOME.DESCRIPTION' | translate }}</p>
         </div>
     `,
     styleUrls: ['./home.component.scss']

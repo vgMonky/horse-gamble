@@ -1,0 +1,15 @@
+{
+    "PAGES": {
+        "HOME": {
+            "TITLE": "DEX",
+            "DESCRIPTION": "Un mercado peer-to-peer donde las transacciones se realizan directamente entre operadores de criptomonedas."
+        },
+        "EXPLORE": {
+            "TITLE": "Página de Exploración",
+            "DESCRIPTION": "¡Descubre nuevo contenido aquí!"
+        }
+    },
+    "COMPONENTS": {
+        
+    }
+}
