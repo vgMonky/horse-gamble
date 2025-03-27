@@ -9,6 +9,8 @@ import { ExpandableGroupComponent } from '@app/components/base-components/expand
 import { TokenTransferFormComponent } from '@app/components/token-transfer-form/token-transfer-form.component';
 import { BREAKPOINT } from 'src/types';
 import { BreakpointObserver } from '@angular/cdk/layout';
+import { SharedModule } from '@app/shared/shared.module';
+
 @Component({
     selector: 'app-wallet',
     standalone: true,
@@ -17,6 +19,7 @@ import { BreakpointObserver } from '@angular/cdk/layout';
         ExpandableComponent,
         ExpandableGroupComponent,
         TokenTransferFormComponent,
+        SharedModule
     ],
     templateUrl: './wallet.component.html',
     styleUrls: ['./wallet.component.scss'],

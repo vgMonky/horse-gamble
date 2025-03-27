@@ -6,11 +6,16 @@ import { user } from '@app/store/user';
 import { Observable, Subject } from 'rxjs';
 import { map, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { ToggleComponent } from '@app/components/base-components/toggle/toggle.component';
+import { SharedModule } from '@app/shared/shared.module';
 
 @Component({
     selector: 'app-preferences',
     standalone: true,
-    imports: [CommonModule, ToggleComponent],
+    imports: [
+        CommonModule,
+        ToggleComponent,
+        SharedModule
+    ],
     templateUrl: './preferences.component.html',
     styleUrls: ['./preferences.component.scss']
 })

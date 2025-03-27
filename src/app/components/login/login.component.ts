@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 import { SessionService } from '@app/services/session-kit.service';
 import { LucideAngularModule, User } from 'lucide-angular';
 import { ExpandableManagerService } from '../base-components/expandable/expandable-manager.service';
+import { SharedModule } from '@app/shared/shared.module';
 
 @Component({
     selector: 'app-login',
@@ -13,7 +14,8 @@ import { ExpandableManagerService } from '../base-components/expandable/expandab
         CommonModule,
         DropDownComponent,
         RouterModule,
-        LucideAngularModule
+        LucideAngularModule,
+        SharedModule
     ],
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss'],

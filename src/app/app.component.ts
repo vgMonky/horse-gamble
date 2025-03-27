@@ -27,25 +27,30 @@ import { TranslateService } from '@ngx-translate/core';
 export class AppComponent {
     title = 'my-angular-app';
 
+
     constructor(
         private redirectService: RedirectService,
         private translate: TranslateService,
     ) {
         // Set default language
         this.translate.setDefaultLang('en');
-        // Use default language
         this.translate.use('en');
 
         // FIXME: Remove this section (is for testing only) -----------------------------
-        // changint the language in 5 seconds to es with a console count down by seconds
-        let count = 5;
+        let count = 2;
+        let isEnglish = true;
+
         const interval = setInterval(() => {
             console.log(`Changing language in ${count} seconds`);
             count--;
+
             if (count === 0) {
-                clearInterval(interval);
-                console.log('Changing language to Español');
-                this.translate.use('es');
+                isEnglish = !isEnglish;
+                const newLang = isEnglish ? 'en' : 'es';
+                console.log(`Changing language to ${newLang.toUpperCase()}`);
+                this.translate.use(newLang);
+
+                count = 2; // Reset countdown
             }
         }, 1000);
         // ------------------------------------------------------------------------------

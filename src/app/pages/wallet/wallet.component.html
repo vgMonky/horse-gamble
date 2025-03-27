@@ -5,15 +5,15 @@
 >
     <div class="p-wallet__header">
         <div class="p-wallet__header-title">
-            Wallet
+            {{ 'PAGES.WALLET.TITLE' | translate }}
         </div>
         <div class="p-wallet__header-subtitle">
-            Balance of your tokens
+            {{ 'PAGES.WALLET.DESCRIPTION' | translate }}
         </div>
     </div>
 
     <div class="p-wallet__loading" *ngIf="loading; else balanceList">
-        <p>[ Loading... ]</p>
+        <p>{{ 'PAGES.WALLET.LOADING' | translate }}</p>
     </div>
 
     <ng-template #balanceList>
@@ -32,7 +32,7 @@
                 <!-- Open Header: (Optional) Show Same or Different Info When Expanded -->
                 <div class="p-wallet__balance-head p-wallet__balance-head--open" openHeader>
                     <img class="p-wallet__balance-icon" src="{{ balance.token.logo }}">
-                    <p>Transfer {{ balance.token.symbol }}</p>
+                    <p>{{ 'COMPONENTS.TRANSFER-FORM.TITLE' | translate }} {{ balance.token.symbol }}</p>
                 </div>
 
                 <!-- Expandable Body: Show Detailed Info -->
@@ -41,14 +41,14 @@
                 </div>
             </app-expandable>
         </app-expandable-group>
-        <a class="p-wallet__refresh" (click)="refreshBalances()">&#x21bb; Refresh Balances </a>
+        <a class="p-wallet__refresh" (click)="refreshBalances()">&#x21bb; {{ 'TYPES.BUTTON.REFRESH' | translate }} {{ 'PAGES.WALLET.NAME' | translate }}  </a>
     </ng-template>
 </div>
 
 <ng-template #noSession>
     <div class="p-wallet">
         <div class="p-wallet__header-subtitle">
-            No active session. Please log in first.
+            {{ 'PAGES.WALLET.ERROR' | translate }}
         </div>
     </div>
 </ng-template>
