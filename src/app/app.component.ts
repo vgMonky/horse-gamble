@@ -29,30 +29,10 @@ export class AppComponent {
 
 
     constructor(
-        private redirectService: RedirectService,
+        private redirectService: RedirectService, //Automatically sets redirection rules
         private translate: TranslateService,
     ) {
         // Set default language
-        this.translate.setDefaultLang('en');
         this.translate.use('en');
-
-        // FIXME: Remove this section (is for testing only) -----------------------------
-        let count = 2;
-        let isEnglish = true;
-
-        const interval = setInterval(() => {
-            console.log(`Changing language in ${count} seconds`);
-            count--;
-
-            if (count === 0) {
-                isEnglish = !isEnglish;
-                const newLang = isEnglish ? 'en' : 'es';
-                console.log(`Changing language to ${newLang.toUpperCase()}`);
-                this.translate.use(newLang);
-
-                count = 2; // Reset countdown
-            }
-        }, 1000);
-        // ------------------------------------------------------------------------------
     }
 }
