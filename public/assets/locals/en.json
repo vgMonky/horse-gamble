@@ -6,7 +6,7 @@
             "DESCRIPTION": "A peer-to-peer marketplace where transactions occur directly between cryptocurrency traders."
         },
         "TRADE": {
-            "NAME": "Trading",
+            "NAME": "Trade",
             "TITLE": "Trading Page",
             "DESCRIPTION": "Description!"
         },

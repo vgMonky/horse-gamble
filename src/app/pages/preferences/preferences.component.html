@@ -3,9 +3,9 @@
     <p>{{ 'PAGES.PREFERENCES.DESCRIPTION' | translate }}</p>
     <div class="p-preferences__section">
         <h3>{{ 'PAGES.PREFERENCES.LANGUAGE.TITLE' | translate }}</h3>
-        <div dropdown-body class="p-preferences__dropdown">
-            <a class="p-preferences__dropdown-option" (click)="setLang('en')">{{ 'PAGES.PREFERENCES.LANGUAGE.EN' | translate }}</a>
-            <a class="p-preferences__dropdown-option" (click)="setLang('es')">{{ 'PAGES.PREFERENCES.LANGUAGE.ES' | translate }}</a>
+        <div class="p-preferences__lang">
+            <a class="p-preferences__lang-option" (click)="setLang('en')">{{ 'PAGES.PREFERENCES.LANGUAGE.EN' | translate }}</a>
+            <a class="p-preferences__lang-option" (click)="setLang('es')">{{ 'PAGES.PREFERENCES.LANGUAGE.ES' | translate }}</a>
         </div>
     </div>
     <div class="p-preferences__section">
