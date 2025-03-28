@@ -12,6 +12,7 @@ import { BREAKPOINT } from 'src/types';
 import { SideContainerService } from '@app/components/base-components/side-container/side-container.service';
 import { DropDownComponent } from '../base-components/drop-down/drop-down.component';
 import { TranslateService } from '@ngx-translate/core';
+import { SharedModule } from '@app/shared/shared.module';
 
 @Component({
     selector: 'app-nav-bar',
@@ -21,7 +22,8 @@ import { TranslateService } from '@ngx-translate/core';
         RouterModule,
         LoginComponent,
         LucideAngularModule,
-        DropDownComponent
+        DropDownComponent,
+        SharedModule
     ],
     templateUrl: './nav-bar.component.html',
     styleUrls: ['./nav-bar.component.scss']

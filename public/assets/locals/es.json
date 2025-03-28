@@ -30,7 +30,12 @@
         "PREFERENCES": {
             "NAME": "Preferencias",
             "TITLE": "Preferencias de Usuario",
-            "DESCRIPTION": "Las preferencias serán recordadas para cada usuario",
+            "DESCRIPTION": "Configure su entorno",
+            "LANGUAGE": {
+                "TITLE": "Idioma",
+                "EN": "Ingles",
+                "ES": "Español"
+            },
             "MODE": {
                 "TITLE": "Modo",
                 "DARK": "Oscuro",
