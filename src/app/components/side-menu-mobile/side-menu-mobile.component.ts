@@ -13,6 +13,7 @@ import {
 import { RouterModule } from '@angular/router';
 import { SessionService } from '@app/services/session-kit.service';
 import { SharedModule } from '@app/shared/shared.module';
+import { LoginComponent } from '../login/login.component';
 
 @Component({
     selector: 'app-side-menu-mobile',
@@ -20,7 +21,8 @@ import { SharedModule } from '@app/shared/shared.module';
         SideContainerComponent,
         LucideAngularModule,
         RouterModule,
-        SharedModule
+        SharedModule,
+        LoginComponent
     ],
     templateUrl: './side-menu-mobile.component.html',
     styleUrl: './side-menu-mobile.component.scss'
