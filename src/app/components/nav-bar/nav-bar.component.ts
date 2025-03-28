@@ -7,7 +7,7 @@ import { RouterModule } from '@angular/router';
 import { LoginComponent } from '../login/login.component';
 import { Subject, takeUntil } from 'rxjs';
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { LucideAngularModule, Menu, ScanQrCode, Sun, Moon, Globe} from 'lucide-angular'
+import { LucideAngularModule, Menu, ScanQrCode, Sun, Moon, Globe, Settings} from 'lucide-angular'
 import { BREAKPOINT } from 'src/types';
 import { SideContainerService } from '@app/components/base-components/side-container/side-container.service';
 import { DropDownComponent } from '../base-components/drop-down/drop-down.component';
@@ -34,6 +34,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
     readonly SunIcon = Sun
     readonly MoonIcon = Moon
     readonly GlobeIcon = Globe
+    readonly SettingsIcon = Settings
 
     isDarkTheme = false;
     isMobileView = false;

@@ -60,7 +60,12 @@
 
             <app-login></app-login>
 
-            <lucide-icon [img]="MenuIcon" class="c-navbar__icon c-navbar__icon--btn" (click)="toggleMobileSideMenu()"></lucide-icon>
+            <lucide-icon dropdown-button
+                [img]="SettingsIcon"
+                class="c-navbar__icon"
+                routerLink="/preferences"
+                routerLinkActive="active-link"
+            ></lucide-icon>
         </div>
     </nav>
 </ng-template>
