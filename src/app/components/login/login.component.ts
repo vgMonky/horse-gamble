@@ -42,6 +42,6 @@ export class LoginComponent {
     }
 
     toggleMobileSideMenu() {
-        this.sideContainerService.toggle('mobile-side-menu');
+        this.sideContainerService.toggle('user-side-menu');
     }
 }

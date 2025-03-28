@@ -13,21 +13,19 @@ import {
 import { RouterModule } from '@angular/router';
 import { SessionService } from '@app/services/session-kit.service';
 import { SharedModule } from '@app/shared/shared.module';
-import { LoginComponent } from '../login/login.component';
 
 @Component({
-    selector: 'app-side-menu-mobile',
+    selector: 'app-user-side-menu',
     imports: [
         SideContainerComponent,
         LucideAngularModule,
         RouterModule,
-        SharedModule,
-        LoginComponent
+        SharedModule
     ],
-    templateUrl: './side-menu-mobile.component.html',
-    styleUrl: './side-menu-mobile.component.scss'
+    templateUrl: './user-side-menu.component.html',
+    styleUrl: './user-side-menu.component.scss'
 })
-export class SideMenuMobileComponent {
+export class UserSideMenuComponent {
     readonly ChartCandlestickIcon = ChartCandlestick;
     readonly SettingsIcon = Settings;
     readonly CoinsIcon = Coins;

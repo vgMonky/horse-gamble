@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NavBarComponent } from '@app/components/nav-bar/nav-bar.component';
-import { SideMenuMobileComponent } from '@app/components/side-menu-mobile/side-menu-mobile.component';
+import { UserSideMenuComponent } from '@app/components/user-side-menu/user-side-menu.component';
 import { RedirectService } from '@app/services/redirect.services';
 import { SharedModule } from '@app/shared/shared.module';
 import { TranslateService } from '@ngx-translate/core';
@@ -12,7 +12,7 @@ import { TranslateService } from '@ngx-translate/core';
     imports: [
         RouterOutlet,
         NavBarComponent,
-        SideMenuMobileComponent,
+        UserSideMenuComponent,
         SharedModule
     ],
     template: `
@@ -20,7 +20,7 @@ import { TranslateService } from '@ngx-translate/core';
         <div class='view'>
             <router-outlet></router-outlet>
         </div>
-        <app-side-menu-mobile></app-side-menu-mobile>
+        <app-user-side-menu></app-user-side-menu>
     `,
     styleUrls: ['./app.component.scss']
 })
