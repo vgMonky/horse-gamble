@@ -60,12 +60,19 @@
 
             <app-login></app-login>
 
-            <lucide-icon dropdown-button
-                [img]="SettingsIcon"
-                class="c-navbar__icon"
-                routerLink="/preferences"
-                routerLinkActive="active-link"
-            ></lucide-icon>
+            <app-drop-down>
+                <!-- Dropdown Button -->
+                <lucide-icon dropdown-button
+                    [img]="GlobeIcon"
+                    class="c-navbar__icon"
+                ></lucide-icon>
+
+                <!-- Dropdown Body -->
+                <div dropdown-body class="c-navbar__dropdown">
+                    <a class="c-navbar__dropdown-option" (click)="setLang('en')">{{ 'PAGES.PREFERENCES.LANGUAGE.EN' | translate }}</a>
+                    <a class="c-navbar__dropdown-option" (click)="setLang('es')">{{ 'PAGES.PREFERENCES.LANGUAGE.ES' | translate }}</a>
+                </div>
+            </app-drop-down>
         </div>
     </nav>
 </ng-template>
