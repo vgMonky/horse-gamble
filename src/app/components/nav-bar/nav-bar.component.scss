@@ -1,6 +1,6 @@
 @use 'mixin' as *;
 
-.c-nabvar {
+.c-navbar {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -28,11 +28,17 @@
 
     &__icon {
         @include hyperlink;
-        margin-top: 6px;
+        @include icon
     }
 
+    &__dropdown{
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        padding: 10px;
 
+        &-option{
+            @include hyperlink
+        }
+    }
 }
-
-
-

@@ -23,6 +23,11 @@
     }
 
     &__form {
+        &-title{
+            font-size: 14px;
+            color: var(--c-foreground-2);
+            margin: 0px;
+        }
         &-input {
             @include input;
         }

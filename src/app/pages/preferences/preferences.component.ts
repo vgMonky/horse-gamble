@@ -6,15 +6,25 @@ import { user } from '@app/store/user';
 import { Observable, Subject } from 'rxjs';
 import { map, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { ToggleComponent } from '@app/components/base-components/toggle/toggle.component';
+import { SharedModule } from '@app/shared/shared.module';
+import { LucideAngularModule, Globe } from 'lucide-angular';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-preferences',
     standalone: true,
-    imports: [CommonModule, ToggleComponent],
+    imports: [
+        CommonModule,
+        ToggleComponent,
+        SharedModule,
+        LucideAngularModule
+    ],
     templateUrl: './preferences.component.html',
     styleUrls: ['./preferences.component.scss']
 })
 export class PreferencesComponent implements OnInit, OnDestroy {
+    readonly GlobeIcon = Globe
+
     hue0$: Observable<number>;
     hue1$: Observable<number>;
     currentState$: Observable<number>;
@@ -24,7 +34,10 @@ export class PreferencesComponent implements OnInit, OnDestroy {
     private hue1Subject = new Subject<number>();
     private destroy$ = new Subject<void>(); // Cleanup subject
 
-    constructor(private store: Store<AppState>) {
+    constructor(
+        private translate: TranslateService,
+        private store: Store<AppState>
+    ) {
         this.hue0$ = this.store.pipe(select(user.selectors.hue0));
         this.hue1$ = this.store.pipe(select(user.selectors.hue1));
 
@@ -72,6 +85,10 @@ export class PreferencesComponent implements OnInit, OnDestroy {
                 this.store.dispatch(user.actions.setLight());
                 break;
         }
+    }
+
+    setLang( l: string ) {
+        this.translate.use(l)
     }
 
     setHueTheme(theme: 'default' | 'igneous' | 'emerald') {

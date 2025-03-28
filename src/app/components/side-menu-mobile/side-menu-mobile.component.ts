@@ -12,6 +12,7 @@ import {
 } from 'lucide-angular';
 import { RouterModule } from '@angular/router';
 import { SessionService } from '@app/services/session-kit.service';
+import { SharedModule } from '@app/shared/shared.module';
 
 @Component({
     selector: 'app-side-menu-mobile',
@@ -19,6 +20,7 @@ import { SessionService } from '@app/services/session-kit.service';
         SideContainerComponent,
         LucideAngularModule,
         RouterModule,
+        SharedModule
     ],
     templateUrl: './side-menu-mobile.component.html',
     styleUrl: './side-menu-mobile.component.scss'

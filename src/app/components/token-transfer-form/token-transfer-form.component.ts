@@ -10,11 +10,16 @@ import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
 import { AbstractControl } from '@angular/forms';
 import { timer, of, catchError, map, switchMap } from 'rxjs';
 import { ExpandableManagerService } from '@app/components/base-components/expandable/expandable-manager.service';
+import { SharedModule } from '@app/shared/shared.module';
 
 @Component({
     selector: 'app-token-transfer-form',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule],
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        SharedModule
+    ],
     templateUrl: './token-transfer-form.component.html',
     styleUrls: ['./token-transfer-form.component.scss']
 })

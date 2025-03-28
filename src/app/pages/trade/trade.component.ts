@@ -1,13 +1,14 @@
 import { Component } from '@angular/core';
+import { SharedModule } from '@app/shared/shared.module';
 
 @Component({
     standalone: true,
     selector: 'app-trade',
-    imports: [],
+    imports: [SharedModule],
     template: `
         <div class="p-trade">
-            <div class="p-trade__title">Trade Page</div>
-            <p class="p-trade__subtitle">Perform your trades here!</p>
+            <div class="p-trade__title">{{ 'PAGES.TRADE.TITLE' | translate }}</div>
+            <p class="p-trade__subtitle">{{ 'PAGES.TRADE.DESCRIPTION' | translate }}</p>
         </div>
     `,
     styleUrls: ['./trade.component.scss']
