@@ -3,10 +3,6 @@
 .c-login {
     &__btn {
         @include button-0;
-
-        &--active {
-            @include button-1
-        }
     }
     &__menu {
         &-body {

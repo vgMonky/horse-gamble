@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LoginComponent } from '@app/components/login/login.component';
 import { SessionService } from '@app/services/session-kit.service';
 import { SharedModule } from '@app/shared/shared.module';
 
@@ -9,7 +8,6 @@ import { SharedModule } from '@app/shared/shared.module';
     standalone: true,
     imports: [
         CommonModule,
-        LoginComponent,
         SharedModule
     ],
     templateUrl: './accounts.component.html',

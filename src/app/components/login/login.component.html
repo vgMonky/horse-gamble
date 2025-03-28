@@ -6,7 +6,7 @@
     >{{'TYPES.BUTTON.LOGIN' | translate}}</button>
 
     <div class="c-login__menu" *ngIf="(sessionService.session$ | async) as session">
-            <button class="c-login__btn--active" (click)="toggleMobileSideMenu()">
+            <button class="c-login__btn" (click)="toggleMobileSideMenu()">
                 <lucide-icon [img]="UserIcon" size="18"></lucide-icon>
                 {{ session.actor }}
             </button>

@@ -93,8 +93,8 @@
             "CLOSE": "Close",
             "TRANSFER": "Transfer",
             "PROCESSING": "Processing...",
-            "LOGIN": "Log In",
-            "LOGOUT": "Log out"
+            "LOGIN": "LogIn",
+            "LOGOUT": "LogOut"
         },
         "TRANSFER-SUMMARY": {
             "FROM": "From:",
