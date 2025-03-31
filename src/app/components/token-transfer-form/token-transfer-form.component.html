@@ -27,7 +27,13 @@
             <div class="c-token-transfer__input-container">
                 <div class="c-token-transfer__input-container-bar">
                     <label class="c-token-transfer__form-title" for="amount">{{ 'COMPONENTS.TRANSFER-FORM.AMOUNT.TITLE' | translate }}</label>
-                    <a *ngIf="!isMaxAmount()" class="c-token-transfer__form-max" (click)="useMax()">{{ 'COMPONENTS.TRANSFER-FORM.AMOUNT.USE-MAX' | translate }}</a>
+                    <a
+                        *ngIf="!isMaxAmount()"
+                        class="c-token-transfer__form-max"
+                        (click)="useMax()"
+                    >
+                        {{ 'COMPONENTS.TRANSFER-FORM.AMOUNT.USE-MAX' | translate }}
+                    </a>
                 </div>
                 <input class="c-token-transfer__form-input" id="amount" type="text" formControlName="amount" placeholder="{{ 'COMPONENTS.TRANSFER-FORM.AMOUNT.INPUT' | translate }}" autocomplete="off" />
 

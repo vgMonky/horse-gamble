@@ -1,0 +1,21 @@
+.c-message {
+    display: flex;
+    align-items: center;
+    background-color: var(--c-background-0);
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 10px;
+
+    &__icon {
+        margin-right: 10px;
+    }
+
+    &__content {
+        flex-grow: 1;
+    }
+
+    &__close {
+        cursor: pointer;
+    }
+}

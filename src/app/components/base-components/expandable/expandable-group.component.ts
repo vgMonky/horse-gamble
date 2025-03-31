@@ -1,4 +1,4 @@
-import { Component, ContentChildren, QueryList, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import { Component, ContentChildren, QueryList, AfterViewInit, ChangeDetectorRef, ViewEncapsulation } from '@angular/core';
 import { ExpandableComponent } from './expandable.component';
 import { ExpandableManagerService } from './expandable-manager.service';
 
@@ -6,6 +6,7 @@ import { ExpandableManagerService } from './expandable-manager.service';
     selector: 'app-expandable-group',
     standalone: true,
     template: `<ng-content></ng-content>`,
+    encapsulation: ViewEncapsulation.None
 })
 export class ExpandableGroupComponent implements AfterViewInit {
     @ContentChildren(ExpandableComponent) expandables!: QueryList<ExpandableComponent>;

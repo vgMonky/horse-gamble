@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { ExpandableManagerService } from './expandable-manager.service';
@@ -8,7 +8,8 @@ import { ExpandableManagerService } from './expandable-manager.service';
     imports: [CommonModule],
     standalone: true,
     templateUrl: './expandable.component.html',
-    styleUrls: ['./expandable.component.scss']
+    styleUrls: ['./expandable.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class ExpandableComponent implements OnInit, OnDestroy {
     @Input() expandableId!: string;

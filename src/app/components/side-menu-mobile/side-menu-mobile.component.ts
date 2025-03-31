@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { SideContainerComponent } from '@app/components/base-components/side-container/side-container.component';
 import {
     LucideAngularModule,
@@ -23,7 +23,8 @@ import { SharedModule } from '@app/shared/shared.module';
         SharedModule
     ],
     templateUrl: './side-menu-mobile.component.html',
-    styleUrl: './side-menu-mobile.component.scss'
+    styleUrl: './side-menu-mobile.component.scss',
+    encapsulation: ViewEncapsulation.None
 })
 export class SideMenuMobileComponent {
     readonly ChartCandlestickIcon = ChartCandlestick;

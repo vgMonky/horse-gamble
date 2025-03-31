@@ -1,4 +1,5 @@
 {
+    "SAMPLE_MESSAGE": "Hello, World!",
     "PAGES": {
         "HOME": {
             "NAME": "Home",
@@ -76,6 +77,7 @@
                 "TITLE": "Amount:",
                 "INPUT": "Enter a whole number",
                 "USE-MAX": "Use All",
+                "USE-MAX-TOOLTIP": "Transfer your entire balance",
                 "VALIDATION": {
                     "INVALID-AMOUNT": "❌ Invalid amount",
                     "INVALID-MAX": "❌ Amount exceeds your balance",

@@ -1,0 +1,23 @@
+<div class="c-message-factory">
+    <app-message
+        [ngClass]="{
+            'c-message-factory__msg': true,
+            'c-message-factory__msg--fade': message.destroying,
+        }"
+        *ngFor="let message of messages"
+        [message]="message"
+        (dismiss)="onDismiss(message.id)"
+    >
+        <div  class="c-message-factory__msg-icon" icon>
+            <lucide-icon [img]="icons[message.type]" />
+        </div>
+        <div class="c-message-factory__msg-message" message>
+            {{ message.content | translate }}
+        </div>
+        <div class="c-message-factory__msg-close" (click)="onDismiss(message.id)" close>
+            <div class="c-message-factory__msg-close-icon">
+                <lucide-icon [img]="icons['close']" />
+            </div>
+        </div>
+    </app-message>
+</div>

@@ -1,4 +1,4 @@
-import { Component, ContentChildren, QueryList, AfterContentInit, EventEmitter, Output, Input } from "@angular/core";
+import { Component, ContentChildren, QueryList, AfterContentInit, EventEmitter, Output, Input, ViewEncapsulation } from "@angular/core";
 import { CommonModule } from "@angular/common";
 
 @Component({
@@ -7,6 +7,7 @@ import { CommonModule } from "@angular/common";
     styleUrls: ['./toggle.component.scss'],
     standalone: true,
     imports: [CommonModule],
+    encapsulation: ViewEncapsulation.None
 })
 export class ToggleComponent implements AfterContentInit {
     @ContentChildren('stateContent') projectedContents!: QueryList<any>;

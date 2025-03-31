@@ -18,7 +18,7 @@ import { SharedModule } from '@app/shared/shared.module';
     imports: [
         CommonModule,
         ReactiveFormsModule,
-        SharedModule
+        SharedModule,
     ],
     templateUrl: './token-transfer-form.component.html',
     styleUrls: ['./token-transfer-form.component.scss']
