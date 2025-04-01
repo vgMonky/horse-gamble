@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Store } from '@ngrx/store';
 import { AppState } from '@app/store/app.state';
@@ -26,7 +26,8 @@ import { SharedModule } from '@app/shared/shared.module';
         SharedModule
     ],
     templateUrl: './nav-bar.component.html',
-    styleUrls: ['./nav-bar.component.scss']
+    styleUrls: ['./nav-bar.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class NavBarComponent implements OnInit, OnDestroy {
     readonly MenuIcon = Menu

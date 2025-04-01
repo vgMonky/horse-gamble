@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DropDownComponent } from '@app/components/base-components/drop-down/drop-down.component';
 import { RouterModule } from '@angular/router';
@@ -19,6 +19,7 @@ import { SharedModule } from '@app/shared/shared.module';
     ],
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class LoginComponent {
     readonly UserIcon = User

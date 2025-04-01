@@ -1,0 +1,52 @@
+@use 'mixin' as *;
+
+.c-message-factory {
+    position: fixed;
+    top: 100px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    z-index: 1000;
+
+    &__msg {
+        @include text-title;
+        margin: 0px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        background-color: var(--c-background-0);
+        transition: all 0.3s;
+
+        &--fade {
+            animation: fadeOut 0.3s forwards;
+        }
+
+        & .c-message {
+            display: flex;
+            align-items: flex-start;
+        }
+
+        &-icon {
+            margin-right: 10px;
+        }
+
+        &-message {
+            // background-color: dodgerblue;
+        }
+
+        &-close {
+            cursor: pointer;
+            &-icon {
+                border-radius: 50%;
+                padding: 5px;
+                font-size: smaller;
+                background-color: var(--c-foreground-0);
+                color: var(--c-background-0);
+                height: 24px;
+                width: 24px;
+                transform: rotate(45deg) translate(0px, -15px) scale(0.6);            
+            }
+        }
+    }
+
+
+}

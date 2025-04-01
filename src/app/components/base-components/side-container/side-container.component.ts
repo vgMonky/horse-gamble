@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { SideContainerService } from './side-container.service';
@@ -8,7 +8,8 @@ import { SideContainerService } from './side-container.service';
     standalone: true,
     imports: [CommonModule],
     templateUrl: './side-container.component.html',
-    styleUrls: ['./side-container.component.scss']
+    styleUrls: ['./side-container.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class SideContainerComponent implements OnInit, OnDestroy {
     @Input() id!: string;

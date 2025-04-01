@@ -1,6 +1,6 @@
 // src/app/reusable/ui/window-container.component.ts
 
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -15,7 +15,8 @@ import { CommonModule } from '@angular/common';
             </div>
         </div>
     `,
-    styleUrls: ['./window-container.component.scss']
+    styleUrls: ['./window-container.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class WindowContainerComponent {
     @Output() close = new EventEmitter<void>();

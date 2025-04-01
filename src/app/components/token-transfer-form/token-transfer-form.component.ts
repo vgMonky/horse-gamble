@@ -11,6 +11,7 @@ import { AbstractControl } from '@angular/forms';
 import { timer, of, catchError, map, switchMap } from 'rxjs';
 import { ExpandableManagerService } from '@app/components/base-components/expandable/expandable-manager.service';
 import { SharedModule } from '@app/shared/shared.module';
+import { MessageService } from '@app/services/messages.service';
 
 @Component({
     selector: 'app-token-transfer-form',
@@ -18,7 +19,7 @@ import { SharedModule } from '@app/shared/shared.module';
     imports: [
         CommonModule,
         ReactiveFormsModule,
-        SharedModule
+        SharedModule,
     ],
     templateUrl: './token-transfer-form.component.html',
     styleUrls: ['./token-transfer-form.component.scss']
@@ -38,7 +39,8 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
         private tokenTransferService: TokenTransferService,
         private sessionService: SessionService,
         private accountKitService: AccountKitService,
-        private expandableManager: ExpandableManagerService
+        private expandableManager: ExpandableManagerService,
+        private messageService: MessageService,
     ) {}
 
     ngOnInit(): void {
@@ -46,7 +48,7 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
         this.tokenTransferService.getTransferStatus$(this.tokenSymbol)
             .pipe(takeUntil(this.destroy$))
             .subscribe(status => {
-                this.transferStatus = status;
+                this.handleNewStatus(status);
             });
 
         // Initialize Form
@@ -103,6 +105,37 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
                     }, 500);
                 }
             });
+    }
+
+    handleNewStatus(status: TransferStatus) {
+        this.transferStatus = status;
+
+        switch(status.state) {
+            case 'success':
+                // this.form.reset();
+                this.messageService.pushMessage({
+                    content: 'COMPONENTS.TRANSFER-FORM.TRANSFER_SUCCESS',
+                    type: 'success',
+                    autoClose: true,
+                    duration: 4000,
+                    destroyDelay: 600,
+                });
+
+                break;
+            case 'failure':
+                // this.form.get('recipient')?.setErrors({ accountNotFound: true });
+                this.messageService.pushMessage({
+                    content: status.message,
+                    type: 'error',
+                    autoClose: true,
+                    duration: 4000,
+                    destroyDelay: 600,
+                });
+                break;
+            case 'none':
+                // this.tokenTransferService.resetTransferCycle(this.tokenSymbol);
+                break;
+        }
     }
 
     ngOnDestroy(): void {
@@ -215,6 +248,14 @@ export class TokenTransferFormComponent implements OnInit, OnDestroy {
 
         try {
             this.isLoading = true;
+            this.messageService.pushMessage({
+                content: 'COMPONENTS.TRANSFER-FORM.TRANSFERRING',
+                // rotate between types
+                type: 'info',
+                autoClose: true,
+                duration: 3000,
+                destroyDelay: 600,
+            });
             await this.tokenTransferService.makeTokenTransaction(
                 sender.toString(),
                 recipient,
