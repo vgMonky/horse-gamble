@@ -48,24 +48,24 @@ export class AppComponent {
         this.translate.use('en');
 
         // FIXME: remove this code. It's just for testing purposes -----
-        let counter = 6;
-        const timer = setInterval(() => {
-            console.log('counter', counter);
-            const types = ['info', 'success', 'warning', 'error'];
-            if (counter === 0) {
-                clearInterval(timer);
-            }
-            const type = types[counter % types.length];
-            this.messageService.pushMessage({
-                content: 'SAMPLE_MESSAGE',
-                // rotate between types
-                type: type,
-                autoClose: true,
-                duration: 5000,
-                destroyDelay: 600,
-            });
-            counter--;
-        }, 1000);
+        // let counter = 1;
+        // const timer = setInterval(() => {
+        //     console.log('counter', counter);
+        //     const types = ['info', 'success', 'warning', 'error'];
+        //     if (counter === 0) {
+        //         clearInterval(timer);
+        //     }
+        //     const type = types[counter % types.length];
+        //     this.messageService.pushMessage({
+        //         content: 'SAMPLE_MESSAGE',
+        //         // rotate between types
+        //         type: type,
+        //         autoClose: true,
+        //         duration: 5000,
+        //         destroyDelay: 600,
+        //     });
+        //     counter--;
+        // }, 1000);
         // -------------------------------------------------------------
     }
 }
