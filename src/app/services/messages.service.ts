@@ -33,7 +33,6 @@ export class MessageService {
     }
 
     public pushMessage(message: Partial<IMessageData>): void {
-        console.log('MessageService.pushMessage()', { message });
 
         // Generate a unique id for the message
         message.id = this.nextId.toString();
@@ -45,7 +44,7 @@ export class MessageService {
             ...message
         });
         this.messagesSubject.next(this.messages);
-        
+
         const startDestroyingTime = message.duration! + message.destroyDelay!;
         if (message.autoClose && message.duration) {
             setTimeout(() => {
@@ -55,7 +54,6 @@ export class MessageService {
     }
 
     public dismissMessage(id: string): void {
-        console.log('MessageService.dismissMessage()', { id });
 
         // get the message by id
         const message = this.messages.find((msg) => msg.id === id);
@@ -71,7 +69,7 @@ export class MessageService {
         setTimeout(() => {
             // Remove the message from the queue
             this.messages = this.messages.filter((msg) => msg.id !== id);
-            console.log('MessageService.dismissMessage() messagesSubject.next()', { id, messages: this.messages });
+
             this.messagesSubject.next(this.messages);
         }, message.destroyDelay);
     }

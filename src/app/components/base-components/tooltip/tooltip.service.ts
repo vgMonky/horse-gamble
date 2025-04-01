@@ -21,7 +21,7 @@ export class TooltipService {
 
     // Show tooltip with provided text and element offset
     public show(text: string, target: DOMRect): void {
-        console.log('TooltipService show', { text, target });
+        clearTimeout(this.timer);
         if (!this.tooltipComponentRef) {
             // Create the component dynamically
             this.tooltipComponentRef = createComponent(TooltipComponent, {
@@ -42,10 +42,23 @@ export class TooltipService {
     }
 
     // Hide the tooltip
+    timer = setTimeout(() => {},0);
     public hide(): void {
-        console.log('TooltipService hide', { tooltipComponentRef: this.tooltipComponentRef });
         if (this.tooltipComponentRef) {
             this.tooltipComponentRef.instance.hide();
+        }
+        clearTimeout(this.timer);
+        this.timer = setTimeout(() => {
+            this.destroy();
+        }, 400);
+    }
+
+    // Destroy the tooltip
+    public destroy(): void {
+        if (this.tooltipComponentRef) {
+            this.appRef.detachView(this.tooltipComponentRef.hostView);
+            this.tooltipComponentRef.destroy();
+            this.tooltipComponentRef = null;
         }
     }
 }

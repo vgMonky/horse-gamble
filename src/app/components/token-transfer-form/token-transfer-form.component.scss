@@ -4,7 +4,7 @@
     &__container {
         display: flex;
         flex-direction: column;
-        gap: 40px;
+        gap: 20px;
     }
 
     &__header {
@@ -56,6 +56,7 @@
         }
     }
 
+
     &__input-container {
         display: flex;
         flex-direction: column;
@@ -68,6 +69,19 @@
         }
     }
 
+    &__result {
+        margin: 0px;
+    }
+    &__error-message {
+        @include text-small;
+        color: var(--c-alert-0);
+        margin: 0px;
+        text-align: center;
+    }
+    &__input-buttons {
+        display: flex;
+        gap: 10px;
+    }
     &__status {
         margin: 0px;
         &-checking {
