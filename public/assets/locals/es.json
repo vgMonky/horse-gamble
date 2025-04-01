@@ -86,7 +86,8 @@
             },
             "SUCCESS": "✅ Transacción Exitosa",
             "FAILURE": "❌ Transacción Fallida",
-            "TRANSFERRING": "⏳ Transferiendo..."
+            "TRANSFERRING": "Transferiendo...",
+            "TRANSFERRING_ICON": "⏳ Transferiendo..."
         }
     },
     "TYPES": {
