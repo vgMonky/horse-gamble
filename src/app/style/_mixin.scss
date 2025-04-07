@@ -99,12 +99,13 @@
 
 @mixin button-0 {
     @include button-base-0;
-    color: var(--c-background-0);
-    border: none;
-    background: var(--c-gradient-0);
+    color: var(--c-accent-0);
+    background-color: var(--c-background-0);
+    border: 1px solid var(--c-accent-0);
     &:hover,
     &:active {
-        background: var(--c-gradient-1);
+        background-color: var(--c-accent-0);
+        color: var(--c-background-0)
     }
 }
 
