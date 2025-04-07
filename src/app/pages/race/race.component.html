@@ -1,6 +1,7 @@
 <div class="p-trade">
-    <h2>Race in Progress</h2>
-    <p>First to {{ finalPosition }} wins!</p>
+    <h2 class="p-trade__title">Race in Progress</h2>
+    <p class="p-trade__subtitle">First to {{ finalPosition }} wins!</p>
+    <br>
 
     <div *ngFor="let horse of horses" class="horse-track">
         <label>Horse {{ horse.index }} — Position: {{ horse.position }}</label>
