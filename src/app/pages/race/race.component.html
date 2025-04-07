@@ -1,0 +1,9 @@
+<div class="p-trade">
+    <div class="p-trade__title">{{ 'PAGES.HORSE-RACE.T1' | translate }}</div>
+    <div class="p-trade__title">{{ 'PAGES.HORSE-RACE.T2' | translate }}</div>
+    <br />
+    <label for="useHorse1">Use Horse 1</label>
+    <input id="useHorse1" type="checkbox" [(ngModel)]="useHorse1" />
+
+    <app-phaser-canvas [useHorse1]="useHorse1" />
+</div>
