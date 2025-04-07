@@ -48,7 +48,7 @@ import {
                     frameWidth: 430,
                     frameHeight: 300,
                 });
-                this.load.spritesheet('horse2', 'public/assets/horse-sprite-sheet-2.jpg', {
+                this.load.spritesheet('horse2', 'assets/horse-sprite-sheet-2.jpg', {
                     frameWidth: 400,
                     frameHeight: 300,
                 });
