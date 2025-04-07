@@ -1,25 +1,29 @@
 <div class="p-trade">
-    <div class="p-trade">
-        <h2>Race in Progress</h2>
-        <p>First to {{ finalPosition }} wins!</p>
-        <ul>
-            <li *ngFor="let horse of horses">
-                Horse {{ horse.index }} — Position: {{ horse.position }}
-            </li>
-        </ul>
+    <h2>Race in Progress</h2>
+    <p>First to {{ finalPosition }} wins!</p>
 
-        <div *ngIf="winner">
-            <h3>🏁 Winner: Horse {{ winner.index }}</h3>
-            <h4>🏆 Final Standings:</h4>
-            <ol>
-                <li *ngFor="let h of podium">
-                    Horse {{ h.index }} ({{ h.position }})
-                </li>
-            </ol>
-        </div>
+    <div *ngFor="let horse of horses" class="horse-track">
+        <label>Horse {{ horse.index }} — Position: {{ horse.position }}</label>
+        <input
+            type="range"
+            [min]="0"
+            [max]="finalPosition"
+            [value]="horse.position"
+            disabled
+        />
     </div>
-    <br>
-    <br>
+
+    <div *ngIf="winner">
+        <h3>🏁 Winner: Horse {{ winner.index }}</h3>
+        <h4>🏆 Final Standings:</h4>
+        <ol>
+            <li *ngFor="let h of podium">
+                Horse {{ h.index }} ({{ h.position }})
+            </li>
+        </ol>
+    </div>
+
+    <br /><br />
     <label for="useHorse1">Use Horse 1</label>
     <input id="useHorse1" type="checkbox" [(ngModel)]="useHorse1" />
 

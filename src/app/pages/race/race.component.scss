@@ -8,7 +8,44 @@
     &__title {
         @include text-title;
     }
+
     &__subtitle {
         @include text-subtitle;
+    }
+
+    .horse-track {
+        margin-bottom: 1rem;
+
+        label {
+            display: block;
+            margin-bottom: 0.25rem;
+            font-weight: bold;
+        }
+
+        input[type='range'] {
+            width: 100%;
+            height: 6px;
+            background: var(--c-background-4);
+            border-radius: 3px;
+            appearance: none;
+            pointer-events: none;
+
+            &::-webkit-slider-thumb {
+                appearance: none;
+                width: 16px;
+                height: 16px;
+                background: var(--c-accent-0);
+                border-radius: 50%;
+                cursor: default;
+            }
+
+            &::-moz-range-thumb {
+                width: 16px;
+                height: 16px;
+                background: var(--c-accent-0);
+                border-radius: 50%;
+                cursor: default;
+            }
+        }
     }
 }
