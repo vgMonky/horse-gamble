@@ -10,11 +10,13 @@ export class RaceService implements OnDestroy {
     private _horses = new BehaviorSubject<Horse[]>([]);
     private _winner = new BehaviorSubject<Horse | null>(null);
     private _podium = new BehaviorSubject<Horse[]>([]);
+    private _finalPosition = new BehaviorSubject<number>(this.winningDistance);
     private raceFinished = false;
 
     horses$ = this._horses.asObservable();
     winner$ = this._winner.asObservable();
     podium$ = this._podium.asObservable();
+    finalPosition$ = this._finalPosition.asObservable();
 
     startRace(horseCount: number = 4): void {
         const horses = Array.from({ length: horseCount }, (_, i) => new Horse(i + 1));

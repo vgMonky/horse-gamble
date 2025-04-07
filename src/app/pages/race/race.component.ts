@@ -23,6 +23,7 @@ export class RaceComponent implements OnInit, OnDestroy {
     horses: any[] = [];
     winner: any = null;
     podium: any[] = [];
+    finalPosition = 0;
 
     private sub = new Subscription();
 
@@ -32,6 +33,8 @@ export class RaceComponent implements OnInit, OnDestroy {
         this.sub.add(this.raceService.horses$.subscribe(h => this.horses = h));
         this.sub.add(this.raceService.winner$.subscribe(w => this.winner = w));
         this.sub.add(this.raceService.podium$.subscribe(p => this.podium = p));
+        this.sub.add(this.raceService.finalPosition$.subscribe(fp => this.finalPosition = fp));
+
         this.raceService.startRace();
     }
 
