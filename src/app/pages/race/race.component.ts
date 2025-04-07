@@ -7,10 +7,10 @@ import { SharedModule } from '@app/shared/shared.module';
     imports: [SharedModule],
     template: `
         <div class="p-trade">
-            <div class="p-trade__title">{{ 'PAGES.TRADE.TITLE' | translate }}</div>
-            <p class="p-trade__subtitle">{{ 'PAGES.TRADE.DESCRIPTION' | translate }}</p>
+            <div class="p-trade__title">{{ 'PAGES.HORSE-RACE.T1' | translate }}</div>
+            <p class="p-trade__subtitle">{{ 'PAGES.HORSE-RACE.T2' | translate }}</p>
         </div>
     `,
-    styleUrls: ['./trade.component.scss']
+    styleUrls: ['./race.component.scss']
 })
-export class TradeComponent {}
+export class RaceComponent {}

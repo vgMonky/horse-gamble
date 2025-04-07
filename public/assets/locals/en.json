@@ -5,10 +5,10 @@
             "TITLE": "DEX",
             "DESCRIPTION": "A peer-to-peer marketplace where transactions occur directly between cryptocurrency traders."
         },
-        "TRADE": {
-            "NAME": "Trade",
-            "TITLE": "Trading Page",
-            "DESCRIPTION": "Description!"
+        "HORSE-RACE": {
+            "NAME": "Horse Race",
+            "T1": "Horses List",
+            "T2": "Canvas"
         },
         "EXPLORE": {
             "NAME": "Explore",

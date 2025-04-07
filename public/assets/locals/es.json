@@ -5,10 +5,10 @@
             "TITLE": "DEX",
             "DESCRIPTION": "Un mercado peer-to-peer donde las transacciones se realizan directamente entre operadores de criptomonedas."
         },
-        "TRADE": {
-            "NAME": "Tradeo",
-            "TITLE": "Página de Tradeo",
-            "DESCRIPTION": "¡Descripción!"
+        "HORSE-RACE": {
+            "NAME": "Carrera de caballo",
+            "T1": "Lista de Caballos",
+            "T2": "Canvas"
         },
         "EXPLORE": {
             "NAME": "Explorar",
