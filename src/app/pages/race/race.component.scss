@@ -13,6 +13,10 @@
         @include text-subtitle;
     }
 
+    &__button {
+        @include button-0
+    }
+
     .horse-track {
         margin-bottom: 1rem;
 

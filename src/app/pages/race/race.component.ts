@@ -42,4 +42,8 @@ export class RaceComponent implements OnInit, OnDestroy {
         this.sub.unsubscribe();
         this.raceService.stopRace();
     }
+
+    restartRace(): void {
+        this.raceService.restartRace();
+    }
 }

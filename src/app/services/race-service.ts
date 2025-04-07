@@ -28,6 +28,11 @@ export class RaceService implements OnDestroy {
         this.raceInterval$ = interval(this.tickSpeed).subscribe(() => this.runRaceTick());
     }
 
+    restartRace(horseCount: number = 4): void {
+        this.stopRace();
+        this.startRace(horseCount);
+    }
+
     private runRaceTick(): void {
         if (this.raceFinished) return;
 

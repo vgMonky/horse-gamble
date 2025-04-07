@@ -14,6 +14,10 @@
         />
     </div>
 
+    <button class="p-trade__button" (click)="restartRace()">🔁 Restart Race</button>
+    <br>
+    <br>
+
     <div *ngIf="winner">
         <h3>🏁 Winner: Horse {{ winner.index }}</h3>
         <h4>🏆 Final Standings:</h4>
