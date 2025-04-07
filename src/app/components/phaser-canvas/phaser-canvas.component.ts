@@ -8,15 +8,15 @@ import {
     ElementRef,
     ViewChild
     } from '@angular/core';
-    import Phaser from 'phaser';
+import Phaser from 'phaser';
 
-    @Component({
+@Component({
     selector: 'app-phaser-canvas',
     templateUrl: './phaser-canvas.component.html',
     styleUrls: ['./phaser-canvas.component.scss'],
     standalone: true
-    })
-    export class PhaserCanvasComponent implements OnInit, OnDestroy, OnChanges {
+})
+export class PhaserCanvasComponent implements OnInit, OnDestroy, OnChanges {
     @Input() useHorse1: boolean = true;
 
     @ViewChild('phaserContainer', { static: true }) containerRef!: ElementRef;
