@@ -5,6 +5,7 @@
 
     <div *ngFor="let horse of horses" class="horse-track">
         <label>Horse {{ horse.index }} — Position: {{ horse.position }}</label>
+        <br>
         <input
             type="range"
             [min]="0"
@@ -12,6 +13,8 @@
             [value]="horse.position"
             disabled
         />
+        <br>
+        <br>
     </div>
 
     <button class="p-trade__button" (click)="restartRace()">🔁 Restart Race</button>
