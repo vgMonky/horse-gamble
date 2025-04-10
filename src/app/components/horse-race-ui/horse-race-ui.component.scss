@@ -5,9 +5,7 @@
 }
 
 .c-horse-race {
-    border: 1px solid red;
-    padding: 10px 30px;
-    margin: auto;
+    @include container-border;
 
     &__title {
         @include text-title;
@@ -58,5 +56,10 @@
                 cursor: default;
             }
         }
+    }
+
+    &__race-result{
+        @include container-border;
+        background-color: var(--c-background-0);
     }
 }

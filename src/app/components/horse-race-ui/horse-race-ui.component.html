@@ -1,10 +1,10 @@
 <div class="c-horse-race">
-    <h2 class="c-horse-race__title">Race in Progress</h2>
-    <p class="c-horse-race__subtitle">First to {{ finalPosition }} wins!</p>
+    <div class="c-horse-race__title">Current Race</div>
+    <div class="c-horse-race__subtitle">Race Distance: {{ finalPosition }}m</div>
     <br />
 
     <div *ngFor="let horse of horses" class="c-horse-race__horse-track">
-        <label>Horse {{ horse.index }} — Position: {{ horse.position }}</label>
+        <label>Horse {{ horse.index }} — {{ horse.position }}m</label>
         <br>
         <input
             type="range"
@@ -19,9 +19,8 @@
     <button class="c-horse-race__button" (click)="restartRace()">Restart Race</button>
     <br /><br />
 
-    <div *ngIf="winner">
-        <h3>🏁 Winner: Horse {{ winner.index }}</h3>
-        <h4>🏆 Final Standings:</h4>
+    <div class="c-horse-race__race-result" *ngIf="winner">
+        <div class="c-horse-race__subtitle">🏆 Final Standings:</div>
         <ol>
             <li *ngFor="let h of podium">
                 Horse {{ h.index }} ({{ h.position }})
