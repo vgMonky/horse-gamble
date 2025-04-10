@@ -4,7 +4,7 @@
     @include page;
 }
 
-.p-trade {
+.p-race {
     &__title {
         @include text-title;
     }
@@ -15,44 +15,5 @@
 
     &__button {
         @include button-0
-    }
-
-    .horse-track {
-        margin-bottom: 1rem;
-
-        label {
-            @include text-small;
-            display: block;
-            margin-bottom: 0.25rem;
-            font-weight: bold;
-        }
-
-        input[type='range'] {
-            width: 100%;
-            height: 6px;
-            background: var(--c-background-4);
-            border-radius: 3px;
-            appearance: none;
-            pointer-events: none;
-
-            &::-webkit-slider-thumb {
-                appearance: none;
-                width: 45px;
-                height: 45px;
-                background: url('/assets/horse-head.png') no-repeat center center;
-                background-size: contain;
-                border: none;
-                cursor: default;
-            }
-
-            &::-moz-range-thumb {
-                width: 45px;
-                height: 45px;
-                background: url('/assets/horse-head.png') no-repeat center center;
-                background-size: contain;
-                border: none;
-                cursor: default;
-            }
-        }
     }
 }

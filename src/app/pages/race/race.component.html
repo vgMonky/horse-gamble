@@ -1,35 +1,5 @@
-<div class="p-trade">
-    <h2 class="p-trade__title">Race in Progress</h2>
-    <p class="p-trade__subtitle">First to {{ finalPosition }} wins!</p>
-    <br>
-
-    <div *ngFor="let horse of horses" class="horse-track">
-        <label>Horse {{ horse.index }} — Position: {{ horse.position }}</label>
-        <br>
-        <input
-            type="range"
-            [min]="0"
-            [max]="finalPosition"
-            [value]="horse.position"
-            disabled
-        />
-        <br>
-        <br>
-    </div>
-
-    <button class="p-trade__button" (click)="restartRace()">🔁 Restart Race</button>
-    <br>
-    <br>
-
-    <div *ngIf="winner">
-        <h3>🏁 Winner: Horse {{ winner.index }}</h3>
-        <h4>🏆 Final Standings:</h4>
-        <ol>
-            <li *ngFor="let h of podium">
-                Horse {{ h.index }} ({{ h.position }})
-            </li>
-        </ol>
-    </div>
+<div class="p-race">
+    <app-horse-race-ui />
 
     <br /><br />
     <label for="useHorse1">Use Horse 1</label>
