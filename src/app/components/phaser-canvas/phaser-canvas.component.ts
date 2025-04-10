@@ -55,7 +55,7 @@ export class PhaserCanvasComponent implements OnInit, OnDestroy, OnChanges {
             }
 
             create() {
-                this.horseSprite = this.add.sprite(400, 300, 'horse1');
+                this.horseSprite = this.add.sprite(150, 150, 'horse1');
 
                 this.anims.create({
                     key: 'run1',
@@ -91,8 +91,8 @@ export class PhaserCanvasComponent implements OnInit, OnDestroy, OnChanges {
 
         this.game = new Phaser.Game({
             type: Phaser.AUTO,
-            width: 800,
-            height: 600,
+            width: 300,
+            height: 300,
             parent: this.containerRef.nativeElement,
             scene: [MainScene],
         });
