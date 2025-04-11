@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { SharedModule } from '@app/shared/shared.module';
 import { PhaserCanvasComponent } from '@app/components/phaser-canvas/phaser-canvas.component';
 import { HorseRaceUiComponent } from '@app/components/horse-race-ui/horse-race-ui.component';
-import { RaceService } from '@app/services/race-service';
+import { RaceService } from '@app/services/race.service';
 import { Subscription } from 'rxjs';
 
 @Component({

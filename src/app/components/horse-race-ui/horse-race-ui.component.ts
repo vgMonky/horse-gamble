@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RaceService } from '@app/services/race-service';
+import { RaceService } from '@app/services/race.service';
 import { Subscription } from 'rxjs';
 
 @Component({
