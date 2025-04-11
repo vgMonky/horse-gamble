@@ -3,8 +3,8 @@ import { BehaviorSubject, interval, Subscription } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class RaceService implements OnDestroy {
-    private readonly tickSpeed = 1000;
-    private readonly winningDistance = 500;
+    private readonly tickSpeed = 600;
+    private readonly winningDistance = 1000;
     private raceInterval$!: Subscription;
 
     private _horses = new BehaviorSubject<Horse[]>([]);
