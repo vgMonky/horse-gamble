@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NavBarComponent } from '@app/components/nav-bar/nav-bar.component';
 import { SideMenuMobileComponent } from '@app/components/side-menu-mobile/side-menu-mobile.component';
-import { RedirectService } from '@app/services/redirect.services';
+import { RedirectService } from '@app/services/redirect.service';
 import { SharedModule } from '@app/shared/shared.module';
 import { TranslateService } from '@ngx-translate/core';
 
