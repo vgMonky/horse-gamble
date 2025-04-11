@@ -19,7 +19,7 @@
     <button class="c-horse-race__button" (click)="restartRace()">Restart Race</button>
     <br /><br />
 
-    <div class="c-horse-race__race-result" *ngIf="winner">
+    <div class="c-horse-race__race-result">
         <div class="c-horse-race__subtitle">🏆 Final Standings:</div>
         <ol>
             <li *ngFor="let h of podium">

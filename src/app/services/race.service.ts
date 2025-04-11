@@ -3,7 +3,7 @@ import { BehaviorSubject, interval, Subscription } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class RaceService implements OnDestroy {
-    private readonly tickSpeed = 600;
+    private readonly tickSpeed = 400;
     private readonly winningDistance = 1000;
     private raceInterval$!: Subscription;
 
@@ -34,35 +34,44 @@ export class RaceService implements OnDestroy {
     }
 
     private runRaceTick(): void {
-        if (this.raceFinished) return;
-
         const horses = [...this._horses.getValue()];
+        const podium = [...this._podium.getValue()];
         const seed = new Seed(8);
         const advances = seed.splitNumber(horses.length);
 
         horses.forEach((horse, i) => {
-            const amount = advances[i] || 0;
-            horse.advance(amount);
+            if (horse.position < this.winningDistance) {
+                const amount = advances[i] || 0;
+                horse.advance(amount);
+
+                // If horse now crosses finish line, add to podium if not already there
+                if (horse.position >= this.winningDistance && !podium.includes(horse)) {
+                    podium.push(horse);
+                    console.log(`🎉 Horse ${horse.index} finished!`);
+                }
+            }
         });
 
         this._horses.next(horses);
+        this._podium.next(podium);
         console.log('Seed value:', seed.value);
         console.log('Advance values:', advances);
         console.log('Horse positions:', horses.map(h => h.position));
 
-        const winner = horses.find(h => h.position >= this.winningDistance);
-        if (winner) {
-            this.raceFinished = true;
-            this._winner.next(winner);
+        // First horse that finished is considered the winner
+        if (!this._winner.getValue() && podium.length > 0) {
+            this._winner.next(podium[0]);
+            console.log(`🏁 Horse ${podium[0].index} is the winner!`);
+        }
 
-            const podium = [...horses].sort((a, b) => b.position - a.position);
-            this._podium.next(podium);
-            console.log(`🏁 Horse ${winner.index} wins the race!`);
-
+        // All horses finished?
+        if (podium.length === horses.length) {
+            console.log(`✅ All horses finished! Final podium:`);
             podium.forEach((horse, place) => {
                 console.log(`${place + 1}º place: Horse ${horse.index} (${horse.position})`);
             });
 
+            this.raceFinished = true;
             this.stopRace();
         }
     }
