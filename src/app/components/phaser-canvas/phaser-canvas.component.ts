@@ -44,11 +44,11 @@ export class PhaserCanvasComponent implements OnInit, OnDestroy, OnChanges {
             private horseSprite?: Phaser.GameObjects.Sprite;
 
             preload() {
-                this.load.spritesheet('horse1', 'assets/horse-sprite-sheet-1.jpg', {
+                this.load.spritesheet('horse1', 'assets/game-img/sprite-sheet/horse-sprite-sheet-1.jpg', {
                     frameWidth: 430,
                     frameHeight: 300,
                 });
-                this.load.spritesheet('horse2', 'assets/horse-sprite-sheet-2.jpg', {
+                this.load.spritesheet('horse2', 'assets/game-img/sprite-sheet/horse-sprite-sheet-2.jpg', {
                     frameWidth: 400,
                     frameHeight: 300,
                 });
