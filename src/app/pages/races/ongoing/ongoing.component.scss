@@ -4,11 +4,16 @@
     @include page;
 }
 
-.p-pool {
+.p-ongoing {
     &__title {
         @include text-title;
     }
+
     &__subtitle {
         @include text-subtitle;
+    }
+
+    &__button {
+        @include button-0
     }
 }

@@ -2,23 +2,20 @@
     "PAGES": {
         "HOME": {
             "NAME": "Inicio",
-            "TITLE": "DEX",
-            "DESCRIPTION": "Un mercado peer-to-peer donde las transacciones se realizan directamente entre operadores de criptomonedas."
+            "TITLE": "Landing Inicial",
+            "DESCRIPTION": "Un juego de apuestas de carrera de caballos basado en Telos EVM."
         },
-        "HORSE-RACE": {
-            "NAME": "Carrera de caballo",
-            "T1": "Lista de Caballos",
-            "T2": "Canvas"
+        "UPCOMING": {
+            "NAME": "Abiertas",
+            "TITLE": "Upcoming Races"
         },
-        "EXPLORE": {
-            "NAME": "Explorar",
-            "TITLE": "Página de Exploración",
-            "DESCRIPTION": "¡Descubre nuevo contenido aquí!"
+        "ONGOING": {
+            "NAME": "Corriendo",
+            "TITLE": "Carrera en Vivo"
         },
-        "POOL": {
-            "NAME": "Piscina",
-            "TITLE": "Página de Piscina de Liquidez",
-            "DESCRIPTION": "¡Descripción!"
+        "COMPLETED": {
+            "NAME": "Completadas",
+            "TITLE": "Carreras Completadas"
         },
         "WALLET": {
             "NAME": "Billetera",

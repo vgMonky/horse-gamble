@@ -9,7 +9,7 @@ import { Subscription } from 'rxjs';
 
 @Component({
     standalone: true,
-    selector: 'app-trade',
+    selector: 'app-ongoing',
     imports: [
         SharedModule,
         CommonModule,
@@ -17,10 +17,10 @@ import { Subscription } from 'rxjs';
         PhaserCanvasComponent,
         HorseRaceUiComponent
     ],
-    templateUrl: './race.component.html',
-    styleUrls: ['./race.component.scss']
+    templateUrl: './ongoing.component.html',
+    styleUrls: ['./ongoing.component.scss']
 })
-export class RaceComponent implements OnInit, OnDestroy {
+export class OngoingComponent implements OnInit, OnDestroy {
     useHorse1 = true;
 
     private sub = new Subscription();

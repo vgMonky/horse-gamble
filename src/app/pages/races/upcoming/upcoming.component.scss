@@ -4,16 +4,11 @@
     @include page;
 }
 
-.p-race {
+.p-upcoming {
     &__title {
         @include text-title;
     }
-
     &__subtitle {
         @include text-subtitle;
-    }
-
-    &__button {
-        @include button-0
     }
 }

@@ -36,13 +36,13 @@ export class RedirectService implements OnDestroy {
             .subscribe(session => {
                 if (session) {
                     if (isMobile) {
-                        this.router.navigate(['/race']);
+                        this.router.navigate(['/ongoing']);
                     }
                 } else {
                     if (isMobile) {
-                        this.router.navigate(['/race']);
+                        this.router.navigate(['/ongoing']);
                     } else {
-                        this.router.navigate(['/']);
+                        this.router.navigate(['/ongoing']);
                     }
                 }
             });

@@ -2,23 +2,20 @@
     "PAGES": {
         "HOME": {
             "NAME": "Home",
-            "TITLE": "DEX",
-            "DESCRIPTION": "A peer-to-peer marketplace where transactions occur directly between cryptocurrency traders."
+            "TITLE": "Home Landing",
+            "DESCRIPTION": "A horse race gambling game based on Telos EVM."
         },
-        "HORSE-RACE": {
-            "NAME": "Horse Race",
-            "T1": "Horses List",
-            "T2": "Canvas"
+        "UPCOMING": {
+            "NAME": "Upcoming",
+            "TITLE": "Upcoming Races"
         },
-        "EXPLORE": {
-            "NAME": "Explore",
-            "TITLE": "Exploration Page",
-            "DESCRIPTION": "Discover new content here!"
+        "ONGOING": {
+            "NAME": "Ongoing",
+            "TITLE": "Ongoing Races"
         },
-        "POOL": {
-            "NAME": "Pool",
-            "TITLE": "Liquidity Pool Page",
-            "DESCRIPTION": "Description!"
+        "COMPLETED": {
+            "NAME": "Completed",
+            "TITLE": "Completed Races"
         },
         "WALLET": {
             "NAME": "Wallet",
