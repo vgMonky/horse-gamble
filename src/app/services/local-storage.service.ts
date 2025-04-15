@@ -60,7 +60,7 @@ export class LocalStorageService {
         } else {
             // No preferences found at all — default preferences
             this.store.dispatch(user.actions.setDark());
-            this.store.dispatch(user.actions.setHueTheme({ h0: 100, h1: 40 }));
+            this.store.dispatch(user.actions.setHueTheme({ h0: 40, h1: 100 }));
         }
     }
 }
