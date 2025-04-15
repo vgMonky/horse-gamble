@@ -24,6 +24,7 @@
 
     &__button {
         @include hyperlink;
+        margin-left: 10px
     }
 
     &__icon {
