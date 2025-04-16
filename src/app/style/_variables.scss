@@ -10,7 +10,7 @@
 /* Dark Theme default*/
 body.dark-theme {
     --c-background-0: hsl(var(--h1), 0%, 4%); // background dark 0
-    --c-background-1: hsl(var(--h1), 0%, 5%); // background dark 1
+    --c-background-1: hsl(var(--h1), 0%, 7%); // background dark 1
     --c-background-2: hsl(var(--h1), 0%, 9%); // background dark 2
     --c-background-3: hsl(var(--h1), 0%, 11%); // background dark 3
     --c-background-4: hsl(var(--h1), 0%, 13%); // background dark 4
@@ -39,11 +39,11 @@ body.dark-theme {
 
 /* Light Theme */
 body.light-theme {
-    --c-background-0: hsl(var(--h1), 10%, 32%); // background light 0
-    --c-background-1: hsl(var(--h1), 10%, 36%); // background light 1
-    --c-background-2: hsl(var(--h1), 10%, 30%); // background light 2
-    --c-background-3: hsl(var(--h1), 10%, 45%); // background light 3
-    --c-background-4: hsl(var(--h1), 10%, 50%); // background light 4
+    --c-background-0: hsl(var(--h1), 10%, 28%); // background light 0
+    --c-background-1: hsl(var(--h1), 10%, 30%); // background light 1
+    --c-background-2: hsl(var(--h1), 10%, 32%); // background light 2
+    --c-background-3: hsl(var(--h1), 10%, 35%); // background light 3
+    --c-background-4: hsl(var(--h1), 10%, 40%); // background light 4
 
     --c-foreground-2: hsl(var(--h0), 5%, 75%); // foreground light 2
     --c-foreground-1: hsl(var(--h0), 5%, 80%); // foreground light 1
