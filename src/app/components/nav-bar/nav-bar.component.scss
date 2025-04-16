@@ -29,7 +29,12 @@
 
     &__icon {
         @include hyperlink;
-        @include icon
+        @include icon;
+        color: var(--c-accent-0);
+        &:hover,
+        &:active {
+            color: var(--c-foreground-2);
+        }
     }
 
     &__dropdown{

@@ -1,11 +1,10 @@
 <div class="p-ongoing">
     <div class="p-ongoing__title">{{ 'PAGES.ONGOING.TITLE' | translate }}</div>
 
-    <app-horse-race-ui />
-
-    <br /><br />
+    <app-phaser-canvas [useHorse1]="useHorse1" />
     <label for="useHorse1">Use Horse 1</label>
     <input id="useHorse1" type="checkbox" [(ngModel)]="useHorse1" />
 
-    <app-phaser-canvas [useHorse1]="useHorse1" />
+    <br><br>
+    <app-horse-race-ui />
 </div>

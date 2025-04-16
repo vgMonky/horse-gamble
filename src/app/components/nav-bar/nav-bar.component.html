@@ -45,7 +45,12 @@
 
             <app-login></app-login>
 
-            <lucide-icon [img]="MenuIcon" class="c-navbar__icon c-navbar__icon--btn" (click)="toggleMobileSideMenu()"></lucide-icon>
+            <lucide-icon
+                [img]="isDarkTheme ? SunIcon : MoonIcon"
+                class="c-navbar__icon lucide_icons"
+                (click)="toggleTheme()"
+            ></lucide-icon>
+            <!-- <lucide-icon [img]="MenuIcon" class="c-navbar__icon c-navbar__icon--btn" (click)="toggleMobileSideMenu()"></lucide-icon> -->
         </div>
     </nav>
 </ng-template>

@@ -1,11 +1,9 @@
 @use 'mixin' as *;
 
-:host {
-    @include page;
-}
-
 .c-horse-race {
     @include container-border;
+    margin: auto;
+    display: inline-block;
 
     &__title {
         @include text-title;
@@ -59,7 +57,6 @@
     }
 
     &__race-result{
-        @include container-border;
-        background-color: var(--c-background-0);
+        @include container-border
     }
 }

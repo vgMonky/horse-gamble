@@ -81,15 +81,11 @@
     transition: 0.3s;
     cursor: pointer;
     //box-shadow: var(--c-shadow-0);
-    &:hover,
-    &:active {
-        box-shadow: var(--c-shadow-1);
-    }
 }
 
 @mixin button-unable-0 {
     @include button-base-0;
-    color: var(--c-foreground-2);
+    color: var(--c-foreground-0);
     border: none;
     cursor: not-allowed;
     opacity: 0.5;
@@ -102,9 +98,7 @@
     background-color: var(--c-accent-0);
     border: 1px solid var(--c-accent-0);
     border-color: var(--c-accent-2) var(--c-accent-2) var(--c-accent-1) var(--c-accent-1);
-    &:hover,
-    &:active,
-    &:focus {
+    &:hover {
         color: var(--c-accent-0);
         background-color: var(--c-background-1);
         border-color: var(--c-accent-0) var(--c-accent-0) var(--c-accent-1) var(--c-accent-1);
@@ -117,8 +111,7 @@
     background-color: var(--c-background-0);
     border: 1px solid var(--c-accent-0);
     border-color: var(--c-accent-0) var(--c-accent-0) var(--c-accent-1) var(--c-accent-1);
-    &:hover,
-    &:active {
+    &:hover {
         color: var(--c-background-0);
         background-color: var(--c-accent-0);
         border-color: var(--c-accent-2) var(--c-accent-2) var(--c-accent-1) var(--c-accent-1);
@@ -153,8 +146,8 @@
 }
 
 @mixin container-border {
-    border: 1px solid var(--c-background-2);
-    border-radius: 4px;
     background-color: var(--c-background-1);
     padding: 20px 30px;
+    border-radius: 8px;
+    border: 1px solid var(--c-background-3);
 }

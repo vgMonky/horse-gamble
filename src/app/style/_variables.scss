@@ -9,8 +9,8 @@
 
 /* Dark Theme default*/
 body.dark-theme {
-    --c-background-0: hsl(var(--h1), 0%, 5%); // background dark 0
-    --c-background-1: hsl(var(--h1), 0%, 7%); // background dark 1
+    --c-background-0: hsl(var(--h1), 0%, 4%); // background dark 0
+    --c-background-1: hsl(var(--h1), 0%, 5%); // background dark 1
     --c-background-2: hsl(var(--h1), 0%, 9%); // background dark 2
     --c-background-3: hsl(var(--h1), 0%, 11%); // background dark 3
     --c-background-4: hsl(var(--h1), 0%, 13%); // background dark 4
@@ -39,21 +39,21 @@ body.dark-theme {
 
 /* Light Theme */
 body.light-theme {
-    --c-background-0: hsl(var(--h1), 0%, 98%); // background light 0
-    --c-background-1: hsl(var(--h1), 0%, 95%); // background light 1
-    --c-background-2: hsl(var(--h1), 0%, 92%); // background light 2
-    --c-background-3: hsl(var(--h1), 0%, 89%); // background light 3
-    --c-background-4: hsl(var(--h1), 0%, 86%); // background light 4
+    --c-background-0: hsl(var(--h1), 10%, 32%); // background light 0
+    --c-background-1: hsl(var(--h1), 10%, 36%); // background light 1
+    --c-background-2: hsl(var(--h1), 10%, 30%); // background light 2
+    --c-background-3: hsl(var(--h1), 10%, 45%); // background light 3
+    --c-background-4: hsl(var(--h1), 10%, 50%); // background light 4
 
-    --c-foreground-2: hsl(var(--h0), 0%, 50%); // foreground dark 2
-    --c-foreground-1: hsl(var(--h0), 0%, 40%); // foreground dark 1
-    --c-foreground-0: hsl(var(--h0), 0%, 0%); // foreground dark 0
+    --c-foreground-2: hsl(var(--h0), 5%, 75%); // foreground light 2
+    --c-foreground-1: hsl(var(--h0), 5%, 80%); // foreground light 1
+    --c-foreground-0: hsl(var(--h0), 5%, 98%); // foreground light 0
 
     --c-accent-0: hsl(var(--h0), 45%, 60%); // accent 0
     --c-accent-1: hsl(var(--h0), 50%, 40%); // accent 1
     --c-accent-2: hsl(var(--h0), 10%, 90%); // accent 2
 
-    --c-accent-0b: hsl(var(--h1), 60%, 55%);  // accent 0 b
+    --c-accent-0b: hsl(var(--h1), 15%, 30%);  // accent 0 b
     --c-accent-1b: hsl(var(--h1), 40%, 16%); // accent 1 b
     --c-accent-2b: hsl(var(--h1), 30%, 8%); // accent 2 b
 
