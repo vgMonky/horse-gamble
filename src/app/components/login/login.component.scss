@@ -5,7 +5,7 @@
         @include button-1;
 
         &--active {
-            @include button-0
+            @include button-1
         }
     }
     &__menu {

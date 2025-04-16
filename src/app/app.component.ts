@@ -5,6 +5,7 @@ import { SideMenuMobileComponent } from '@app/components/side-menu-mobile/side-m
 import { RedirectService } from '@app/services/redirect.service';
 import { SharedModule } from '@app/shared/shared.module';
 import { TranslateService } from '@ngx-translate/core';
+import { RacesMenuMobileComponent } from './components/races-menu-mobile/races-menu-mobile.component';
 
 @Component({
     selector: 'app-root',
@@ -13,6 +14,7 @@ import { TranslateService } from '@ngx-translate/core';
         RouterOutlet,
         NavBarComponent,
         SideMenuMobileComponent,
+        RacesMenuMobileComponent,
         SharedModule
     ],
     template: `
@@ -21,6 +23,7 @@ import { TranslateService } from '@ngx-translate/core';
             <router-outlet></router-outlet>
         </div>
         <app-side-menu-mobile></app-side-menu-mobile>
+        <app-races-menu-mobile></app-races-menu-mobile>
     `,
     styleUrls: ['./app.component.scss']
 })
