@@ -1,8 +1,4 @@
 <div class="c-horse-race">
-    <div class="c-horse-race__title">Current Race</div>
-    <div class="c-horse-race__subtitle">Race Distance: {{ finalPosition }}m</div>
-    <br />
-
     <div *ngFor="let horse of horses" class="c-horse-race__horse-track">
         <label>Horse {{ horse.index }} — {{ horse.position }}m</label>
         <br>
@@ -16,7 +12,10 @@
         <br><br>
     </div>
 
+    <div class="c-horse-race__subtitle">Race Distance: {{ finalPosition }}m</div>
+    <br />
     <button class="c-horse-race__button" (click)="restartRace()">Restart Race</button>
+
     <br /><br />
 
     <div class="c-horse-race__race-result">

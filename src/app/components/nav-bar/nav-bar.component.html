@@ -3,26 +3,11 @@
 <ng-container *ngIf="!isMobileView; else mobileNav">
     <nav class="c-navbar">
         <div class="c-navbar__row">
-            <a
-                class="c-navbar__logo"
-                routerLink="/"
-                routerLinkActive="active-link"
-                [routerLinkActiveOptions]="{ exact: true }"
-            >
-                <svg width="40" height="40" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                        <linearGradient id="gradientStroke" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" stop-color="var(--c-accent-0)" />
-                            <stop offset="100%" stop-color="var(--c-accent-0b)" />
-                        </linearGradient>
-                    </defs>
-                    <circle cx="50" cy="50" r="40" stroke="url(#gradientStroke)" stroke-width="15" fill="none" />
-                </svg>
-            </a>
+            <img src="assets/game-img/gold-horse.png" routerLink="/" width="50px">
 
-            <a class="c-navbar__button" routerLink="/race" routerLinkActive="active-link">{{ 'PAGES.HORSE-RACE.NAME' | translate }}</a>
-            <a class="c-navbar__button" routerLink="/explore" routerLinkActive="active-link">{{ 'PAGES.EXPLORE.NAME' | translate }}</a>
-            <a class="c-navbar__button" routerLink="/pool" routerLinkActive="active-link">{{ 'PAGES.POOL.NAME' | translate }}</a>
+            <a class="c-navbar__button" routerLink="/upcoming" routerLinkActive="active-link">{{ 'PAGES.UPCOMING.NAME' | translate }}</a>
+            <a class="c-navbar__button" routerLink="/ongoing" routerLinkActive="active-link">{{ 'PAGES.ONGOING.NAME' | translate }}</a>
+            <a class="c-navbar__button" routerLink="/completed" routerLinkActive="active-link">{{ 'PAGES.COMPLETED.NAME' | translate }}</a>
         </div>
 
         <div class="c-navbar__row">
@@ -31,7 +16,7 @@
                 <!-- Dropdown Button -->
                 <lucide-icon dropdown-button
                     [img]="GlobeIcon"
-                    class="c-navbar__icon"
+                    class="c-navbar__icon lucide_icons"
                 ></lucide-icon>
 
                 <!-- Dropdown Body -->
@@ -43,7 +28,7 @@
 
             <lucide-icon
                 [img]="isDarkTheme ? SunIcon : MoonIcon"
-                class="c-navbar__icon"
+                class="c-navbar__icon lucide_icons"
                 (click)="toggleTheme()"
             ></lucide-icon>
             <app-login></app-login>
@@ -56,12 +41,16 @@
 <ng-template #mobileNav>
     <nav class="c-navbar">
         <div class="c-navbar__row c-navbar__row--mobile">
-            <lucide-icon [img]="QrIcon" class="c-navbar__icon c-navbar__icon--btn"></lucide-icon>
+            <img src="assets/game-img/gold-horse.png" routerLink="/" width="40px">
 
             <app-login></app-login>
 
-            <lucide-icon [img]="MenuIcon" class="c-navbar__icon c-navbar__icon--btn" (click)="toggleMobileSideMenu()"></lucide-icon>
+            <lucide-icon
+                [img]="isDarkTheme ? SunIcon : MoonIcon"
+                class="c-navbar__icon lucide_icons"
+                (click)="toggleTheme()"
+            ></lucide-icon>
+            <!-- <lucide-icon [img]="MenuIcon" class="c-navbar__icon c-navbar__icon--btn" (click)="toggleMobileSideMenu()"></lucide-icon> -->
         </div>
     </nav>
 </ng-template>
-<!-- -->

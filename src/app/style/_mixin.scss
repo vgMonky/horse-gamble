@@ -76,51 +76,45 @@
     align-items: center;
     gap: 10px;
     font-size: 10pt;
-    padding: 10px 20px;
-    border-radius: 20px;
+    padding: 6px 25px;
+    border-radius: 6px;
     transition: 0.3s;
     cursor: pointer;
-    box-shadow: var(--c-shadow-0);
-    &:hover,
-    &:active {
-        box-shadow: var(--c-shadow-1);
-    }
+    //box-shadow: var(--c-shadow-0);
 }
 
 @mixin button-unable-0 {
     @include button-base-0;
-    color: var(--c-foreground-2);
+    color: var(--c-foreground-0);
     border: none;
-    background-color: var(--c-background-2);
     cursor: not-allowed;
     opacity: 0.5;
-    box-shadow: none;
+    box-shadow: none
 }
 
 @mixin button-0 {
     @include button-base-0;
-    color: var(--c-accent-0);
-    background-color: var(--c-background-0);
+    color: var(--c-background-0);
+    background-color: var(--c-accent-0);
     border: 1px solid var(--c-accent-0);
-    &:hover,
-    &:active {
-        background-color: var(--c-accent-0);
-        color: var(--c-background-0)
+    border-color: var(--c-accent-2) var(--c-accent-2) var(--c-accent-1) var(--c-accent-1);
+    &:hover {
+        color: var(--c-accent-0);
+        background-color: var(--c-background-1);
+        border-color: var(--c-accent-0) var(--c-accent-0) var(--c-accent-1) var(--c-accent-1);
     }
 }
 
 @mixin button-1 {
     @include button-base-0;
     color: var(--c-accent-0);
-    border: 1px solid var(--c-accent-0);
     background-color: var(--c-background-0);
-    margin: 0;
-    outline: none;
-    &:hover,
-    &:active,
-    &:focus {
+    border: 1px solid var(--c-accent-0);
+    border-color: var(--c-accent-0) var(--c-accent-0) var(--c-accent-1) var(--c-accent-1);
+    &:hover {
         color: var(--c-background-0);
         background-color: var(--c-accent-0);
+        border-color: var(--c-accent-2) var(--c-accent-2) var(--c-accent-1) var(--c-accent-1);
     }
 }
 
@@ -152,8 +146,8 @@
 }
 
 @mixin container-border {
-    border: 1px solid var(--c-background-2);
-    border-radius: 4px;
     background-color: var(--c-background-1);
     padding: 20px 30px;
+    border-radius: 8px;
+    border: 1px solid var(--c-background-3);
 }

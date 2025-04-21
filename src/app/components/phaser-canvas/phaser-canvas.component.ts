@@ -44,11 +44,15 @@ export class PhaserCanvasComponent implements OnInit, OnDestroy, OnChanges {
             private horseSprite?: Phaser.GameObjects.Sprite;
 
             preload() {
-                this.load.spritesheet('horse1', 'assets/horse-sprite-sheet-1.jpg', {
+                this.load.spritesheet('horse0', 'assets/game-img/sprite-sheet/horse-sprite-sheet-0.png', {
+                    frameWidth: 575,
+                    frameHeight: 434,
+                });
+                this.load.spritesheet('horse1', 'assets/game-img/sprite-sheet/horse-sprite-sheet-1.jpg', {
                     frameWidth: 430,
                     frameHeight: 300,
                 });
-                this.load.spritesheet('horse2', 'assets/horse-sprite-sheet-2.jpg', {
+                this.load.spritesheet('horse2', 'assets/game-img/sprite-sheet/horse-sprite-sheet-2.jpg', {
                     frameWidth: 400,
                     frameHeight: 300,
                 });
@@ -59,12 +63,21 @@ export class PhaserCanvasComponent implements OnInit, OnDestroy, OnChanges {
 
                 this.anims.create({
                     key: 'run1',
-                    frames: this.anims.generateFrameNumbers('horse1', {
-                        frames: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+                    frames: this.anims.generateFrameNumbers('horse0', {
+                        frames: [0, 1, 2, 3, 4, 5, 6, 7, 8],
                     }),
-                    frameRate: 15,
+                    frameRate: 13,
                     repeat: -1,
                 });
+
+                // this.anims.create({
+                //     key: 'run1',
+                //     frames: this.anims.generateFrameNumbers('horse1', {
+                //         frames: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+                //     }),
+                //     frameRate: 15,
+                //     repeat: -1,
+                // });
 
                 this.anims.create({
                     key: 'run2',
