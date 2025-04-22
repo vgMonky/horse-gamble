@@ -1,39 +1,63 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject, interval, Subscription } from 'rxjs';
 
+type OngoingRaceState = 'pre' | 'in' | 'post';
+
 @Injectable({ providedIn: 'root' })
 export class OngoingRaceService implements OnDestroy {
     private readonly tickSpeed = 400;
     private readonly winningDistance = 1000;
+    private readonly countdownDuration = 10; // in seconds
+
     private raceInterval$!: Subscription;
+    private countdownInterval$!: Subscription;
 
     private _horses = new BehaviorSubject<Horse[]>([]);
     private _winner = new BehaviorSubject<Horse | null>(null);
     private _podium = new BehaviorSubject<Horse[]>([]);
     private _finalPosition = new BehaviorSubject<number>(this.winningDistance);
-    private raceFinished = false;
+    private _raceState = new BehaviorSubject<OngoingRaceState>('pre');
+    private _countdown = new BehaviorSubject<number>(this.countdownDuration);
 
     horses$ = this._horses.asObservable();
     winner$ = this._winner.asObservable();
     podium$ = this._podium.asObservable();
     finalPosition$ = this._finalPosition.asObservable();
+    raceState$ = this._raceState.asObservable();
+    countdown$ = this._countdown.asObservable();
 
-    startRace(horseCount: number = 4): void {
+    startOngoingRace(horseCount: number = 4): void {
+        this.stopOngoingRace(); // Ensure clean state
+
         const horses = Array.from({ length: horseCount }, (_, i) => new Horse(i + 1));
         this._horses.next(horses);
         this._winner.next(null);
         this._podium.next([]);
-        this.raceFinished = false;
+        this._raceState.next('pre');
+        this._countdown.next(this.countdownDuration);
 
-        this.raceInterval$ = interval(this.tickSpeed).subscribe(() => this.runRaceTick());
+        this.countdownInterval$ = interval(1000).subscribe(() => {
+            const remaining = this._countdown.getValue() - 1;
+            this._countdown.next(remaining);
+
+            if (remaining <= 0) {
+                this.countdownInterval$.unsubscribe();
+                this.beginInRace();
+            }
+        });
     }
 
-    restartRace(horseCount: number = 4): void {
-        this.stopRace();
-        this.startRace(horseCount);
+    restartOngoingRace(horseCount: number = 4): void {
+        this.startOngoingRace(horseCount);
     }
 
-    private runRaceTick(): void {
+    private beginInRace(): void {
+        this._raceState.next('in');
+
+        this.raceInterval$ = interval(this.tickSpeed).subscribe(() => this.runInRaceTick());
+    }
+
+    private runInRaceTick(): void {
         const horses = [...this._horses.getValue()];
         const podium = [...this._podium.getValue()];
         const seed = new Seed(8);
@@ -44,7 +68,6 @@ export class OngoingRaceService implements OnDestroy {
                 const amount = advances[i] || 0;
                 horse.advance(amount);
 
-                // If horse now crosses finish line, add to podium if not already there
                 if (horse.position >= this.winningDistance && !podium.includes(horse)) {
                     podium.push(horse);
                     console.log(`🎉 Horse ${horse.index} finished!`);
@@ -58,30 +81,37 @@ export class OngoingRaceService implements OnDestroy {
         console.log('Advance values:', advances);
         console.log('Horse positions:', horses.map(h => h.position));
 
-        // First horse that finished is considered the winner
         if (!this._winner.getValue() && podium.length > 0) {
             this._winner.next(podium[0]);
             console.log(`🏁 Horse ${podium[0].index} is the winner!`);
         }
 
-        // All horses finished?
         if (podium.length === horses.length) {
             console.log(`✅ All horses finished! Final podium:`);
             podium.forEach((horse, place) => {
                 console.log(`${place + 1}º place: Horse ${horse.index} (${horse.position})`);
             });
 
-            this.raceFinished = true;
-            this.stopRace();
+            this._raceState.next('post');
+            this.stopRaceInterval();
         }
     }
 
-    stopRace(): void {
+    private stopRaceInterval(): void {
         this.raceInterval$?.unsubscribe();
     }
 
+    private stopCountdownInterval(): void {
+        this.countdownInterval$?.unsubscribe();
+    }
+
+    stopOngoingRace(): void {
+        this.stopRaceInterval();
+        this.stopCountdownInterval();
+    }
+
     ngOnDestroy(): void {
-        this.stopRace();
+        this.stopOngoingRace();
     }
 }
 

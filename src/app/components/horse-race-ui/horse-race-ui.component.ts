@@ -15,6 +15,7 @@ export class HorseRaceUiComponent implements OnInit, OnDestroy {
     winner: any = null;
     podium: any[] = [];
     finalPosition = 0;
+    raceState: 'pre' | 'in' | 'post' = 'pre';
 
     private sub = new Subscription();
 
@@ -25,6 +26,7 @@ export class HorseRaceUiComponent implements OnInit, OnDestroy {
         this.sub.add(this.ongoingRaceService.winner$.subscribe(w => this.winner = w));
         this.sub.add(this.ongoingRaceService.podium$.subscribe(p => this.podium = p));
         this.sub.add(this.ongoingRaceService.finalPosition$.subscribe(fp => this.finalPosition = fp));
+        this.sub.add(this.ongoingRaceService.raceState$.subscribe(rs => this.raceState = rs));
     }
 
     ngOnDestroy(): void {
@@ -32,6 +34,6 @@ export class HorseRaceUiComponent implements OnInit, OnDestroy {
     }
 
     restartRace(): void {
-        this.ongoingRaceService.restartRace();
+        this.ongoingRaceService.restartOngoingRace();
     }
 }

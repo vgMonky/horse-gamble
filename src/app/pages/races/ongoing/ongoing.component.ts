@@ -22,17 +22,21 @@ import { Subscription } from 'rxjs';
 })
 export class OngoingComponent implements OnInit, OnDestroy {
     useHorse1 = true;
+    raceState: 'pre' | 'in' | 'post' = 'pre';
+    countdown = 0;
 
     private sub = new Subscription();
 
     constructor(private ongoingRaceService: OngoingRaceService) {}
 
     ngOnInit(): void {
-        this.ongoingRaceService.startRace();
+        this.ongoingRaceService.startOngoingRace();
+        this.sub.add(this.ongoingRaceService.raceState$.subscribe(state => this.raceState = state));
+        this.sub.add(this.ongoingRaceService.countdown$.subscribe(c => this.countdown = c));
     }
 
     ngOnDestroy(): void {
         this.sub.unsubscribe();
-        this.ongoingRaceService.stopRace();
+        this.ongoingRaceService.stopOngoingRace();
     }
 }

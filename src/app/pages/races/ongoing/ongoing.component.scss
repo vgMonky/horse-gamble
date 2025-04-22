@@ -16,4 +16,8 @@
     &__button {
         @include button-0
     }
+
+    &__top{
+        @include container-border
+    }
 }

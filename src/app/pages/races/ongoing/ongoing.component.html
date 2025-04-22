@@ -1,8 +1,29 @@
 <div class="p-ongoing">
-    <app-phaser-canvas [useHorse1]="useHorse1" />
-    <label for="useHorse1">Use Horse 1</label>
-    <input id="useHorse1" type="checkbox" [(ngModel)]="useHorse1" />
+    <div *ngIf="raceState === 'pre'" class="p-ongoing__pre">
+        <div class="p-ongoing__top">
+            <p>*canvas art*</p>
+            <h2>🏁 Race Starting Soon</h2>
+            <p>Countdown: {{ countdown }}s</p>
+        </div>
+    </div>
 
-    <br><br>
-    <app-horse-race-ui />
+    <div *ngIf="raceState === 'in'" class="p-ongoing__in">
+        <div class="p-ongoing__top">
+            <app-phaser-canvas [useHorse1]="useHorse1" />
+            <label for="useHorse1">Use Horse 1</label>
+            <input id="useHorse1" type="checkbox" [(ngModel)]="useHorse1" />
+        </div>
+    </div>
+
+    <div *ngIf="raceState === 'post'" class="p-ongoing__post">
+        <div class="p-ongoing__top">
+            <p>*canvas art*</p>
+            <h2>🏆 Race Complete</h2>
+            <p>The race has finished!</p>
+        </div>
+    </div>
+
+    <div class="p-ongoing__bottom">
+        <app-horse-race-ui />
+    </div>
 </div>

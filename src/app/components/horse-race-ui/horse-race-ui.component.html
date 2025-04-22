@@ -1,7 +1,7 @@
 <div class="c-horse-race">
     <div *ngFor="let horse of horses" class="c-horse-race__horse-track">
         <label>Horse {{ horse.index }} — {{ horse.position }}m</label>
-        <br>
+        <br />
         <input
             type="range"
             [min]="0"
@@ -9,21 +9,23 @@
             [value]="horse.position"
             disabled
         />
-        <br><br>
+        <br /><br />
     </div>
 
     <div class="c-horse-race__subtitle">Race Distance: {{ finalPosition }}m</div>
     <br />
-    <button class="c-horse-race__button" (click)="restartRace()">Restart Race</button>
 
-    <br /><br />
+    <div *ngIf="raceState === 'post'" class="c-horse-race__post-ui">
+        <button class="c-horse-race__button" (click)="restartRace()">Restart Race</button>
+        <br /><br />
 
-    <div class="c-horse-race__race-result">
-        <div class="c-horse-race__subtitle">🏆 Final Standings:</div>
-        <ol>
-            <li *ngFor="let h of podium">
-                Horse {{ h.index }} ({{ h.position }})
-            </li>
-        </ol>
+        <div class="c-horse-race__race-result">
+            <div class="c-horse-race__subtitle">🏆 Final Standings:</div>
+            <ol>
+                <li *ngFor="let h of podium">
+                    Horse {{ h.index }} ({{ h.position }})
+                </li>
+            </ol>
+        </div>
     </div>
 </div>
