@@ -7,43 +7,43 @@ type OngoingRaceState = 'pre' | 'in' | 'post';
 export class OngoingRaceService implements OnDestroy {
     private readonly tickSpeed = 400;
     private readonly winningDistance = 1000;
-    private readonly countdownDuration = 10; // in seconds
+    private readonly preCountdownDuration = 10;
+    private readonly postCountdownDuration = 10;
 
     private raceInterval$!: Subscription;
-    private countdownInterval$!: Subscription;
+    private preTimer = new CountdownTimer();
+    private postTimer = new CountdownTimer();
 
     private _horses = new BehaviorSubject<Horse[]>([]);
     private _winner = new BehaviorSubject<Horse | null>(null);
     private _podium = new BehaviorSubject<Horse[]>([]);
     private _finalPosition = new BehaviorSubject<number>(this.winningDistance);
     private _raceState = new BehaviorSubject<OngoingRaceState>('pre');
-    private _countdown = new BehaviorSubject<number>(this.countdownDuration);
 
     horses$ = this._horses.asObservable();
     winner$ = this._winner.asObservable();
     podium$ = this._podium.asObservable();
     finalPosition$ = this._finalPosition.asObservable();
     raceState$ = this._raceState.asObservable();
-    countdown$ = this._countdown.asObservable();
+
+    // Expose countdown based on current state
+    get countdown$() {
+        return this._raceState.getValue() === 'post'
+            ? this.postTimer.countdown$
+            : this.preTimer.countdown$;
+    }
 
     startOngoingRace(horseCount: number = 4): void {
-        this.stopOngoingRace(); // Ensure clean state
+        this.stopOngoingRace();
 
         const horses = Array.from({ length: horseCount }, (_, i) => new Horse(i + 1));
         this._horses.next(horses);
         this._winner.next(null);
         this._podium.next([]);
         this._raceState.next('pre');
-        this._countdown.next(this.countdownDuration);
 
-        this.countdownInterval$ = interval(1000).subscribe(() => {
-            const remaining = this._countdown.getValue() - 1;
-            this._countdown.next(remaining);
-
-            if (remaining <= 0) {
-                this.countdownInterval$.unsubscribe();
-                this.beginInRace();
-            }
+        this.preTimer.start(this.preCountdownDuration, () => {
+            this.beginInRace();
         });
     }
 
@@ -94,6 +94,10 @@ export class OngoingRaceService implements OnDestroy {
 
             this._raceState.next('post');
             this.stopRaceInterval();
+
+            this.postTimer.start(this.postCountdownDuration, () => {
+                this.restartOngoingRace();
+            });
         }
     }
 
@@ -101,13 +105,10 @@ export class OngoingRaceService implements OnDestroy {
         this.raceInterval$?.unsubscribe();
     }
 
-    private stopCountdownInterval(): void {
-        this.countdownInterval$?.unsubscribe();
-    }
-
     stopOngoingRace(): void {
         this.stopRaceInterval();
-        this.stopCountdownInterval();
+        this.preTimer.stop();
+        this.postTimer.stop();
     }
 
     ngOnDestroy(): void {
@@ -153,5 +154,32 @@ class Seed {
 
     get value(): number {
         return this.seedValue;
+    }
+}
+
+class CountdownTimer {
+    private interval$!: Subscription;
+    private _countdown = new BehaviorSubject<number>(0);
+
+    get countdown$() {
+        return this._countdown.asObservable();
+    }
+
+    start(seconds: number, onComplete: () => void): void {
+        this._countdown.next(seconds);
+
+        this.interval$ = interval(1000).subscribe(() => {
+            const next = this._countdown.getValue() - 1;
+            this._countdown.next(next);
+
+            if (next <= 0) {
+                this.stop();
+                onComplete();
+            }
+        });
+    }
+
+    stop(): void {
+        this.interval$?.unsubscribe();
     }
 }
