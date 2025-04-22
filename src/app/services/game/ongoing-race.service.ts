@@ -7,8 +7,8 @@ type OngoingRaceState = 'pre' | 'in' | 'post';
 export class OngoingRaceService implements OnDestroy {
     private readonly tickSpeed = 400;
     private readonly winningDistance = 1000;
-    private readonly preCountdownDuration = 10;
-    private readonly postCountdownDuration = 10;
+    private readonly preCountdownDuration = 6;
+    private readonly postCountdownDuration = 15;
 
     private raceInterval$!: Subscription;
     private preTimer = new CountdownTimer();
@@ -19,19 +19,14 @@ export class OngoingRaceService implements OnDestroy {
     private _podium = new BehaviorSubject<Horse[]>([]);
     private _finalPosition = new BehaviorSubject<number>(this.winningDistance);
     private _raceState = new BehaviorSubject<OngoingRaceState>('pre');
+    private _countdown = new BehaviorSubject<number>(0);
 
     horses$ = this._horses.asObservable();
     winner$ = this._winner.asObservable();
     podium$ = this._podium.asObservable();
     finalPosition$ = this._finalPosition.asObservable();
     raceState$ = this._raceState.asObservable();
-
-    // Expose countdown based on current state
-    get countdown$() {
-        return this._raceState.getValue() === 'post'
-            ? this.postTimer.countdown$
-            : this.preTimer.countdown$;
-    }
+    countdown$ = this._countdown.asObservable();
 
     startOngoingRace(horseCount: number = 4): void {
         this.stopOngoingRace();
@@ -44,7 +39,7 @@ export class OngoingRaceService implements OnDestroy {
 
         this.preTimer.start(this.preCountdownDuration, () => {
             this.beginInRace();
-        });
+        }, this._countdown);
     }
 
     restartOngoingRace(horseCount: number = 4): void {
@@ -97,7 +92,7 @@ export class OngoingRaceService implements OnDestroy {
 
             this.postTimer.start(this.postCountdownDuration, () => {
                 this.restartOngoingRace();
-            });
+            }, this._countdown);
         }
     }
 
@@ -165,12 +160,14 @@ class CountdownTimer {
         return this._countdown.asObservable();
     }
 
-    start(seconds: number, onComplete: () => void): void {
+    start(seconds: number, onComplete: () => void, externalCountdown?: BehaviorSubject<number>): void {
         this._countdown.next(seconds);
+        externalCountdown?.next(seconds);
 
         this.interval$ = interval(1000).subscribe(() => {
             const next = this._countdown.getValue() - 1;
             this._countdown.next(next);
+            externalCountdown?.next(next);
 
             if (next <= 0) {
                 this.stop();

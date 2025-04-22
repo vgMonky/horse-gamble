@@ -12,10 +12,7 @@ import { Subscription } from 'rxjs';
 })
 export class HorseRaceUiComponent implements OnInit, OnDestroy {
     horses: any[] = [];
-    winner: any = null;
-    podium: any[] = [];
     finalPosition = 0;
-    raceState: 'pre' | 'in' | 'post' = 'pre';
 
     private sub = new Subscription();
 
@@ -23,17 +20,10 @@ export class HorseRaceUiComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.sub.add(this.ongoingRaceService.horses$.subscribe(h => this.horses = h));
-        this.sub.add(this.ongoingRaceService.winner$.subscribe(w => this.winner = w));
-        this.sub.add(this.ongoingRaceService.podium$.subscribe(p => this.podium = p));
         this.sub.add(this.ongoingRaceService.finalPosition$.subscribe(fp => this.finalPosition = fp));
-        this.sub.add(this.ongoingRaceService.raceState$.subscribe(rs => this.raceState = rs));
     }
 
     ngOnDestroy(): void {
         this.sub.unsubscribe();
-    }
-
-    restartRace(): void {
-        this.ongoingRaceService.restartOngoingRace();
     }
 }

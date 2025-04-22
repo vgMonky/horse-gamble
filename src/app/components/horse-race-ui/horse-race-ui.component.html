@@ -13,19 +13,4 @@
     </div>
 
     <div class="c-horse-race__subtitle">Race Distance: {{ finalPosition }}m</div>
-    <br />
-
-    <div *ngIf="raceState === 'post'" class="c-horse-race__post-ui">
-        <button class="c-horse-race__button" (click)="restartRace()">Restart Race</button>
-        <br /><br />
-
-        <div class="c-horse-race__race-result">
-            <div class="c-horse-race__subtitle">🏆 Final Standings:</div>
-            <ol>
-                <li *ngFor="let h of podium">
-                    Horse {{ h.index }} ({{ h.position }})
-                </li>
-            </ol>
-        </div>
-    </div>
 </div>

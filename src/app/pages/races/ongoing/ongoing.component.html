@@ -19,7 +19,16 @@
         <div class="p-ongoing__top">
             <p>*canvas art*</p>
             <h2>🏆 Race Complete</h2>
-            <p>The race has finished!</p>
+            <p>Next race starts in {{ countdown }}s</p>
+
+            <div class="p-ongoing__podium">
+                <h3>🥇 Final Standings</h3>
+                <ol>
+                    <li *ngFor="let h of podium">
+                        Horse {{ h.index }} — {{ h.position }}m
+                    </li>
+                </ol>
+            </div>
         </div>
     </div>
 
