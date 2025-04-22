@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RaceService } from '@app/services/game/race.service';
+import { OngoingRaceService } from '@app/services/game/ongoing-race.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -18,13 +18,13 @@ export class HorseRaceUiComponent implements OnInit, OnDestroy {
 
     private sub = new Subscription();
 
-    constructor(private raceService: RaceService) {}
+    constructor(private ongoingRaceService: OngoingRaceService) {}
 
     ngOnInit(): void {
-        this.sub.add(this.raceService.horses$.subscribe(h => this.horses = h));
-        this.sub.add(this.raceService.winner$.subscribe(w => this.winner = w));
-        this.sub.add(this.raceService.podium$.subscribe(p => this.podium = p));
-        this.sub.add(this.raceService.finalPosition$.subscribe(fp => this.finalPosition = fp));
+        this.sub.add(this.ongoingRaceService.horses$.subscribe(h => this.horses = h));
+        this.sub.add(this.ongoingRaceService.winner$.subscribe(w => this.winner = w));
+        this.sub.add(this.ongoingRaceService.podium$.subscribe(p => this.podium = p));
+        this.sub.add(this.ongoingRaceService.finalPosition$.subscribe(fp => this.finalPosition = fp));
     }
 
     ngOnDestroy(): void {
@@ -32,6 +32,6 @@ export class HorseRaceUiComponent implements OnInit, OnDestroy {
     }
 
     restartRace(): void {
-        this.raceService.restartRace();
+        this.ongoingRaceService.restartRace();
     }
 }

@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { SharedModule } from '@app/shared/shared.module';
 import { PhaserCanvasComponent } from '@app/components/phaser-canvas/phaser-canvas.component';
 import { HorseRaceUiComponent } from '@app/components/horse-race-ui/horse-race-ui.component';
-import { RaceService } from '@app/services/game/race.service';
+import { OngoingRaceService } from '@app/services/game/ongoing-race.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -25,14 +25,14 @@ export class OngoingComponent implements OnInit, OnDestroy {
 
     private sub = new Subscription();
 
-    constructor(private raceService: RaceService) {}
+    constructor(private ongoingRaceService: OngoingRaceService) {}
 
     ngOnInit(): void {
-        this.raceService.startRace();
+        this.ongoingRaceService.startRace();
     }
 
     ngOnDestroy(): void {
         this.sub.unsubscribe();
-        this.raceService.stopRace();
+        this.ongoingRaceService.stopRace();
     }
 }

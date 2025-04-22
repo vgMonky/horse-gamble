@@ -2,7 +2,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject, interval, Subscription } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
-export class RaceService implements OnDestroy {
+export class OngoingRaceService implements OnDestroy {
     private readonly tickSpeed = 400;
     private readonly winningDistance = 1000;
     private raceInterval$!: Subscription;
