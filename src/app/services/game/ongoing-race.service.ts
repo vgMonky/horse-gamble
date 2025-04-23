@@ -7,8 +7,8 @@ type OngoingRaceState = 'pre' | 'in' | 'post';
 export class OngoingRaceService implements OnDestroy {
     private readonly tickSpeed = 400;
     private readonly winningDistance = 1000;
-    private readonly preCountdownDuration = 6;
-    private readonly postCountdownDuration = 15;
+    private readonly preCountdownDuration = 3;
+    private readonly postCountdownDuration = 3;
 
     private raceInterval$!: Subscription;
     private preTimer = new CountdownTimer();
