@@ -4,13 +4,4 @@
         <span *ngIf="horse.position !== null"> — {{ horse.position }}m</span>
         <span *ngIf="horse.position === null"> — 🏁 Finished</span>
     </label>
-    <br />
-    <input
-        *ngIf="horse.position !== null"
-        type="range"
-        [min]="0"
-        [max]="finalPosition"
-        [value]="horse.position"
-        disabled
-    />
 </div>
