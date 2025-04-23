@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SharedModule } from '@app/shared/shared.module';
 import { PhaserCanvasComponent } from '@app/components/phaser-canvas/phaser-canvas.component';
-import { HorseRaceUiComponent } from '@app/components/horse-race-ui/horse-race-ui.component';
+import { OngoingListUiComponent } from '@app/components/ongoing-list-ui/ongoing-list-ui.component';
 import { OngoingRaceService } from '@app/services/game/ongoing-race.service';
 import { Subscription } from 'rxjs';
 
@@ -15,7 +15,7 @@ import { Subscription } from 'rxjs';
         CommonModule,
         FormsModule,
         PhaserCanvasComponent,
-        HorseRaceUiComponent
+        OngoingListUiComponent
     ],
     templateUrl: './ongoing.component.html',
     styleUrls: ['./ongoing.component.scss']

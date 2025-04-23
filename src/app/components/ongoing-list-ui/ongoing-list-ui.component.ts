@@ -5,12 +5,12 @@ import { Subscription } from 'rxjs';
 
 @Component({
     standalone: true,
-    selector: 'app-horse-race-ui',
+    selector: 'app-ongoing-list-ui',
     imports: [CommonModule],
-    templateUrl: './horse-race-ui.component.html',
-    styleUrls: ['./horse-race-ui.component.scss']
+    templateUrl: './ongoing-list-ui.component.html',
+    styleUrls: ['./ongoing-list-ui.component.scss']
 })
-export class HorseRaceUiComponent implements OnInit, OnDestroy {
+export class OngoingListUiComponent implements OnInit, OnDestroy {
     horses: any[] = [];
     finalPosition = 0;
 

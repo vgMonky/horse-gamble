@@ -1,5 +1,5 @@
-<div class="c-horse-race">
-    <div *ngFor="let horse of horses" class="c-horse-race__horse-track">
+<div class="c-ongoing-list-ui">
+    <div *ngFor="let horse of horses" class="c-ongoing-list-ui__horse-track">
         <label>Horse {{ horse.index }} — {{ horse.position }}m</label>
         <br />
         <input
@@ -12,5 +12,5 @@
         <br /><br />
     </div>
 
-    <div class="c-horse-race__subtitle">Race Distance: {{ finalPosition }}m</div>
+    <div class="c-ongoing-list-ui__subtitle">Race Distance: {{ finalPosition }}m</div>
 </div>
