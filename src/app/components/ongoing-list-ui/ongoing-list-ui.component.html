@@ -1,16 +1,9 @@
+<!-- updated ongoing-list-ui.component.html -->
 <div class="c-ongoing-list-ui">
-    <div *ngFor="let horse of horses" class="c-ongoing-list-ui__horse-track">
-        <label>Horse {{ horse.index }} — {{ horse.position }}m</label>
-        <br />
-        <input
-            type="range"
-            [min]="0"
-            [max]="finalPosition"
-            [value]="horse.position"
-            disabled
-        />
-        <br /><br />
-    </div>
-
     <div class="c-ongoing-list-ui__subtitle">Race Distance: {{ finalPosition }}m</div>
+    <app-ongoing-horse-ui
+        *ngFor="let horse of horses"
+        [horse]="horse"
+        [finalPosition]="finalPosition"
+    />
 </div>

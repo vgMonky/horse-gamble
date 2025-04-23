@@ -1,0 +1,12 @@
+<!-- ongoing-horse-ui.component.html -->
+<div class="c-ongoing-horse-ui">
+    <label>Horse {{ horse.index }} — {{ horse.position }}m</label>
+    <br />
+    <input
+        type="range"
+        [min]="0"
+        [max]="finalPosition"
+        [value]="horse.position"
+        disabled
+    />
+</div>
