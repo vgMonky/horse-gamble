@@ -6,3 +6,8 @@
         @include text-subtitle;
     }
 }
+
+.c-ongoing-horse-wrapper {
+    /* hint that we’ll be animating transform */
+    will-change: transform;
+}

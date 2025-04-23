@@ -1,9 +1,18 @@
-<!-- updated ongoing-list-ui.component.html -->
+<!-- ongoing-list-ui.component.html -->
 <div class="c-ongoing-list-ui">
-    <div class="c-ongoing-list-ui__subtitle">Race Distance: {{ finalPosition }}m</div>
-    <app-ongoing-horse-ui
-        *ngFor="let horse of horses"
-        [horse]="horse"
-        [finalPosition]="finalPosition"
-    />
+    <div
+        #horseTrack
+        *ngFor="let horse of horses; trackBy: trackByHorse"
+        class="c-ongoing-horse-wrapper"
+        [attr.data-index]="horse.index"
+    >
+        <app-ongoing-horse-ui
+            [horse]="horse"
+            [finalPosition]="finalPosition"
+        ></app-ongoing-horse-ui>
+    </div>
+
+    <div class="c-ongoing-list-ui__subtitle">
+        Race Distance: {{ finalPosition }}m
+    </div>
 </div>
