@@ -1,13 +1,11 @@
 @use 'mixin' as *;
 
 .c-ongoing-list-ui {
-
     &__subtitle {
         @include text-subtitle;
     }
 }
 
 .c-ongoing-horse-wrapper {
-    /* hint that we’ll be animating transform */
     will-change: transform;
 }
