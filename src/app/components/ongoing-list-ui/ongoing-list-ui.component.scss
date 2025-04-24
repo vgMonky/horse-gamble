@@ -1,6 +1,13 @@
 @use 'mixin' as *;
 
 .c-ongoing-list-ui {
+    display: flex;
+    flex-direction: row;
+
+    &.mobile {
+        flex-direction: column;  // mobile override
+    }
+
     &__subtitle {
         @include text-subtitle;
     }

@@ -1,4 +1,4 @@
-<div class="c-ongoing-list-ui">
+<div class="c-ongoing-list-ui" [class.mobile]="isMobileView">
     <div
         #horseTrack
         *ngFor="let horse of horses; trackBy: trackByHorse"
