@@ -15,7 +15,6 @@
 
     &__index {
         @include container-border;
-        border-radius: 4px;
         font-weight: bold;
         display: flex;
         align-items: center;
@@ -29,6 +28,6 @@
     &__placement {
         font-weight: bold;
         font-size: 0.9rem;
-        color: gold;
+        color: var(--c-accent-0);
     }
 }

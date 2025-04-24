@@ -1,8 +1,10 @@
+import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 
 @Component({
     standalone: true,
     selector: 'app-ongoing-horse-ui',
+    imports: [CommonModule],
     templateUrl: './ongoing-horse-ui.component.html',
     styleUrls: ['./ongoing-horse-ui.component.scss']
 })
