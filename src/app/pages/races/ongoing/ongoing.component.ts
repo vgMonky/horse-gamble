@@ -25,6 +25,7 @@ export class OngoingComponent implements OnInit, OnDestroy {
     raceState: 'pre' | 'in' | 'post' = 'pre';
     countdown = 0;
     podium: any[] = [];
+    finalPosition = 0;
 
     private sub = new Subscription();
 
@@ -35,6 +36,10 @@ export class OngoingComponent implements OnInit, OnDestroy {
         this.sub.add(this.ongoingRaceService.raceState$.subscribe(state => this.raceState = state));
         this.sub.add(this.ongoingRaceService.countdown$.subscribe(c => this.countdown = c));
         this.sub.add(this.ongoingRaceService.podium$.subscribe(p => this.podium = p));
+        this.sub.add(
+            this.ongoingRaceService.finalPosition$
+                .subscribe(fp => this.finalPosition = fp)
+        );
     }
 
     ngOnDestroy(): void {

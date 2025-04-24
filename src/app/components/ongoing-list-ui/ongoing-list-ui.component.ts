@@ -65,12 +65,6 @@ export class OngoingListUiComponent implements OnInit, OnDestroy {
                 this.runFLIP([...finished, ...inRace]);
             })
         );
-
-        // 4) subscribe finalPosition
-        this.sub.add(
-            this.ongoingRaceService.finalPosition$
-                .subscribe(fp => this.finalPosition = fp)
-        );
     }
 
     ngOnDestroy(): void {
