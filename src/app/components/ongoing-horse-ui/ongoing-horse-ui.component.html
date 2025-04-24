@@ -1,7 +1,21 @@
 <div class="c-ongoing-horse-ui">
-    <label>
-        Horse {{ horse.index }}
-        <span *ngIf="horse.position !== null"> — {{ horse.position }}m</span>
-        <span *ngIf="horse.position === null"> — 🏁 Finished</span>
-    </label>
+    <div class="c-ongoing-horse-ui__info">
+        <div
+            class="c-ongoing-horse-ui__index"
+            [style.background]="
+                // pick a color per index, or use a CSS variable
+                'hsl(' + (horse.index * 40 % 360) + ', 70%, 50%)'
+            ">
+            {{ horse.index }}
+        </div>
+        <div class="c-ongoing-horse-ui__name">
+            {{ horse.name }}
+        </div>
+    </div>
+    <div class="c-ongoing-horse-ui__placement">
+        {{ horse.placement
+            ? getOrdinal(horse.placement)
+            : (horse.position !== null ? '--' : '🏁')
+        }}
+    </div>
 </div>

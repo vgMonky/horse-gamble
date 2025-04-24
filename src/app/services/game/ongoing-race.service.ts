@@ -28,10 +28,21 @@ export class OngoingRaceService implements OnDestroy {
     raceState$ = this._raceState.asObservable();
     countdown$ = this._countdown.asObservable();
 
-    startOngoingRace(horseCount: number = 4): void {
+    startOngoingRace(): void {
         this.stopOngoingRace();
 
-        const horses = Array.from({ length: horseCount }, (_, i) => new Horse(i + 1));
+        // ← define your horses here:
+        const horseConfigs = [
+            { index: 1,  name: 'Fast Fury'    },
+            { index: 8,  name: 'Lucky Star'   },
+            { index: 3,  name: 'Silver Arrow' },
+            { index: 14, name: 'Night Rider'  },
+        ];
+
+        // ← create them with names
+        const horses = horseConfigs.map(cfg =>
+            new Horse(cfg.index, cfg.name)
+        );
         this._horses.next(horses);
         this._winner.next(null);
         this._podium.next([]);
@@ -42,8 +53,9 @@ export class OngoingRaceService implements OnDestroy {
         }, this._countdown);
     }
 
-    restartOngoingRace(horseCount: number = 4): void {
-        this.startOngoingRace(horseCount);
+
+    restartOngoingRace(): void {
+        this.startOngoingRace();
     }
 
     private beginInRace(): void {
@@ -64,6 +76,7 @@ export class OngoingRaceService implements OnDestroy {
                 horse.advance(advances[i] || 0);
                 // mark finished
                 if (horse.position! >= this.winningDistance && !podium.includes(horse)) {
+                    horse.placement = podium.length + 1;
                     podium.push(horse);
                     horse.position = null;
                     console.log(`🎉 Horse ${horse.index} finished!`);
@@ -105,8 +118,14 @@ export class OngoingRaceService implements OnDestroy {
     }
 }
 
+// src/app/services/game/ongoing-race.service.ts
 class Horse {
-    constructor(public index: number, public position: number | null = 0) {}
+    constructor(
+        public index: number,
+        public name: string,
+        public position: number | null = 0,
+        public placement?: number     // 1 for 1st, 2 for 2nd, etc.
+    ) {}
     advance(amount: number) {
         if (this.position !== null) {
             this.position += amount;
