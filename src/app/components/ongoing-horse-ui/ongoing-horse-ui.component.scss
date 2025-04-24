@@ -14,7 +14,9 @@
     }
 
     &__index {
-        @include container-border;
+        @include border;
+        width: 45px;
+        height: 45px;
         font-weight: bold;
         display: flex;
         align-items: center;
