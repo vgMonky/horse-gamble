@@ -11,8 +11,8 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { combineLatest, Subscription } from 'rxjs';
-import { OngoingRaceService } from '@app/services/game/ongoing-race.service';
+import { Subscription } from 'rxjs';
+import { OngoingRaceService, Standing } from '@app/services/game/ongoing-race.service';
 import { OngoingHorseUiComponent } from '@app/components/ongoing-horse-ui/ongoing-horse-ui.component';
 import { BREAKPOINT } from 'src/types';
 
@@ -24,7 +24,7 @@ import { BREAKPOINT } from 'src/types';
     styleUrls: ['./ongoing-list-ui.component.scss']
 })
 export class OngoingListUiComponent implements OnInit, OnDestroy {
-    horses: any[] = [];
+    standings: Standing[] = [];
     finalPosition = 0;
     isMobileView = false;
 
@@ -42,28 +42,26 @@ export class OngoingListUiComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit(): void {
-        // 1) watch viewport
+        // viewport watcher
         this.sub.add(
             this.breakpointObserver
                 .observe(BREAKPOINT)
                 .subscribe(r => this.isMobileView = r.matches)
         );
 
-        // 2) capture initial positions for FLIP
+        // capture for FLIP
         setTimeout(() => this.recordPositions(), 0);
 
-        // 3) race + podium combined → reorder via FLIP
+        // subscribe finalPosition$
         this.sub.add(
-            combineLatest([
-                this.ongoingRaceService.horses$,
-                this.ongoingRaceService.podium$
-            ]).subscribe(([all, podium]) => {
-                const finished = podium.map(h => ({ ...h, position: null }));
-                const inRace = all
-                    .filter(h => h.position !== null && !podium.includes(h))
-                    .sort((a, b) => b.position! - a.position!);
-                this.runFLIP([...finished, ...inRace]);
-            })
+            this.ongoingRaceService.finalPosition$
+                .subscribe(fp => this.finalPosition = fp)
+        );
+
+        // subscribe to standings$
+        this.sub.add(
+            this.ongoingRaceService.standings$
+                .subscribe(s => this.runFLIP(s))
         );
     }
 
@@ -71,8 +69,8 @@ export class OngoingListUiComponent implements OnInit, OnDestroy {
         this.sub.unsubscribe();
     }
 
-    trackByHorse(_i: number, h: any) {
-        return h.index;
+    trackByHorse(_i: number, s: Standing) {
+        return s.horse.index;
     }
 
     private recordPositions(): void {
@@ -84,9 +82,9 @@ export class OngoingListUiComponent implements OnInit, OnDestroy {
         });
     }
 
-    private runFLIP(newHorses: any[]): void {
+    private runFLIP(newStandings: Standing[]): void {
         const oldPos = this.prevPos;
-        this.horses = newHorses;
+        this.standings = newStandings;
 
         this.ngZone.runOutsideAngular(() => {
             requestAnimationFrame(() => {
@@ -98,7 +96,7 @@ export class OngoingListUiComponent implements OnInit, OnDestroy {
                     newPos.set(idx, { x: rect.left, y: rect.top });
                 });
 
-                // invert on the correct axis
+                // invert & animate
                 this.horseElems.forEach(el => {
                     const idx = +el.nativeElement.dataset.index;
                     const old = oldPos.get(idx)!;
@@ -118,13 +116,12 @@ export class OngoingListUiComponent implements OnInit, OnDestroy {
                 // force reflow
                 this.horseElems.first.nativeElement.getBoundingClientRect();
 
-                // animate back to zero
+                // play animation
                 requestAnimationFrame(() => {
                     this.horseElems.forEach(el => {
                         this.renderer.setStyle(el.nativeElement, 'transition', 'transform 300ms ease');
                         this.renderer.setStyle(el.nativeElement, 'transform', 'translate(0, 0)');
                     });
-                    // update for next tick
                     setTimeout(() => this.recordPositions(), 300);
                 });
             });
