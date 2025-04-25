@@ -1,0 +1,13 @@
+<div class="c-ongoing-list-ui" [class.mobile]="isMobileView">
+    <div
+        #horseTrack
+        *ngFor="let horse of horses; trackBy: trackByHorse"
+        class="c-ongoing-horse-wrapper"
+        [attr.data-index]="horse.index"
+    >
+        <app-ongoing-horse-ui
+            [horse]="horse"
+            [finalPosition]="finalPosition"
+        ></app-ongoing-horse-ui>
+    </div>
+</div>
