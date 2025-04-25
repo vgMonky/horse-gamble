@@ -1,11 +1,9 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import {
     BehaviorSubject,
-    combineLatest,
     interval,
     Subscription
 } from 'rxjs';
-import { map, shareReplay } from 'rxjs/operators';
 
 type OngoingRaceState = 'pre' | 'in' | 'post';
 
