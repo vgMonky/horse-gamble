@@ -9,9 +9,7 @@
 
     <div *ngIf="raceState === 'in'" class="p-ongoing__in">
         <div class="p-ongoing__top">
-            <app-phaser-canvas [useHorse1]="useHorse1" />
-            <label for="useHorse1">Use Horse 1</label>
-            <input id="useHorse1" type="checkbox" [(ngModel)]="useHorse1" />
+            <app-phaser-canvas />
         </div>
     </div>
 
