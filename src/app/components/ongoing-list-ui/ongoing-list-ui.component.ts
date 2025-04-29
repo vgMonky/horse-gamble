@@ -12,7 +12,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { Subscription } from 'rxjs';
-import { OngoingRaceService, Standing } from '@app/services/game/ongoing-race.service';
+import { OngoingRaceService, Standing } from '@app/game/ongoing-race.service';
 import { OngoingHorseUiComponent } from '@app/components/ongoing-horse-ui/ongoing-horse-ui.component';
 import { BREAKPOINT } from 'src/types';
 
