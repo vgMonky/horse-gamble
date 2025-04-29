@@ -5,6 +5,7 @@ import {
     ElementRef,
     ViewChild
 } from '@angular/core';
+import { Int } from '@wharfkit/session';
 import Phaser from 'phaser';
 
 @Component({
@@ -45,20 +46,26 @@ class MainScene extends Phaser.Scene {
 
     preload() {
         this.load.spritesheet(
-            'horse0',
+            'horse',
             'assets/game-img/sprite-sheet/horse-sprite-sheet-0.png',
             { frameWidth: 575, frameHeight: 434 }
         );
     }
 
     create() {
-        this.horseSprite = this.add.sprite(150, 100, 'horse0');
+        this.add_horse(140,130,14)
+        this.add_horse(90,130,12)
+    }
+
+
+    add_horse(x:integer, y:integer, rate:integer) {
+        this.horseSprite = this.add.sprite(x, y, 'horse');
         this.anims.create({
-            key: 'run1',
-            frames: this.anims.generateFrameNumbers('horse0', { frames: [0,1,2,3,4,5,6,7,8] }),
-            frameRate: 13,
+            key: String(rate),
+            frames: this.anims.generateFrameNumbers('horse', { frames: [0,1,2,3,4,5,6,7,8] }),
+            frameRate: rate,
             repeat: -1,
         });
-        this.horseSprite.setScale(0.3).play('run1');
+        this.horseSprite.setScale(0.3).play(String(rate));
     }
 }
