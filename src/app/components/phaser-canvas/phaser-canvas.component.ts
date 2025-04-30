@@ -6,7 +6,7 @@ import {
     ViewChild
 } from '@angular/core';
 import Phaser from 'phaser';
-import { MainScene } from './main_scene';
+import { MainScene } from './game_visuals/main_scene';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { BREAKPOINT } from 'src/types';
 import { Subscription } from 'rxjs';
