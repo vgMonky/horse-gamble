@@ -5,7 +5,7 @@ import {
     Subscription
 } from 'rxjs';
 
-type OngoingRaceState = 'pre' | 'in' | 'post';
+export type OngoingRaceState = 'pre' | 'in' | 'post';
 
 export interface Horse {
     index:    number;

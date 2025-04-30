@@ -5,7 +5,6 @@ import {
     ElementRef,
     ViewChild
 } from '@angular/core';
-import { Int } from '@wharfkit/session';
 import Phaser from 'phaser';
 
 @Component({
