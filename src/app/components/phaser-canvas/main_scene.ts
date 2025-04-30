@@ -18,7 +18,7 @@ export class MainScene extends Phaser.Scene {
 
     create(): void {
         this.addHorse(400, 130, 14);
-        this.addHorse(130, 130, 12);
+        this.addHorse(130, 130, 11);
         this.addHorse(370, 130, 13);
         this.addHorse(230, 130, 12);
     }
