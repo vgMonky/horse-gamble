@@ -21,7 +21,7 @@ export interface Standing {
 @Injectable({ providedIn: 'root' })
 export class OngoingRaceService implements OnDestroy {
     private readonly tickSpeed             = 400;
-    private readonly winningDistance       = 1000;
+    private readonly winningDistance       = 5000;
     private readonly preCountdownDuration  = 3;
     private readonly postCountdownDuration = 3;
 
