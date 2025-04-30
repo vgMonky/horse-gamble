@@ -45,7 +45,7 @@ export class PhaserCanvasComponent implements OnInit, OnDestroy {
         this.game = new Phaser.Game({
             type: Phaser.AUTO,
             width: 850,
-            height: 200,
+            height: 250,
             parent: this.containerRef.nativeElement,
             scene: [ MainScene ],
         });
