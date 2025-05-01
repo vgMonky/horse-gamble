@@ -30,8 +30,8 @@ export class ParallaxBackground {
             { key: 'cloud2', path: 'assets/game-img/background/cloud_2.png' },
             { key: 'cloud3', path: 'assets/game-img/background/cloud_3.png' },
             { key: 'forest', path: 'assets/game-img/background/forest_bg.png' },
-            { key: 'trees',  path: 'assets/game-img/background/grass_trees.png' },
-            { key: 'fence',  path: 'assets/game-img/background/fence.png' },
+            { key: 'trees',  path: 'assets/game-img/background/darken/grass_trees.png' },
+            { key: 'fence',  path: 'assets/game-img/background/darken/fence.png' },
         ];
         assets.forEach(a => this.scene.load.image(a.key, a.path));
     }
