@@ -12,10 +12,11 @@ interface LayerConfig {
     speed: number;
     yFactor: number;
     scale: number;
-    spacing?: number;      // your existing gap
-    offsetX?: number;      // initial X position
-    tileOffsetX?: number;  // initial texture offset
-    offsetTileY?: number;  // initial vertical texture offset
+    spacing?: number;        // your existing gap
+    offsetX?: number;        // initial X position
+    tileOffsetX?: number;    // initial horizontal texture offset
+    offsetTileY?: number;    // initial vertical texture offset
+    xRepeatFactor?: number;  // how many screen-widths the tile sprite covers (default 2)
 }
 
 export class ParallaxBackground {
@@ -39,12 +40,12 @@ export class ParallaxBackground {
         const { width, height } = this.scene.scale;
 
         const configs: LayerConfig[] = [
-            { key: 'forest', speed: 0.02, yFactor: 0.70, scale: 1.4, offsetTileY: 1 },
-            { key: 'cloud1', speed: 0.04, yFactor: 0.25, scale: 0.5, spacing: 300, offsetX: 0, tileOffsetX: 0 },
-            { key: 'cloud2', speed: 0.06, yFactor: 0.25, scale: 0.2, spacing: 400, offsetX: 100, tileOffsetX: 0 },
-            { key: 'cloud3', speed: 0.10, yFactor: 0.30, scale: 0.4, spacing: 650, offsetX: 100, tileOffsetX: 0 },
-            { key: 'trees',  speed: 0.10, yFactor: 0.78, scale: 0.5, offsetTileY: 1 },
-            { key: 'fence',  speed: 0.62, yFactor: 1.00, scale: 0.65 },
+            { key: 'forest', speed: 0.02, yFactor: 0.70, scale: 1.4, offsetTileY: 1, xRepeatFactor: 2 },
+            { key: 'cloud1', speed: 0.04, yFactor: 0.25, scale: 0.5, spacing: 500, offsetX: 0, tileOffsetX: 0, xRepeatFactor: 2 },
+            { key: 'cloud2', speed: 0.02, yFactor: 0.25, scale: 0.2, spacing: 1500, offsetX: 0, tileOffsetX: 0, xRepeatFactor: 5 },
+            { key: 'cloud3', speed: 0.03, yFactor: 0.30, scale: 0.4, spacing: 950, offsetX: 0, tileOffsetX: 0, xRepeatFactor: 3 },
+            { key: 'trees',  speed: 0.13, yFactor: 0.78, scale: 0.5, offsetTileY: 1, xRepeatFactor: 2 },
+            { key: 'fence',  speed: 0.68, yFactor: 1.00, scale: 0.65, xRepeatFactor: 2 },
         ];
 
         configs.forEach((cfg, i) => {
@@ -68,14 +69,16 @@ export class ParallaxBackground {
                 textureKey = paddedKey;
             }
 
-            // determine initial X (default 0)
+            // initial positions & sizes
             const x0 = cfg.offsetX ?? 0;
+            const repeat = cfg.xRepeatFactor ?? 2;
+            const tileWidth = width * repeat;
 
             const tile = this.scene.add
                 .tileSprite(
                     x0,
                     height * cfg.yFactor,
-                    width * 2,
+                    tileWidth,
                     imgH,
                     textureKey
                 )
@@ -84,7 +87,7 @@ export class ParallaxBackground {
                 .setDepth(-configs.length + i)
                 .setScale(cfg.scale);
 
-            // apply initial texture shifts if desired
+            // apply initial texture offsets if provided
             if (cfg.tileOffsetX) {
                 tile.tilePositionX = cfg.tileOffsetX;
             }
