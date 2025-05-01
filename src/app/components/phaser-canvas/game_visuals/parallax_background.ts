@@ -15,6 +15,7 @@ interface LayerConfig {
     spacing?: number;      // your existing gap
     offsetX?: number;      // initial X position
     tileOffsetX?: number;  // initial texture offset
+    offsetTileY?: number;  // initial vertical texture offset
 }
 
 export class ParallaxBackground {
@@ -38,11 +39,11 @@ export class ParallaxBackground {
         const { width, height } = this.scene.scale;
 
         const configs: LayerConfig[] = [
-            { key: 'forest', speed: 0.02, yFactor: 0.70, scale: 1.4 },
+            { key: 'forest', speed: 0.02, yFactor: 0.70, scale: 1.4, offsetTileY: 1 },
             { key: 'cloud1', speed: 0.04, yFactor: 0.25, scale: 0.5, spacing: 300, offsetX: 0, tileOffsetX: 0 },
             { key: 'cloud2', speed: 0.06, yFactor: 0.25, scale: 0.2, spacing: 400, offsetX: 100, tileOffsetX: 0 },
             { key: 'cloud3', speed: 0.10, yFactor: 0.30, scale: 0.4, spacing: 650, offsetX: 100, tileOffsetX: 0 },
-            { key: 'trees',  speed: 0.10, yFactor: 0.78, scale: 0.5 },
+            { key: 'trees',  speed: 0.10, yFactor: 0.78, scale: 0.5, offsetTileY: 1 },
             { key: 'fence',  speed: 0.62, yFactor: 1.00, scale: 0.65 },
         ];
 
@@ -67,7 +68,7 @@ export class ParallaxBackground {
                 textureKey = paddedKey;
             }
 
-            // determine initial X (default 0) and apply any tileOffsetX
+            // determine initial X (default 0)
             const x0 = cfg.offsetX ?? 0;
 
             const tile = this.scene.add
@@ -83,9 +84,12 @@ export class ParallaxBackground {
                 .setDepth(-configs.length + i)
                 .setScale(cfg.scale);
 
-            // apply an initial texture shift if desired
+            // apply initial texture shifts if desired
             if (cfg.tileOffsetX) {
                 tile.tilePositionX = cfg.tileOffsetX;
+            }
+            if (cfg.offsetTileY) {
+                tile.tilePositionY = cfg.offsetTileY;
             }
 
             this.layers.push({ sprite: tile, speed: cfg.speed, scale: cfg.scale });
