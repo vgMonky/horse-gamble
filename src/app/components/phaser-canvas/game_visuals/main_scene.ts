@@ -37,10 +37,10 @@ export class MainScene extends Phaser.Scene {
         this.bg.create();
 
         // 3️⃣ horses on top
-        this.addHorse(400, 160, 14);
-        this.addHorse(230, 170, 11);
-        this.addHorse(370, 180, 13);
-        this.addHorse(290, 190, 12);
+        this.addHorse(400, 160, 17);
+        this.addHorse(230, 170, 14);
+        this.addHorse(370, 180, 16);
+        this.addHorse(290, 190, 15);
     }
 
     override update(time: number, delta: number): void {
@@ -55,7 +55,7 @@ export class MainScene extends Phaser.Scene {
             frameRate: rate,
             repeat: -1,
         });
-        horse.setScale(0.32).play(rate.toString());
+        horse.setScale(0.33).play(rate.toString());
         this.horseSprites.push(horse);
     }
 }
