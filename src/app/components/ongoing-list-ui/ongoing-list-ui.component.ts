@@ -2,6 +2,7 @@
 import {
     Component,
     OnInit,
+    AfterViewInit,
     OnDestroy,
     ViewChildren,
     QueryList,
@@ -23,7 +24,7 @@ import { BREAKPOINT } from 'src/types';
     templateUrl: './ongoing-list-ui.component.html',
     styleUrls: ['./ongoing-list-ui.component.scss']
 })
-export class OngoingListUiComponent implements OnInit, OnDestroy {
+export class OngoingListUiComponent implements OnInit, AfterViewInit, OnDestroy {
     standings: Standing[] = [];
     finalPosition = 0;
     isMobileView = false;
@@ -49,9 +50,6 @@ export class OngoingListUiComponent implements OnInit, OnDestroy {
                 .subscribe(r => this.isMobileView = r.matches)
         );
 
-        // capture for FLIP
-        setTimeout(() => this.recordPositions(), 0);
-
         // subscribe finalPosition$
         this.sub.add(
             this.ongoingRaceService.finalPosition$
@@ -65,11 +63,16 @@ export class OngoingListUiComponent implements OnInit, OnDestroy {
         );
     }
 
+    ngAfterViewInit(): void {
+        // initial capture for FLIP once the view is rendered
+        this.recordPositions();
+    }
+
     ngOnDestroy(): void {
         this.sub.unsubscribe();
     }
 
-    trackByHorse(_i: number, s: Standing) {
+    trackByHorse(_i: number, s: Standing): number {
         return s.horse.index;
     }
 
@@ -83,7 +86,8 @@ export class OngoingListUiComponent implements OnInit, OnDestroy {
     }
 
     private runFLIP(newStandings: Standing[]): void {
-        const oldPos = this.prevPos;
+        // snapshot old positions
+        const oldPos = new Map(this.prevPos);
         this.standings = newStandings;
 
         this.ngZone.runOutsideAngular(() => {
@@ -99,11 +103,15 @@ export class OngoingListUiComponent implements OnInit, OnDestroy {
                 // invert & animate
                 this.horseElems.forEach(el => {
                     const idx = +el.nativeElement.dataset.index;
-                    const old = oldPos.get(idx)!;
-                    const now = newPos.get(idx)!;
+                    const old = oldPos.get(idx);
+                    const now = newPos.get(idx);
+                    // only proceed if both positions exist
+                    if (!old || !now) return;
+
                     const delta = this.isMobileView
                         ? (old.y - now.y)
                         : (old.x - now.x);
+
                     if (delta) {
                         this.renderer.setStyle(el.nativeElement, 'transition', 'none');
                         const transform = this.isMobileView
@@ -113,10 +121,12 @@ export class OngoingListUiComponent implements OnInit, OnDestroy {
                     }
                 });
 
-                // force reflow
-                this.horseElems.first.nativeElement.getBoundingClientRect();
+                // force a reflow
+                if (this.horseElems.first) {
+                    this.horseElems.first.nativeElement.getBoundingClientRect();
+                }
 
-                // play animation
+                // play the transition
                 requestAnimationFrame(() => {
                     this.horseElems.forEach(el => {
                         this.renderer.setStyle(el.nativeElement, 'transition', 'transform 300ms ease');

@@ -1,3 +1,4 @@
+// src/app/components/phaser-canvas/phaser-canvas.component.ts
 import {
     Component,
     OnInit,
@@ -10,6 +11,7 @@ import { MainScene } from './game_visuals/main_scene';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { BREAKPOINT } from 'src/types';
 import { Subscription } from 'rxjs';
+import { OngoingRaceService } from '@app/game/ongoing-race.service';
 
 @Component({
     selector: 'app-phaser-canvas',
@@ -18,22 +20,38 @@ import { Subscription } from 'rxjs';
     standalone: true
 })
 export class PhaserCanvasComponent implements OnInit, OnDestroy {
-    @ViewChild('phaserContainer', { static: true }) containerRef!: ElementRef;
+    @ViewChild('phaserContainer', { static: true })
+    containerRef!: ElementRef;
 
     isMobileView = false;
     private sub = new Subscription();
     private game?: Phaser.Game;
 
-    constructor(private breakpointObserver: BreakpointObserver) {}
+    constructor(
+        private breakpointObserver: BreakpointObserver,
+        private race: OngoingRaceService
+    ) {}
 
     ngOnInit(): void {
+        // watch viewport
         this.sub.add(
             this.breakpointObserver
                 .observe(BREAKPOINT)
                 .subscribe(r => this.isMobileView = r.matches)
         );
 
+        // boot Phaser
         this.startGame();
+
+        // whenever finalPosition$ emits, push it into our scene
+        this.sub.add(
+            this.race.finalPosition$
+                .subscribe(distance => {
+                    const scene = this.game
+                        ?.scene.getScene('MainScene') as MainScene;
+                    scene?.updateDistance(distance);
+                })
+        );
     }
 
     ngOnDestroy(): void {
@@ -47,7 +65,7 @@ export class PhaserCanvasComponent implements OnInit, OnDestroy {
             width: 850,
             height: 250,
             parent: this.containerRef.nativeElement,
-            scene: [ MainScene ],
+            scene: [ MainScene ]
         });
     }
 }
