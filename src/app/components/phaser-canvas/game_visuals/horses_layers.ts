@@ -7,6 +7,7 @@ export interface HorseConfig {
     rate: number;
     scale?: number;
     frames?: number[];
+    luminosity?: number;
 }
 
 class HorseLayer {
@@ -19,7 +20,8 @@ class HorseLayer {
             y,
             rate,
             scale = 0.33,
-            frames = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+            frames = [0, 1, 2, 3, 4, 5, 6, 7, 8],
+            luminosity
         } = config;
 
         this.animKey = `horse_${rate}`;
@@ -34,28 +36,32 @@ class HorseLayer {
             });
         }
 
-        // add sprite and play
         this.sprite = this.scene.add
             .sprite(x, y, 'horse')
-            .setScale(scale)
-            .play(this.animKey);
+            .setScale(scale);
+
+        if (luminosity !== undefined) {
+            // H=0, S=0 gives shades of gray by L
+            const color = Phaser.Display.Color.HSLToColor(0, 0, luminosity).color;
+            this.sprite.setTint(color);
+        }
+
+        this.sprite.play(this.animKey);
     }
 }
 
 export class Horses {
     private layers: HorseLayer[] = [];
 
-    // centralize your configs here
     private configs: HorseConfig[] = [
-        { x: 400, y: 160, rate: 17 },
-        { x: 230, y: 170, rate: 14 },
-        { x: 370, y: 180, rate: 16 },
-        { x: 290, y: 190, rate: 15 }
+        { x: 400, y: 160, rate: 17, luminosity: 0.76 },
+        { x: 230, y: 170, rate: 14, luminosity: 0.84 },
+        { x: 370, y: 180, rate: 16, luminosity: 0.92 },
+        { x: 290, y: 190, rate: 15, luminosity: 1.00 }
     ];
 
     constructor(private scene: Phaser.Scene) {}
 
-    /** load horse sprite-sheet */
     preload(): void {
         this.scene.load.spritesheet(
             'horse',
@@ -64,13 +70,12 @@ export class Horses {
         );
     }
 
-    /** instantiate each HorseLayer */
+    /** instantiate all horses */
     create(): void {
         this.layers = this.configs.map(cfg => new HorseLayer(this.scene, cfg));
     }
 
-    /** called each frame (no-op for now) */
     update(_time: number, _delta: number): void {
-        // if you ever want to move horses manually, do it here
+        // future horse logic goes here
     }
 }
