@@ -1,24 +1,24 @@
 // src/app/components/phaser-canvas/game_visuals/main_scene.ts
 import Phaser from 'phaser';
 import { ParallaxBackground } from './parallax_background';
+import { Horses } from './horses_layers';
 
 export class MainScene extends Phaser.Scene {
-    private horseSprites: Phaser.GameObjects.Sprite[] = [];
     private bg!: ParallaxBackground;
+    private horses!: Horses;
 
     constructor() {
         super('MainScene');
     }
 
     preload(): void {
+        // 1️⃣ load parallax background assets
         this.bg = new ParallaxBackground(this);
         this.bg.preload();
 
-        this.load.spritesheet(
-            'horse',
-            'assets/game-img/sprite-sheet/horse-sprite-sheet-0.png',
-            { frameWidth: 575, frameHeight: 434 }
-        );
+        // 2️⃣ load all horse assets
+        this.horses = new Horses(this);
+        this.horses.preload();
     }
 
     create(): void {
@@ -26,36 +26,25 @@ export class MainScene extends Phaser.Scene {
 
         // 1️⃣ sky gradient
         const g = this.add.graphics();
-        const topColor    = Phaser.Display.Color.HSLToColor(0.6, 0.2, 0.6).color;
-        const topColor2    = Phaser.Display.Color.HSLToColor(0.99, 0.2, 0.7).color;
+        const topColor   = Phaser.Display.Color.HSLToColor(0.6, 0.2, 0.6).color;
+        const topColor2  = Phaser.Display.Color.HSLToColor(0.99, 0.2, 0.7).color;
         const bottomColor = Phaser.Display.Color.HSLToColor(0.5, 0.2, 0.9).color;
         g.fillGradientStyle(topColor2, topColor, bottomColor, bottomColor, 1);
         g.fillRect(-100, 0, width + 100, height);
-        g.setDepth(-10);  // behind your 6 parallax layers
+        g.setDepth(-10);  // behind parallax layers
 
         // 2️⃣ parallax background
         this.bg.create();
 
         // 3️⃣ horses on top
-        this.addHorse(400, 160, 17);
-        this.addHorse(230, 170, 14);
-        this.addHorse(370, 180, 16);
-        this.addHorse(290, 190, 15);
+        this.horses.create();
     }
 
     override update(time: number, delta: number): void {
+        // animate background
         this.bg.update(time, delta);
-    }
 
-    private addHorse(x: number, y: number, rate: number): void {
-        const horse = this.add.sprite(x, y, 'horse');
-        this.anims.create({
-            key: rate.toString(),
-            frames: this.anims.generateFrameNumbers('horse', { frames: [0,1,2,3,4,5,6,7,8] }),
-            frameRate: rate,
-            repeat: -1,
-        });
-        horse.setScale(0.33).play(rate.toString());
-        this.horseSprites.push(horse);
+        // (optional) update horses if needed
+        this.horses.update(time, delta);
     }
 }
