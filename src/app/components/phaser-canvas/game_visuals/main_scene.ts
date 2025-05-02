@@ -6,7 +6,6 @@ import { Horses } from './horses_layers';
 export class MainScene extends Phaser.Scene {
     private bg!: ParallaxBackground;
     private horses!: Horses;
-    private distanceText!: Phaser.GameObjects.Text;
 
     constructor() {
         super('MainScene');
@@ -37,13 +36,6 @@ export class MainScene extends Phaser.Scene {
         // parallax
         this.bg.create();
 
-        // distance label
-        this.distanceText = this.add.text(
-            20, 20,
-            'Distance: 0',
-            { fontSize: '18px', color: '#ffffff' }
-        ).setDepth(10);
-
         // horses
         this.horses.create();
     }
@@ -51,10 +43,5 @@ export class MainScene extends Phaser.Scene {
     override update(time: number, delta: number): void {
         this.bg.update(time, delta);
         this.horses.update(time, delta);
-    }
-
-    /** Called externally to update the on‐screen distance */
-    public updateDistance(distance: number): void {
-        this.distanceText.setText(`Distance: ${distance}`);
     }
 }

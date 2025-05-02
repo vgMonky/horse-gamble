@@ -42,16 +42,6 @@ export class PhaserCanvasComponent implements OnInit, OnDestroy {
 
         // boot Phaser
         this.startGame();
-
-        // whenever finalPosition$ emits, push it into our scene
-        this.sub.add(
-            this.race.finalPosition$
-                .subscribe(distance => {
-                    const scene = this.game
-                        ?.scene.getScene('MainScene') as MainScene;
-                    scene?.updateDistance(distance);
-                })
-        );
     }
 
     ngOnDestroy(): void {
