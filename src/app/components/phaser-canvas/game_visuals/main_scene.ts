@@ -2,7 +2,7 @@
 import Phaser from 'phaser';
 import { ParallaxBackground } from './parallax_background';
 import { Horses } from './horses_layers';
-import type { Horse, OngoingRaceService } from '@app/game/ongoing-race.service';
+import type { OngoingRaceService } from '@app/game/ongoing-race.service';
 
 export class MainScene extends Phaser.Scene {
     private bg!: ParallaxBackground;

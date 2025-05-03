@@ -3,8 +3,8 @@ import Phaser from 'phaser';
 import type { Horse } from '@app/game/ongoing-race.service';
 import type { Observable, Subscription } from 'rxjs';
 
-export interface HorseConfig {
-    index: number;        // ← add this
+export interface HorseAnimConfig {
+    index: number;
     x: number;
     y: number;
     rate: number;
@@ -15,14 +15,14 @@ export interface HorseConfig {
 
 class HorseLayer {
     public sprite: Phaser.GameObjects.Sprite;
-    public readonly config: HorseConfig;      // ← expose the config here
+    public readonly config: HorseAnimConfig;
     private animKey: string;
 
     constructor(
         private scene: Phaser.Scene,
-        config: HorseConfig
+        config: HorseAnimConfig
     ) {
-        this.config = config;                 // ← store it on the instance
+        this.config = config;
         const {
             x,
             y,
@@ -37,7 +37,7 @@ class HorseLayer {
         if (!this.scene.anims.exists(this.animKey)) {
             this.scene.anims.create({
                 key: this.animKey,
-                frames: this.scene.anims.generateFrameNumbers('horse', { frames }),
+                frames: this.scene.anims.generateFrameNumbers('horseSpriteSheet', { frames }),
                 frameRate: rate,
                 repeat: -1
             });
@@ -62,7 +62,7 @@ export class Horses {
     private layers: HorseLayer[] = [];
     private sub!: Subscription;
 
-    private configs: HorseConfig[] = [
+    private configs: HorseAnimConfig[] = [
         { index: 1,  x: 400, y: 160, rate: 17, luminosity: 0.76 },
         { index: 8,  x: 400, y: 170, rate: 14, luminosity: 0.84 },
         { index: 3,  x: 400, y: 180, rate: 16, luminosity: 0.92 },
@@ -76,7 +76,7 @@ export class Horses {
 
     preload(): void {
         this.scene.load.spritesheet(
-            'horse',
+            'horseSpriteSheet',
             'assets/game-img/sprite-sheet/horse-sprite-sheet-0.png',
             { frameWidth: 575, frameHeight: 434 }
         );
