@@ -45,7 +45,7 @@ export class ParallaxBackground {
             { key: 'cloud2', speed: 0.02, yFactor: 0.25, scale: 0.2, spacing: 1500, offsetX: 0, tileOffsetX: 0, xRepeatFactor: 5 },
             { key: 'cloud3', speed: 0.03, yFactor: 0.30, scale: 0.4, spacing: 950, offsetX: 0, tileOffsetX: 0, xRepeatFactor: 3 },
             { key: 'trees',  speed: 0.13, yFactor: 0.78, scale: 0.5, offsetTileY: 1, xRepeatFactor: 2 },
-            { key: 'fence',  speed: 0.68, yFactor: 1.00, scale: 0.65, xRepeatFactor: 2 },
+            { key: 'fence',  speed: 0.72, yFactor: 1.00, scale: 0.65, xRepeatFactor: 2 },
         ];
 
         configs.forEach((cfg, i) => {
