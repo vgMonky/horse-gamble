@@ -58,7 +58,7 @@ class HorseLayer {
     }
 
     /** tween the sprite’s X to `targetX` over `duration`ms with Linear ease */
-    public slideTo(targetX: number, duration: number = 300): void {
+    public slideTo(targetX: number, duration: number): void {
         this.scene.tweens.add({
             targets: this.sprite,
             x:       targetX,
@@ -71,7 +71,7 @@ class HorseLayer {
 export class Horses {
     private layers: HorseLayer[] = [];
     private sub!: Subscription;
-    private readonly marchDistancePerTick = 50; // pixels per tick for winners
+    private readonly marchDistancePerTick = 20; // pixels per tick for winners
 
     private configs: HorseAnimConfig[] = [
         { index: 1,  x: 400, y: 160, rate: 17, luminosity: 0.76 },
@@ -102,21 +102,33 @@ export class Horses {
 
     private positionSprites(horses: Horse[]) {
         const maxPos = Math.max(...horses.map(h => h.position ?? 0));
+        // compute speed in px per millisecond (assuming service tickSpeed = 400ms)
+        const speedPxPerMs = this.marchDistancePerTick / 400;
 
         for (let layer of this.layers) {
             const horse = horses.find(h => h.index === layer.config.index)!;
 
             if (horse.position != null) {
-                // in-race sliding
+                // in-race: compute target X
                 const baseX   = layer.config.x;
                 const deltaX  = (horse.position - maxPos) * 0.5;
                 const targetX = baseX + deltaX;
-                layer.slideTo(targetX, 400);
+
+                // distance to travel
+                const distance = Math.abs(targetX - layer.sprite.x);
+                // duration = distance ÷ speed
+                const duration = distance / speedPxPerMs;
+
+                layer.slideTo(targetX, duration);
             } else {
-                // winner: march off-screen by tweening ahead
+                // winner: march off-screen by fixed marchDistancePerTick each tick
                 const currentX = layer.sprite.x;
                 const targetX  = currentX + this.marchDistancePerTick;
-                layer.slideTo(targetX, 400);
+
+                const distance = Math.abs(targetX - currentX);
+                const duration = distance / speedPxPerMs;
+
+                layer.slideTo(targetX, duration);
             }
         }
     }
