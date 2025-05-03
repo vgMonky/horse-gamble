@@ -56,12 +56,21 @@ class HorseLayer {
 
         this.sprite.play(this.animKey);
     }
+
+    /** tween the sprite’s X to `targetX` over `duration`ms */
+    public slideTo(targetX: number, duration: number = 300): void {
+        this.scene.tweens.add({
+            targets: this.sprite,
+            x: targetX,
+            duration,
+            // ease: 'Sine.easeInOut'
+        });
+    }
 }
 
 export class Horses {
     private layers: HorseLayer[] = [];
     private sub!: Subscription;
-
     private configs: HorseAnimConfig[] = [
         { index: 1,  x: 400, y: 160, rate: 17, luminosity: 0.76 },
         { index: 8,  x: 400, y: 170, rate: 14, luminosity: 0.84 },
@@ -91,15 +100,17 @@ export class Horses {
 
     private positionSprites(horses: Horse[]) {
         const maxPos = Math.max(...horses.map(h => h.position ?? 0));
+
         for (let layer of this.layers) {
-            const idx   = layer.config.index;
-            const horse = horses.find(h => h.index === idx);
-            if (!horse || horse.position == null) {
-                continue;
-            }
+            const horse = horses.find(h => h.index === layer.config.index);
+            if (!horse || horse.position == null) { continue; }
+
             const baseX  = layer.config.x;
-            const deltaX = (horse.position - maxPos) * 0.2;
-            layer.sprite.x = baseX + deltaX;
+            const deltaX = (horse.position - maxPos) * 0.3;
+            const targetX = baseX + deltaX;
+
+            // smoothly slide instead of snapping:
+            layer.slideTo(targetX, 400);
         }
     }
 
