@@ -50,12 +50,15 @@ export class PhaserCanvasComponent implements OnInit, OnDestroy {
     }
 
     private startGame(): void {
+        // pass the race service so MainScene can grab horses$
+        const scene = new MainScene(this.race);
+
         this.game = new Phaser.Game({
             type: Phaser.AUTO,
             width: 850,
             height: 250,
             parent: this.containerRef.nativeElement,
-            scene: [ MainScene ]
+            scene: scene
         });
     }
 }

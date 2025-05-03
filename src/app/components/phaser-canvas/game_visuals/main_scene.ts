@@ -2,12 +2,13 @@
 import Phaser from 'phaser';
 import { ParallaxBackground } from './parallax_background';
 import { Horses } from './horses_layers';
+import type { Horse, OngoingRaceService } from '@app/game/ongoing-race.service';
 
 export class MainScene extends Phaser.Scene {
     private bg!: ParallaxBackground;
     private horses!: Horses;
 
-    constructor() {
+    constructor(private race: OngoingRaceService) {
         super('MainScene');
     }
 
@@ -17,7 +18,7 @@ export class MainScene extends Phaser.Scene {
         this.bg.preload();
 
         // 2️⃣ horses
-        this.horses = new Horses(this);
+        this.horses = new Horses(this, this.race.horses$);
         this.horses.preload();
     }
 

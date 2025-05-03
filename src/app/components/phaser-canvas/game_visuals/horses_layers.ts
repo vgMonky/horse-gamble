@@ -1,7 +1,10 @@
 // src/app/components/phaser-canvas/game_visuals/horses_layers.ts
 import Phaser from 'phaser';
+import type { Horse } from '@app/game/ongoing-race.service';
+import type { Observable, Subscription } from 'rxjs';
 
 export interface HorseConfig {
+    index: number;        // ← add this
     x: number;
     y: number;
     rate: number;
@@ -12,9 +15,14 @@ export interface HorseConfig {
 
 class HorseLayer {
     public sprite: Phaser.GameObjects.Sprite;
+    public readonly config: HorseConfig;      // ← expose the config here
     private animKey: string;
 
-    constructor(private scene: Phaser.Scene, config: HorseConfig) {
+    constructor(
+        private scene: Phaser.Scene,
+        config: HorseConfig
+    ) {
+        this.config = config;                 // ← store it on the instance
         const {
             x,
             y,
@@ -26,7 +34,6 @@ class HorseLayer {
 
         this.animKey = `horse_${rate}`;
 
-        // create animation once
         if (!this.scene.anims.exists(this.animKey)) {
             this.scene.anims.create({
                 key: this.animKey,
@@ -41,8 +48,9 @@ class HorseLayer {
             .setScale(scale);
 
         if (luminosity !== undefined) {
-            // H=0, S=0 gives shades of gray by L
-            const color = Phaser.Display.Color.HSLToColor(0, 0, luminosity).color;
+            const color = Phaser.Display.Color
+                .HSLToColor(0, 0, luminosity)
+                .color;
             this.sprite.setTint(color);
         }
 
@@ -52,15 +60,19 @@ class HorseLayer {
 
 export class Horses {
     private layers: HorseLayer[] = [];
+    private sub!: Subscription;
 
     private configs: HorseConfig[] = [
-        { x: 400, y: 160, rate: 17, luminosity: 0.76 },
-        { x: 230, y: 170, rate: 14, luminosity: 0.84 },
-        { x: 370, y: 180, rate: 16, luminosity: 0.92 },
-        { x: 290, y: 190, rate: 15, luminosity: 1.00 }
+        { index: 1,  x: 400, y: 160, rate: 17, luminosity: 0.76 },
+        { index: 8,  x: 400, y: 170, rate: 14, luminosity: 0.84 },
+        { index: 3,  x: 400, y: 180, rate: 16, luminosity: 0.92 },
+        { index: 14, x: 400, y: 190, rate: 15, luminosity: 1.00 },
     ];
 
-    constructor(private scene: Phaser.Scene) {}
+    constructor(
+        private scene: Phaser.Scene,
+        private horses$: Observable<Horse[]>
+    ) {}
 
     preload(): void {
         this.scene.load.spritesheet(
@@ -70,12 +82,28 @@ export class Horses {
         );
     }
 
-    /** instantiate all horses */
     create(): void {
         this.layers = this.configs.map(cfg => new HorseLayer(this.scene, cfg));
+        this.sub = this.horses$.subscribe(horses => this.positionSprites(horses));
     }
 
-    update(_time: number, _delta: number): void {
-        // future horse logic goes here
+    update(_time: number, _delta: number): void {}
+
+    private positionSprites(horses: Horse[]) {
+        const maxPos = Math.max(...horses.map(h => h.position ?? 0));
+        for (let layer of this.layers) {
+            const idx   = layer.config.index;
+            const horse = horses.find(h => h.index === idx);
+            if (!horse || horse.position == null) {
+                continue;
+            }
+            const baseX  = layer.config.x;
+            const deltaX = (horse.position - maxPos) * 0.2;
+            layer.sprite.x = baseX + deltaX;
+        }
+    }
+
+    destroy(): void {
+        this.sub.unsubscribe();
     }
 }
