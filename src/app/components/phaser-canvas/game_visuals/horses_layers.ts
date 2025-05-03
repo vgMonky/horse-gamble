@@ -44,7 +44,7 @@ class HorseLayer {
         }
 
         this.sprite = this.scene.add
-            .sprite(x, y, 'horse')
+            .sprite(x, y, 'horseSpriteSheet')
             .setScale(scale);
 
         if (luminosity !== undefined) {
@@ -57,13 +57,13 @@ class HorseLayer {
         this.sprite.play(this.animKey);
     }
 
-    /** tween the sprite’s X to `targetX` over `duration`ms */
+    /** tween the sprite’s X to `targetX` over `duration`ms with Linear ease */
     public slideTo(targetX: number, duration: number = 300): void {
         this.scene.tweens.add({
             targets: this.sprite,
-            x: targetX,
+            x:       targetX,
             duration,
-            // ease: 'Sine.easeInOut'
+            ease:    'Linear'
         });
     }
 }
@@ -71,6 +71,8 @@ class HorseLayer {
 export class Horses {
     private layers: HorseLayer[] = [];
     private sub!: Subscription;
+    private readonly marchDistancePerTick = 50; // pixels per tick for winners
+
     private configs: HorseAnimConfig[] = [
         { index: 1,  x: 400, y: 160, rate: 17, luminosity: 0.76 },
         { index: 8,  x: 400, y: 170, rate: 14, luminosity: 0.84 },
@@ -102,15 +104,20 @@ export class Horses {
         const maxPos = Math.max(...horses.map(h => h.position ?? 0));
 
         for (let layer of this.layers) {
-            const horse = horses.find(h => h.index === layer.config.index);
-            if (!horse || horse.position == null) { continue; }
+            const horse = horses.find(h => h.index === layer.config.index)!;
 
-            const baseX  = layer.config.x;
-            const deltaX = (horse.position - maxPos) * 0.3;
-            const targetX = baseX + deltaX;
-
-            // smoothly slide instead of snapping:
-            layer.slideTo(targetX, 400);
+            if (horse.position != null) {
+                // in-race sliding
+                const baseX   = layer.config.x;
+                const deltaX  = (horse.position - maxPos) * 0.5;
+                const targetX = baseX + deltaX;
+                layer.slideTo(targetX, 400);
+            } else {
+                // winner: march off-screen by tweening ahead
+                const currentX = layer.sprite.x;
+                const targetX  = currentX + this.marchDistancePerTick;
+                layer.slideTo(targetX, 400);
+            }
         }
     }
 
