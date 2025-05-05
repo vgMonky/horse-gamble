@@ -104,8 +104,8 @@ export class OngoingHorsesList {
 
 @Injectable({ providedIn: 'root' })
 export class OngoingRaceService implements OnDestroy {
+    public readonly winningDistance       = 100;
     private readonly tickSpeed             = 500;
-    private readonly winningDistance       = 100;
     private readonly preCountdownDuration  = 3;
     private readonly postCountdownDuration = 3;
 
