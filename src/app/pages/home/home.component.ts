@@ -1,6 +1,8 @@
 // src/app/pages/home/home.component.ts
 import { Component } from '@angular/core';
 import { SharedModule } from '@app/shared/shared.module';
+import { OngoingRaceService } from '@app/game/ongoing-race.service';
+
 
 @Component({
     standalone: true,
@@ -14,4 +16,18 @@ import { SharedModule } from '@app/shared/shared.module';
     `,
     styleUrls: ['./home.component.scss']
 })
-export class HomeComponent {}
+export class HomeComponent {
+
+    constructor(private ongoingRaceService: OngoingRaceService) {}
+
+    ngAfterViewInit(): void {
+        // defer race start until after the initial change detection
+        setTimeout(() => {
+            this.ongoingRaceService.startOngoingRace();
+        }, 0);
+    }
+
+    ngOnDestroy(): void {
+        this.ongoingRaceService.stopOngoingRace();
+    }
+}

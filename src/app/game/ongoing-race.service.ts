@@ -20,7 +20,7 @@ export interface Standing {
 
 @Injectable({ providedIn: 'root' })
 export class OngoingRaceService implements OnDestroy {
-    private readonly tickSpeed             = 400;
+    private readonly tickSpeed             = 500;
     private readonly winningDistance       = 500;
     private readonly preCountdownDuration  = 3;
     private readonly postCountdownDuration = 3;
@@ -46,6 +46,7 @@ export class OngoingRaceService implements OnDestroy {
 
     startOngoingRace(): void {
         this.stopOngoingRace();
+        console.log("Ongoing race started!")
 
         const horseConfigs = [
             { index: 1,  name: 'Fast Fury'    },
@@ -87,6 +88,7 @@ export class OngoingRaceService implements OnDestroy {
         horses.forEach((h, i) => {
             if (h.position !== null && h.position < this.winningDistance) {
                 h.position! += (advances[i] || 0);
+                console.log(h.position)
                 if (h.position! >= this.winningDistance && !podium.includes(h)) {
                     h.position = null;
                     podium.push(h);
@@ -108,6 +110,7 @@ export class OngoingRaceService implements OnDestroy {
                 this._countdown
             );
         }
+        console.log("---")
     }
 
     private updateStandings(): void {
