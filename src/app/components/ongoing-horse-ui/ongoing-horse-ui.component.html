@@ -3,26 +3,24 @@
     <div class="c-ongoing-horse-ui__info">
         <div
             class="c-ongoing-horse-ui__index"
-            [style.background]="'hsl(' + (horse.index * 40 % 360) + ', 70%, 35%)'"
+            [style.background]="color"
         >
-            {{ horse.index }}
+            {{ ongoingHorse.horse.index }}
         </div>
         <div class="c-ongoing-horse-ui__name">
-            {{ horse.name }}
+            {{ ongoingHorse.horse.name }}
         </div>
     </div>
 
-    <!-- racing distance -->
-    <ng-container *ngIf="horse.position !== null; else finishedTpl">
+    <ng-container *ngIf="ongoingHorse.finalPlace == null; else finishedTpl">
         <div class="c-ongoing-horse-ui__position">
-            {{ horse.position }}m
+            {{ ongoingHorse.position }}m
         </div>
     </ng-container>
 
-    <!-- final placement -->
     <ng-template #finishedTpl>
         <div class="c-ongoing-horse-ui__placement">
-            {{ getOrdinal(placement) }}
+            {{ getOrdinal(ongoingHorse.finalPlace!) }}
         </div>
     </ng-template>
 </div>
