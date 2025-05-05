@@ -51,31 +51,44 @@ export class OngoingHorsesList {
         });
     }
 
-/** apply the advances and mark any new finishers */
-applyAdvances(advances: number[], winningDistance: number): number {
-    let finishCount = this.list.filter(h => h.finalPlace! > 0).length;
+    /** apply the advances and mark any new finishers */
+    applyAdvances(advances: number[], winningDistance: number): number {
+        let finishCount = this.list.filter(h => h.finalPlace! > 0).length;
 
-    this.list.forEach((h, i) => {
-        h.position! += advances[i] || 0;
-    });
+        // capture pre-tick positions for tie-breaking
+        const prePositions = this.list.map(h => h.position!);
 
-    // pick out the horses that just now crossed the line
-    const newFinishers = this.list
-        .filter(h => h.finalPlace == null && h.position! >= winningDistance)
-        // sort descending by overshoot distance,
-        // the bigger the overshoot, the farther past the line they ran
-        .sort((horseA, horseB) => {
-            const overshootA = horseA.position! - winningDistance;
-            const overshootB = horseB.position! - winningDistance;
-            return overshootB - overshootA;
+        this.list.forEach((h, i) => {
+            h.position! += advances[i] || 0;
         });
 
-    newFinishers.forEach(h => {
-        h.finalPlace = ++finishCount;
-    });
+        // compute final placement
+            // primary sort: bigger overshoot wins
+            // secondary sort: who was farther along before this tick
+            // third sort: _list array order
+        const newFinishers = this.list
+            .filter(h => h.finalPlace == null && h.position! >= winningDistance)
+            .sort((horseA, horseB) => {
+                const overshootA = horseA.position! - winningDistance;
+                const overshootB = horseB.position! - winningDistance;
+                if (overshootB !== overshootA) {
+                    return overshootB - overshootA;
+                }
 
-    return finishCount;
-}
+                const idxA = this.list.indexOf(horseA);
+                const idxB = this.list.indexOf(horseB);
+                const preA = prePositions[idxA];
+                const preB = prePositions[idxB];
+                return preB - preA;
+            });
+
+        // assign places in that order
+        newFinishers.forEach(h => {
+            h.finalPlace = ++finishCount;
+        });
+
+        return finishCount;
+    }
 
     consoleLog(): void {
         console.log("")
@@ -88,7 +101,6 @@ applyAdvances(advances: number[], winningDistance: number): number {
         });
     }
 }
-
 
 @Injectable({ providedIn: 'root' })
 export class OngoingRaceService implements OnDestroy {
@@ -114,7 +126,6 @@ export class OngoingRaceService implements OnDestroy {
 
     startOngoingRace(): void {
         this.stopOngoingRace();
-        console.log('Ongoing race started!');
 
         const horsesList = new OngoingHorsesList(ALL_HORSES, 4);
         this._horsesList.next(horsesList);
