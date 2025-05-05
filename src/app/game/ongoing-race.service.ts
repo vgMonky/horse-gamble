@@ -1,27 +1,99 @@
+// src/app/services/ongoing-race.service.ts
 import { Injectable, OnDestroy } from '@angular/core';
-import {
-    BehaviorSubject,
-    interval,
-    Subscription
-} from 'rxjs';
+import { BehaviorSubject, interval, Subscription } from 'rxjs';
+import { ALL_HORSES, Horse } from './horses-database';
 
 export type OngoingRaceState = 'pre' | 'in' | 'post';
 
-export interface Horse {
-    index:    number;
-    name:     string;
-    position: number | null;
+export interface OngoingHorse {
+    horse:       Horse;
+    position:    number | null;
+    finalPlace:  number | null;
 }
 
-export interface Standing {
-    horse:     Horse;
-    placement: number;
+export class OngoingHorsesList {
+    private list: OngoingHorse[];
+
+    constructor(allHorses: Horse[], count: number) {
+        const selected = this.shuffle(allHorses).slice(0, count);
+        this.list = selected.map(h => ({
+            horse:      h,
+            position:   0,
+            finalPlace: null
+        }));
+    }
+
+    private shuffle(arr: Horse[]): Horse[] {
+        const a = [...arr];
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+    }
+
+    getAll(): OngoingHorse[] {
+        return [...this.list];
+    }
+
+    /** sorted by finish place, then by descending position */
+    getByPlacement(): OngoingHorse[] {
+        return [...this.list].sort((a, b) => {
+            if (a.finalPlace != null && b.finalPlace != null) {
+                return a.finalPlace - b.finalPlace;
+            } else if (a.finalPlace != null) {
+                return -1;
+            } else if (b.finalPlace != null) {
+                return 1;
+            } else {
+                return (b.position! - a.position!);
+            }
+        });
+    }
+
+/** apply the advances and mark any new finishers */
+applyAdvances(advances: number[], winningDistance: number): number {
+    let finishCount = this.list.filter(h => h.finalPlace! > 0).length;
+
+    this.list.forEach((h, i) => {
+        h.position! += advances[i] || 0;
+    });
+
+    // pick out the horses that just now crossed the line
+    const newFinishers = this.list
+        .filter(h => h.finalPlace == null && h.position! >= winningDistance)
+        // sort descending by overshoot distance,
+        // the bigger the overshoot, the farther past the line they ran
+        .sort((horseA, horseB) => {
+            const overshootA = horseA.position! - winningDistance;
+            const overshootB = horseB.position! - winningDistance;
+            return overshootB - overshootA;
+        });
+
+    newFinishers.forEach(h => {
+        h.finalPlace = ++finishCount;
+    });
+
+    return finishCount;
 }
+
+    consoleLog(): void {
+        console.log("")
+        this.list.forEach(h => {
+            console.log(
+                `Horse ${h.horse.index} — ` +
+                `pos: ${h.position ?? 'null'} — ` +
+                `Place: ${h.finalPlace ?? 'null'}`
+            );
+        });
+    }
+}
+
 
 @Injectable({ providedIn: 'root' })
 export class OngoingRaceService implements OnDestroy {
     private readonly tickSpeed             = 500;
-    private readonly winningDistance       = 500;
+    private readonly winningDistance       = 100;
     private readonly preCountdownDuration  = 3;
     private readonly postCountdownDuration = 3;
 
@@ -29,42 +101,24 @@ export class OngoingRaceService implements OnDestroy {
     private preTimer   = new CountdownTimer();
     private postTimer  = new CountdownTimer();
 
-    private _horses        = new BehaviorSubject<Horse[]>([]);
-    private _podium        = new BehaviorSubject<Horse[]>([]); // PODIUM: ordered horses that have finished the race
-    private _finalPosition = new BehaviorSubject<number>(this.winningDistance);
+    private _horsesList        = new BehaviorSubject<OngoingHorsesList>(
+        new OngoingHorsesList([], 0)
+    );
     private _raceState     = new BehaviorSubject<OngoingRaceState>('pre');
     private _countdown     = new BehaviorSubject<number>(0);
-    private _standings     = new BehaviorSubject<Standing[]>([]); // STANDINGS: ordered horses whether they’ve finished or not
 
     // Public streams
-    horses$        = this._horses.asObservable();
-    finalPosition$ = this._finalPosition.asObservable();
-    raceState$     = this._raceState.asObservable();
-    countdown$     = this._countdown.asObservable();
-    podium$        = this._podium.asObservable();
-    standings$     = this._standings.asObservable();
+    horsesList$    = this._horsesList.asObservable();
+    raceState$ = this._raceState.asObservable();
+    countdown$ = this._countdown.asObservable();
 
     startOngoingRace(): void {
         this.stopOngoingRace();
-        console.log("Ongoing race started!")
+        console.log('Ongoing race started!');
 
-        const horseConfigs = [
-            { index: 1,  name: 'Fast Fury'    },
-            { index: 8,  name: 'Lucky Star'   },
-            { index: 3,  name: 'Silver Arrow' },
-            { index: 14, name: 'Night Rider'  },
-        ];
-        const horses: Horse[] = horseConfigs.map(c => ({
-            index:    c.index,
-            name:     c.name,
-            position: 0
-        }));
-
-        this._horses.next(horses);
-        this._podium.next([]);
-        this._finalPosition.next(this.winningDistance);
+        const horsesList = new OngoingHorsesList(ALL_HORSES, 4);
+        this._horsesList.next(horsesList);
         this._raceState.next('pre');
-        this.updateStandings();
 
         this.preTimer.start(
             this.preCountdownDuration,
@@ -75,62 +129,25 @@ export class OngoingRaceService implements OnDestroy {
 
     private beginInRace(): void {
         this._raceState.next('in');
-        this.raceInterval$ = interval(this.tickSpeed)
-            .subscribe(() => this.runInRaceTick());
-    }
+        this.raceInterval$ = interval(this.tickSpeed).subscribe(() => {
+            const list    = this._horsesList.getValue();
+            const seed    = new Seed(4);
+            const adv     = seed.splitNumber(list.getAll().length);
+            const finished = list.applyAdvances(adv, this.winningDistance);
 
-    private runInRaceTick(): void {
-        const horses = [...this._horses.getValue()];
-        const podium = [...this._podium.getValue()];
-        const seed    = new Seed(4);
-        const advances= seed.splitNumber(horses.length);
+            this._horsesList.next(list);
+            list.consoleLog();
 
-        horses.forEach((h, i) => {
-            if (h.position !== null && h.position < this.winningDistance) {
-                h.position! += (advances[i] || 0);
-                console.log(h.position)
-                if (h.position! >= this.winningDistance && !podium.includes(h)) {
-                    h.position = null;
-                    podium.push(h);
-                    console.log(`🎉 Horse ${h.index} finished!`);
-                }
+            if (finished === list.getAll().length) {
+                this._raceState.next('post');
+                this.stopRaceInterval();
+                this.postTimer.start(
+                    this.postCountdownDuration,
+                    () => this.startOngoingRace(),
+                    this._countdown
+                );
             }
         });
-
-        this._horses.next(horses);
-        this._podium.next(podium);
-        this.updateStandings();
-
-        if (podium.length === horses.length) {
-            this._raceState.next('post');
-            this.stopRaceInterval();
-            this.postTimer.start(
-                this.postCountdownDuration,
-                () => this.startOngoingRace(),
-                this._countdown
-            );
-        }
-        console.log("---")
-    }
-
-    private updateStandings(): void {
-        const all    = this._horses.getValue();
-        const podium = this._podium.getValue();
-
-        const finished: Standing[] = podium.map((h, i) => ({
-            horse:     h,
-            placement: i + 1
-        }));
-
-        const inRace: Standing[] = all
-            .filter(h => h.position !== null && !podium.includes(h))
-            .sort((a, b) => b.position! - a.position!)
-            .map((h, i) => ({
-                horse:     h,
-                placement: podium.length + i + 1
-            }));
-
-        this._standings.next([...finished, ...inRace]);
     }
 
     private stopRaceInterval(): void {
@@ -159,8 +176,8 @@ class Seed {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
     splitNumber(parts: number): number[] {
-        const digits   = this.seedValue.toString().split('');
-        const chunkSize= Math.floor(digits.length / parts);
+        const digits    = this.seedValue.toString().split('');
+        const chunkSize = Math.floor(digits.length / parts);
         if (!chunkSize) return [];
         const result: number[] = [];
         for (let i = 0; i < parts; i++) {
