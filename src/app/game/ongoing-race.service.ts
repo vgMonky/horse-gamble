@@ -21,7 +21,7 @@ export interface Standing {
 @Injectable({ providedIn: 'root' })
 export class OngoingRaceService implements OnDestroy {
     private readonly tickSpeed             = 400;
-    private readonly winningDistance       = 2600;
+    private readonly winningDistance       = 500;
     private readonly preCountdownDuration  = 3;
     private readonly postCountdownDuration = 3;
 
@@ -30,10 +30,10 @@ export class OngoingRaceService implements OnDestroy {
     private postTimer  = new CountdownTimer();
 
     private _horses        = new BehaviorSubject<Horse[]>([]);
+    private _podium        = new BehaviorSubject<Horse[]>([]); // PODIUM: ordered horses that have finished the race
     private _finalPosition = new BehaviorSubject<number>(this.winningDistance);
     private _raceState     = new BehaviorSubject<OngoingRaceState>('pre');
     private _countdown     = new BehaviorSubject<number>(0);
-    private _podium        = new BehaviorSubject<Horse[]>([]); // PODIUM: ordered horses that have finished the race
     private _standings     = new BehaviorSubject<Standing[]>([]); // STANDINGS: ordered horses whether they’ve finished or not
 
     // Public streams
@@ -81,7 +81,7 @@ export class OngoingRaceService implements OnDestroy {
     private runInRaceTick(): void {
         const horses = [...this._horses.getValue()];
         const podium = [...this._podium.getValue()];
-        const seed    = new Seed(8);
+        const seed    = new Seed(4);
         const advances= seed.splitNumber(horses.length);
 
         horses.forEach((h, i) => {

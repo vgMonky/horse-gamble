@@ -71,7 +71,7 @@ class HorseLayer {
 export class Horses {
     private layers: HorseLayer[] = [];
     private sub!: Subscription;
-    private readonly marchDistancePerTick = 20; // pixels per tick for winners
+    private readonly marchDistancePerTick = 50; // pixels per tick for winners
 
     private configs: HorseAnimConfig[] = [
         { index: 1,  x: 400, y: 160, rate: 17, luminosity: 0.76 },
@@ -102,8 +102,7 @@ export class Horses {
 
     private positionSprites(horses: Horse[]) {
         const maxPos = Math.max(...horses.map(h => h.position ?? 0));
-        // compute speed in px per millisecond (assuming service tickSpeed = 400ms)
-        const speedPxPerMs = this.marchDistancePerTick / 400;
+        const d =  400;
 
         for (let layer of this.layers) {
             const horse = horses.find(h => h.index === layer.config.index)!;
@@ -111,13 +110,13 @@ export class Horses {
             if (horse.position != null) {
                 // in-race: compute target X
                 const baseX   = layer.config.x;
-                const deltaX  = (horse.position - maxPos) * 0.5;
+                const deltaX  = (horse.position - maxPos) * 4;
                 const targetX = baseX + deltaX;
 
                 // distance to travel
                 const distance = Math.abs(targetX - layer.sprite.x);
                 // duration = distance ÷ speed
-                const duration = distance / speedPxPerMs;
+                const duration = d;
 
                 layer.slideTo(targetX, duration);
             } else {
@@ -126,7 +125,7 @@ export class Horses {
                 const targetX  = currentX + this.marchDistancePerTick;
 
                 const distance = Math.abs(targetX - currentX);
-                const duration = distance / speedPxPerMs;
+                const duration = d;
 
                 layer.slideTo(targetX, duration);
             }
