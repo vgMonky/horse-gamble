@@ -12,7 +12,11 @@ import {
 import { CommonModule } from '@angular/common';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { Subject, takeUntil } from 'rxjs';
-import { OngoingRaceService, OngoingHorse } from '@app/game/ongoing-race.service';
+import {
+    OngoingRaceService,
+    OngoingHorse,
+    OngoingHorsesList
+} from '@app/game/ongoing-race.service';
 import { OngoingHorseUiComponent } from '@app/components/ongoing-horse-ui/ongoing-horse-ui.component';
 import { BREAKPOINT } from 'src/types';
 
@@ -27,16 +31,14 @@ export class OngoingListUiComponent implements AfterViewInit, OnDestroy {
     horsesList: OngoingHorse[] = [];
     isMobileView = false;
 
-    /** your 4-color palette */
     readonly colors = [
         'hsl(0,70%,35%)',
         'hsl(90,70%,35%)',
         'hsl(180,70%,35%)',
         'hsl(270,70%,35%)'
     ];
-
-    /** stable mapping: horse.index → color */
-    readonly horseColorMap = new Map<number,string>();
+    public horseColorMap = new Map<number, string>();
+    private lastListInstance?: OngoingHorsesList;
 
     private destroy$ = new Subject<void>();
     private prevPos = new Map<number, { x: number; y: number }>();
@@ -50,23 +52,26 @@ export class OngoingListUiComponent implements AfterViewInit, OnDestroy {
         private renderer: Renderer2,
         private ngZone: NgZone
     ) {
-        // track layout
         this.breakpointObserver
             .observe(BREAKPOINT)
             .pipe(takeUntil(this.destroy$))
             .subscribe(r => this.isMobileView = r.matches);
 
-        // subscribe to the sorted list
+        // on each new OngoingHorsesList
         this.ongoingRaceService.horsesList$
             .pipe(takeUntil(this.destroy$))
-            .subscribe(list => {
-                const sorted = list.getByPlacement();
-
-                // assign any new horses a color, in palette order
+            .subscribe(listInstance => {
+                if (listInstance !== this.lastListInstance) {
+                    this.horseColorMap.clear();
+                    this.lastListInstance = listInstance;
+                }
+                const sorted = listInstance.getByPlacement();
                 sorted.forEach((h, idx) => {
                     if (!this.horseColorMap.has(h.horse.index)) {
-                        const color = this.colors[this.horseColorMap.size % this.colors.length];
-                        this.horseColorMap.set(h.horse.index, color);
+                        this.horseColorMap.set(
+                            h.horse.index,
+                            this.colors[this.horseColorMap.size % this.colors.length]
+                        );
                     }
                 });
 
@@ -105,15 +110,16 @@ export class OngoingListUiComponent implements AfterViewInit, OnDestroy {
                     newPos.set(idx, { x, y });
                 });
 
-                // invert + animate
                 this.horseElems.forEach(el => {
                     const idx = +el.nativeElement.dataset.index;
                     const old = oldPos.get(idx);
                     const now = newPos.get(idx);
                     if (!old || !now) return;
+
                     const delta = this.isMobileView
                         ? (old.y - now.y)
                         : (old.x - now.x);
+
                     if (delta) {
                         this.renderer.setStyle(el.nativeElement, 'transition', 'none');
                         const transform = this.isMobileView
