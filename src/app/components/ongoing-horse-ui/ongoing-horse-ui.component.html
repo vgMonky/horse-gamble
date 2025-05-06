@@ -14,7 +14,7 @@
 
     <ng-container *ngIf="ongoingHorse.finalPlace == null; else finishedTpl">
         <div class="c-ongoing-horse-ui__position">
-            {{ ongoingHorse.position }}m
+            {{ ongoingHorse.position! / 10 }}m
         </div>
     </ng-container>
 

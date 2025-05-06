@@ -13,7 +13,7 @@ export class MainScene extends Phaser.Scene {
     }
 
     preload(): void {
-        this.bg = new ParallaxBackground(this);
+        this.bg = new ParallaxBackground(this, this.ongoingRaceService);
         this.bg.preload();
 
         this.horses = new Horses(this, this.ongoingRaceService);

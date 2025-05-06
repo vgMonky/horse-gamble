@@ -1,4 +1,4 @@
-// src/app/services/ongoing-race.service.ts
+// src/app/game/ongoing-race.service.ts
 import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject, interval, Subscription } from 'rxjs';
 import { ALL_HORSES, Horse } from './horses-database';
@@ -104,8 +104,8 @@ export class OngoingHorsesList {
 
 @Injectable({ providedIn: 'root' })
 export class OngoingRaceService implements OnDestroy {
-    public readonly winningDistance       = 100;
-    private readonly tickSpeed             = 500;
+    public readonly winningDistance       = 2000; // dm
+    private readonly tickSpeed             = 100; // ms
     private readonly preCountdownDuration  = 3;
     private readonly postCountdownDuration = 3;
 
@@ -178,14 +178,22 @@ export class OngoingRaceService implements OnDestroy {
 
 class Seed {
     private seedValue: number;
+    private readonly allowedDigits = [3, 4, 5, 6];
+
     constructor(length: number) {
         this.seedValue = this.genNumber(length);
     }
+
     private genNumber(length: number): number {
-        const min = Math.pow(10, length - 1);
-        const max = Math.pow(10, length) - 1;
-        return Math.floor(Math.random() * (max - min + 1)) + min;
+        let s = '';
+        for (let i = 0; i < length; i++) {
+            // pick a random index into allowedDigits
+            const idx = Math.floor(Math.random() * this.allowedDigits.length);
+            s += this.allowedDigits[idx];
+        }
+        return parseInt(s, 10);
     }
+
     splitNumber(parts: number): number[] {
         const digits    = this.seedValue.toString().split('');
         const chunkSize = Math.floor(digits.length / parts);
@@ -200,6 +208,7 @@ class Seed {
         return result;
     }
 }
+
 
 class CountdownTimer {
     private interval$!: Subscription;

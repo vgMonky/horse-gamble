@@ -136,7 +136,7 @@ export class OngoingListUiComponent implements AfterViewInit, OnDestroy {
                         this.renderer.setStyle(el.nativeElement, 'transition', 'transform 300ms ease');
                         this.renderer.setStyle(el.nativeElement, 'transform', 'translate(0, 0)');
                     });
-                    setTimeout(() => this.recordPositions(), 300);
+                    setTimeout(() => this.recordPositions(), 50);
                 });
             });
         });
