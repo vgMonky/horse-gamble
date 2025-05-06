@@ -2,13 +2,13 @@
 <div class="c-ongoing-list-ui" [class.mobile]="isMobileView">
     <div
         #horseTrack
-        *ngFor="let h of horsesList; let i = index"
+        *ngFor="let h of horsesList"
         class="c-ongoing-horse-wrapper"
         [attr.data-index]="h.horse.index"
     >
         <app-ongoing-horse-ui
             [ongoingHorse]="h"
-            [color]="colors[i]"
+            [color]="horseColorMap.get(h.horse.index)!"
         ></app-ongoing-horse-ui>
     </div>
 </div>
