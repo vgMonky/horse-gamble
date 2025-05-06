@@ -20,13 +20,6 @@ export class HomeComponent {
 
     constructor(private ongoingRaceService: OngoingRaceService) {}
 
-    ngAfterViewInit(): void {
-        // defer race start until after the initial change detection
-        setTimeout(() => {
-            this.ongoingRaceService.startOngoingRace();
-        }, 0);
-    }
-
     ngOnDestroy(): void {
         this.ongoingRaceService.stopOngoingRace();
     }
