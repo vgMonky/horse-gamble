@@ -1,5 +1,5 @@
 <div
     #phaserContainer
     class="phaser-container"
-    [class.mobile]="isMobileView">
+    [class.mobile]="(isMobileView$ | async)">
 </div>

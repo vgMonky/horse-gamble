@@ -7,7 +7,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SharedModule } from '@app/shared/shared.module';
-// import { PhaserCanvasComponent } from '@app/components/phaser-canvas/phaser-canvas.component';
+import { PhaserCanvasComponent } from '@app/components/phaser-canvas/phaser-canvas.component';
 import { OngoingListUiComponent } from '@app/components/ongoing-list-ui/ongoing-list-ui.component';
 import { OngoingRaceService } from '@app/game/ongoing-race.service';
 import { Observable } from 'rxjs';
@@ -19,7 +19,7 @@ import { Observable } from 'rxjs';
         SharedModule,
         CommonModule,
         FormsModule,
-        // PhaserCanvasComponent,
+        PhaserCanvasComponent,
         OngoingListUiComponent
     ],
     templateUrl: './ongoing.component.html',

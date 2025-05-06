@@ -10,48 +10,48 @@ import Phaser from 'phaser';
 import { MainScene } from './game_visuals/main_scene';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { BREAKPOINT } from 'src/types';
-import { Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { OngoingRaceService } from '@app/game/ongoing-race.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
     selector: 'app-phaser-canvas',
     templateUrl: './phaser-canvas.component.html',
     styleUrls: ['./phaser-canvas.component.scss'],
-    standalone: true
+    standalone: true,
+    imports: [ CommonModule ]
+
 })
 export class PhaserCanvasComponent implements OnInit, OnDestroy {
     @ViewChild('phaserContainer', { static: true })
     containerRef!: ElementRef;
-
-    isMobileView = false;
-    private sub = new Subscription();
+    isMobileView$: Observable<boolean>;
     private game?: Phaser.Game;
 
     constructor(
         private breakpointObserver: BreakpointObserver,
-        private race: OngoingRaceService
-    ) {}
+        private ongoingRaceService: OngoingRaceService
+    ) {
+        this.isMobileView$ = this.breakpointObserver
+        .observe(BREAKPOINT)
+        .pipe(
+            map(result => result.matches),
+        );
+    }
 
     ngOnInit(): void {
-        // watch viewport
-        this.sub.add(
-            this.breakpointObserver
-                .observe(BREAKPOINT)
-                .subscribe(r => this.isMobileView = r.matches)
-        );
-
         // boot Phaser
         this.startGame();
     }
 
     ngOnDestroy(): void {
-        this.sub.unsubscribe();
         this.game?.destroy(true);
     }
 
     private startGame(): void {
         // pass the race service so MainScene can grab horses$
-        const scene = new MainScene(this.race);
+        const scene = new MainScene(this.ongoingRaceService);
 
         this.game = new Phaser.Game({
             type: Phaser.AUTO,
