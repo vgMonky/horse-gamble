@@ -1,11 +1,16 @@
 // src/app/components/phaser-canvas/game_visuals/horses_layers.ts
-import { OngoingRaceService } from '@app/game/ongoing-race.service';
 import Phaser from 'phaser';
+import type { Subscription } from 'rxjs';
+import type {
+    OngoingRaceService,
+    OngoingHorsesList,
+    OngoingHorse
+} from '@app/game/ongoing-race.service';
 
 export interface HorseAnimConfig {
-    index:   number;
-    x:       number;
-    y:       number;
+    index:   number;   // matches OngoingHorse.horse.index
+    originX: number;   // starting X in px
+    y:       number;   // lane Y in px
     scale?:  number;
     frames?: number[];
 }
@@ -15,42 +20,43 @@ class HorseLayer {
 
     constructor(
         private scene: Phaser.Scene,
-        private cfg: HorseAnimConfig
+        public  cfg:   HorseAnimConfig
     ) {
         const {
-            x,
+            originX,
             y,
             scale  = 0.33,
             frames = [0,1,2,3,4,5,6,7,8]
         } = cfg;
+        const key = `horse_anim_${cfg.index}`;
 
-        const animKey = `horse_anim_${cfg.index}`;
-        if (!this.scene.anims.exists(animKey)) {
-            this.scene.anims.create({
-                key:       animKey,
-                frames:    this.scene.anims.generateFrameNumbers('horseSpriteSheet', { frames }),
+        if (!scene.anims.exists(key)) {
+            scene.anims.create({
+                key,
+                frames:    scene.anims.generateFrameNumbers('horseSpriteSheet',{ frames }),
                 frameRate: 12,
                 repeat:    -1
             });
         }
 
-        this.sprite = this.scene.add
-            .sprite(x, y, 'horseSpriteSheet')
+        this.sprite = scene.add
+            .sprite(originX, y, 'horseSpriteSheet')
             .setScale(scale)
-            .play(animKey);
+            .play(key);
     }
 }
 
 export class Horses {
     private layers: HorseLayer[] = [];
-    private configs: HorseAnimConfig[] = [
-        { index: 1,  x: 400, y: 160 },
-        { index: 8,  x: 400, y: 170 },
-        { index: 3,  x: 400, y: 180 },
-        { index: 14, x: 400, y: 190 },
-    ];
+    private sub?:   Subscription;
 
-    constructor(private scene: Phaser.Scene, ongoingRaceService : OngoingRaceService) {}
+    /** px per “meter” */
+    private readonly mtr = 6;
+
+    constructor(
+        private scene:   Phaser.Scene,
+        private raceSvc: OngoingRaceService
+    ) {}
 
     preload(): void {
         this.scene.load.spritesheet(
@@ -61,15 +67,60 @@ export class Horses {
     }
 
     create(): void {
-        // instantiate one HorseLayer per config
-        this.layers = this.configs.map(cfg => new HorseLayer(this.scene, cfg));
+        // on every new list tick:
+        this.sub = this.raceSvc.horsesList$.subscribe((list: OngoingHorsesList) => {
+            // 1) first emission: build layers once
+            if (this.layers.length === 0) {
+                const entries = list.getAll();
+                entries.forEach((h, i) => {
+                    const laneY   = 148 + i * 10;   // or whatever spacing you like
+                    const originX = 400;
+                    const cfg: HorseAnimConfig = {
+                        index:   h.horse.index,
+                        originX,
+                        y:       laneY
+                    };
+                    this.layers.push(new HorseLayer(this.scene, cfg));
+                });
+            }
+
+            // 2) reposition on *every* emission
+            this.positionLayers(list.getByPlacement());
+        });
     }
 
     update(_time: number, _delta: number): void {
-        // nothing dynamic yet
+        // we don’t need per-frame logic here—
+        // repositioning happens in the subscription
     }
 
     destroy(): void {
-        // no subscriptions to clean up
+        this.sub?.unsubscribe();
+    }
+
+    private positionLayers(placed: OngoingHorse[]) {
+        if (placed.length === 0) return;
+
+        // Absolute leader position in meters
+        const leaderPos     = placed[0].position!;
+
+        // Anchor at finish line (never exceed winningDistance)
+        const cameraAnchor  = Math.min(leaderPos, this.raceSvc.winningDistance);
+
+        // Reposition every horse around that anchor
+        this.layers.forEach(layer => {
+            const h        = placed.find(p => p.horse.index === layer.cfg.index)!;
+            const originX  = layer.cfg.originX;
+
+            // how many meters ahead/behind of the camera anchor
+            const deltaM   = h.position! - cameraAnchor;
+
+            // final X on screen
+            layer.sprite.x = originX + this.mtr * deltaM;
+        });
+    }
+
+    private posToMtr(pos: number): number {
+        return pos * this.mtr;
     }
 }
