@@ -1,26 +1,28 @@
 <div class="c-phaser-canvas">
-    <div class="c-phaser-canvas__slider">
-        <label for="opacitySlider">Marker Opacity: {{ markerOpacity }}</label>
-        <input
-            type="range"
-            id="opacitySlider"
-            min="0"
-            max="1"
-            step="0.2"
-            [(ngModel)]="markerOpacity"
-        />
-    </div>
+    <div class="c-phaser-canvas__sliders-container" [class.mobile]="(isMobileView$ | async)">
+        <div class="c-phaser-canvas__slider">
+            <label for="opacitySlider">Marker Opacity: {{ markerOpacity }}</label>
+            <input
+                type="range"
+                id="opacitySlider"
+                min="0"
+                max="1"
+                step="0.2"
+                [(ngModel)]="markerOpacity"
+            />
+        </div>
 
-    <div class="c-phaser-canvas__slider">
-        <label for="lightnessSlider">Filter Lightness: {{ lightnessValue }}</label>
-        <input
-            type="range"
-            id="lightnessSlider"
-            min="0"
-            max="0.4"
-            step="0.05"
-            [(ngModel)]="lightnessValue"
-        />
+        <div class="c-phaser-canvas__slider" >
+            <label for="lightnessSlider">Filter Lightness: {{ lightnessValue }}</label>
+            <input
+                type="range"
+                id="lightnessSlider"
+                min="0"
+                max="0.4"
+                step="0.05"
+                [(ngModel)]="lightnessValue"
+            />
+        </div>
     </div>
 
     <div

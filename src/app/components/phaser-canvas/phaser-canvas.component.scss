@@ -18,8 +18,18 @@
         }
     }
 
+    &__sliders-container{
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+
+        &.mobile {
+            flex-direction: column;
+        }
+    }
+
     label{
-        @include text-smaller
+        @include text-smaller;
     }
 
     input[type="range"] {
@@ -27,7 +37,7 @@
 
         & {
             margin: 10px;
-            width: 100px;
+            width: 60px;
         }
     }
 }
