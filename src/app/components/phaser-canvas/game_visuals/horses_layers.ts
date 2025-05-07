@@ -7,13 +7,13 @@ import type {
 } from '@app/game/ongoing-race.service';
 import { SLOT_COLOR_MAP } from '@app/game/ongoing-race.service';
 
-
 export interface HorseAnimConfig {
-    index:          number; // this is now `slot`
+    index:          number;
     originX:        number;
     y:              number;
     scale?:         number;
     frames?:        number[];
+    frameRate?:     number; // ✅ NEW
     showMarker?:    boolean;
     markerOffsetX?: number;
     markerOffsetY?: number;
@@ -34,6 +34,7 @@ class HorseLayer {
             y,
             scale           = 0.33,
             frames          = [0,1,2,3,4,5,6,7,8],
+            frameRate       = 16, // ✅ default if not passed
             showMarker      = false,
             markerOffsetX   = 0,
             markerOffsetY   = -10
@@ -44,7 +45,7 @@ class HorseLayer {
             scene.anims.create({
                 key,
                 frames:    scene.anims.generateFrameNumbers('horseSpriteSheet', { frames }),
-                frameRate: 16,
+                frameRate,
                 repeat:    -1
             });
         }
@@ -66,7 +67,7 @@ class HorseLayer {
                 )
                 .setOrigin(0.5, 1)
                 .setDepth(10)
-                .setAlpha(this.markerOpacityGetter())
+                .setAlpha(this.markerOpacityGetter());
         }
     }
 
@@ -78,16 +79,15 @@ class HorseLayer {
 }
 
 export class Horses {
-    private layers:    HorseLayer[]           = [];
+    private layers:    HorseLayer[] = [];
     private sub?:      Subscription;
-    private finished = false;
-
+    private finished   = false;
     private baselineX: Record<number, number> = {};
     private lastPos:   Record<number, number> = {};
 
-    private readonly pxFactor           = 10;
-    private readonly pxFactorMultiplier = 20;
-    private readonly slideVelocity           = 0.05;
+    private readonly pxFactor              = 10;
+    private readonly pxFactorMultiplier   = 20;
+    private readonly slideVelocity        = 0.05;
     private readonly slideVelocityMultiplier = 10;
 
     constructor(
@@ -109,22 +109,31 @@ export class Horses {
             const placed = list.getByPlacement();
             if (!placed.length) return;
 
+            // build slot → placement rank map
+            const slotToRank = new Map<number, number>();
+            placed.forEach((h, i) => slotToRank.set(h.slot, i));
+
             if (!this.layers.length) {
                 list.getAll().forEach((h) => {
-                    const laneY   = 148 + h.slot * 10;
-                    const originX = 400;
+                    const laneY     = 148 + h.slot * 10;
+                    const originX   = 400;
+                    const rank      = slotToRank.get(h.slot) ?? 3;
+                    const frameRate = 20 - rank;
+
                     const layer = new HorseLayer(
                         this.scene,
                         {
                             index: h.slot,
                             originX,
                             y: laneY,
+                            frameRate,
                             showMarker: true,
                             markerOffsetX: 88,
                             markerOffsetY: 19
                         },
                         this.markerOpacityGetter
                     );
+
                     this.layers.push(layer);
                     this.lastPos[h.slot] = h.position!;
                 });
@@ -199,8 +208,6 @@ function hslStringToPhaserColor(hslStr: string, lightnessAdjust = 0): number {
     const s = parseInt(match[2], 10) / 100;
     let l   = parseInt(match[3], 10) / 100;
 
-    // Adjust lightness
     l = Math.max(0, Math.min(1, l + lightnessAdjust / 100));
-
     return Phaser.Display.Color.HSLToColor(h, s, l).color;
 }
