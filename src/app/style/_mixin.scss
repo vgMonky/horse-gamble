@@ -143,7 +143,34 @@
     background: var(--c-background-2);
     outline: none;
     margin: 0;
+
+    &::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: var(--c-accent-0);
+        cursor: pointer;
+    }
+
+    &::-moz-range-thumb {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: var(--c-accent-0);
+        cursor: pointer;
+    }
+
+    &::-ms-thumb {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: var(--c-accent-0);
+        cursor: pointer;
+    }
 }
+
 
 @mixin container-border {
     background-color: var(--c-background-1);

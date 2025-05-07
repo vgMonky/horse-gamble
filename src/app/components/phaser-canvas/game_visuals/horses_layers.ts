@@ -26,7 +26,8 @@ class HorseLayer {
 
     constructor(
         private scene: Phaser.Scene,
-        public  cfg:   HorseAnimConfig
+        public  cfg:   HorseAnimConfig,
+        private markerOpacityGetter: () => number
     ) {
         const {
             originX,
@@ -64,7 +65,14 @@ class HorseLayer {
                     hslStringToPhaserColor(SLOT_COLOR_MAP[cfg.index], +25)
                 )
                 .setOrigin(0.5, 1)
-                .setDepth(10);
+                .setDepth(10)
+                .setAlpha(this.markerOpacityGetter())
+        }
+    }
+
+    updateMarkerOpacity(): void {
+        if (this.marker) {
+            this.marker.setAlpha(this.markerOpacityGetter());
         }
     }
 }
@@ -84,7 +92,8 @@ export class Horses {
 
     constructor(
         private scene:   Phaser.Scene,
-        private raceSvc: OngoingRaceService
+        private raceSvc: OngoingRaceService,
+        private markerOpacityGetter: () => number
     ) {}
 
     preload(): void {
@@ -104,14 +113,18 @@ export class Horses {
                 list.getAll().forEach((h) => {
                     const laneY   = 148 + h.slot * 10;
                     const originX = 400;
-                    const layer = new HorseLayer(this.scene, {
-                        index:          h.slot, // using slot now
-                        originX,
-                        y:             laneY,
-                        showMarker:    true,
-                        markerOffsetX: 88,
-                        markerOffsetY: 19
-                    });
+                    const layer = new HorseLayer(
+                        this.scene,
+                        {
+                            index: h.slot,
+                            originX,
+                            y: laneY,
+                            showMarker: true,
+                            markerOffsetX: 88,
+                            markerOffsetY: 19
+                        },
+                        this.markerOpacityGetter
+                    );
                     this.layers.push(layer);
                     this.lastPos[h.slot] = h.position!;
                 });
@@ -168,6 +181,7 @@ export class Horses {
                 const oy = layer.cfg.markerOffsetY ?? 0;
                 layer.marker.x = layer.targetX + ox;
                 layer.marker.y = layer.sprite.y + oy;
+                layer.updateMarkerOpacity();
             }
         });
     }

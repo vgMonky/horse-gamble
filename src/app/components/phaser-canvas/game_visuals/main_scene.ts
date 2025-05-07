@@ -8,7 +8,10 @@ export class MainScene extends Phaser.Scene {
     private bg!: ParallaxBackground;
     private horses!: Horses;
 
-    constructor(private ongoingRaceService: OngoingRaceService) {
+    constructor(
+        private ongoingRaceService: OngoingRaceService,
+        private markerOpacityGetter: () => number
+    ) {
         super('MainScene');
     }
 
@@ -16,7 +19,11 @@ export class MainScene extends Phaser.Scene {
         this.bg = new ParallaxBackground(this, this.ongoingRaceService);
         this.bg.preload();
 
-        this.horses = new Horses(this, this.ongoingRaceService);
+        this.horses = new Horses(
+            this,
+            this.ongoingRaceService,
+            this.markerOpacityGetter
+        );
         this.horses.preload();
     }
 

@@ -14,13 +14,14 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { OngoingRaceService } from '@app/game/ongoing-race.service';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
     selector: 'app-phaser-canvas',
     templateUrl: './phaser-canvas.component.html',
     styleUrls: ['./phaser-canvas.component.scss'],
     standalone: true,
-    imports: [ CommonModule ]
+    imports: [ CommonModule, FormsModule ]
 
 })
 export class PhaserCanvasComponent implements OnInit, OnDestroy {
@@ -28,6 +29,7 @@ export class PhaserCanvasComponent implements OnInit, OnDestroy {
     containerRef!: ElementRef;
     isMobileView$: Observable<boolean>;
     private game?: Phaser.Game;
+    markerOpacity = 1; // default full opacity (range: 0–1)
 
     constructor(
         private breakpointObserver: BreakpointObserver,
@@ -51,11 +53,11 @@ export class PhaserCanvasComponent implements OnInit, OnDestroy {
 
     private startGame(): void {
         // pass the race service so MainScene can grab horses$
-        const scene = new MainScene(this.ongoingRaceService);
+        const scene = new MainScene(this.ongoingRaceService, () => this.markerOpacity);
 
         this.game = new Phaser.Game({
             type: Phaser.AUTO,
-            width: 850,
+            width: 950,
             height: 250,
             parent: this.containerRef.nativeElement,
             scene: scene

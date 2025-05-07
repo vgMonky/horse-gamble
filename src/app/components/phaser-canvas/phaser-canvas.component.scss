@@ -1,16 +1,29 @@
 /* src/app/components/phaser-canvas/phaser-canvas.component.scss */
 @use 'mixin' as *;
 
-.phaser-container {
-    @include border;
-    margin-top: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 1px solid var(--c-background-4);
-    overflow: hidden;   // ensure it actually crops
 
-    &.mobile {
-        width: 330px;
+.c-phaser-canvas{
+
+    &__phaser-container {
+        @include border;
+        margin-top: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: 1px solid var(--c-background-4);
+        overflow: hidden;
+
+        &.mobile {
+            width: 330px;
+        }
+    }
+
+    input[type="range"] {
+        @include input-range;
+
+        & {
+            margin: 10px;
+            width: 100px;
+        }
     }
 }
