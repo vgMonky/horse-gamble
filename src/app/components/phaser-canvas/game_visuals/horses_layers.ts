@@ -1,4 +1,3 @@
-// src/app/components/phaser-canvas/game_visuals/horses_layers.ts
 import Phaser from 'phaser';
 import type { Subscription } from 'rxjs';
 import type {
@@ -8,14 +7,14 @@ import type {
 } from '@app/game/ongoing-race.service';
 
 export interface HorseAnimConfig {
-    index:          number;
+    index:          number; // this is now `slot`
     originX:        number;
     y:              number;
     scale?:         number;
     frames?:        number[];
-    showMarker?:    boolean;   // whether to draw the marker
-    markerOffsetX?: number;    // horizontal adjustment for the marker
-    markerOffsetY?: number;    // vertical adjustment for the marker
+    showMarker?:    boolean;
+    markerOffsetX?: number;
+    markerOffsetY?: number;
 }
 
 class HorseLayer {
@@ -42,18 +41,16 @@ class HorseLayer {
             scene.anims.create({
                 key,
                 frames:    scene.anims.generateFrameNumbers('horseSpriteSheet', { frames }),
-                frameRate: 12,
+                frameRate: 16,
                 repeat:    -1
             });
         }
 
-        // 1) horse sprite
         this.sprite = scene.add
             .sprite(originX, y, 'horseSpriteSheet')
             .setScale(scale)
             .play(key);
 
-        // 2) initial target and optional marker
         this.targetX = originX;
         if (showMarker) {
             this.marker = scene.add
@@ -75,20 +72,12 @@ export class Horses {
     private sub?:      Subscription;
     private finished = false;
 
-    /** pixel baseline for each horse once finish hits */
     private baselineX: Record<number, number> = {};
-
-    /** last logical position per horse */
     private lastPos:   Record<number, number> = {};
 
-    /** px offset per unit before finish */
     private readonly pxFactor           = 10;
-    /** px offset per unit after finish */
     private readonly pxFactorMultiplier = 20;
-
-    /** slide speed in px per ms (pre‐finish) */
     private readonly slideVelocity           = 0.05;
-    /** multiplier for slide speed once finish line is reached */
     private readonly slideVelocityMultiplier = 10;
 
     constructor(
@@ -109,21 +98,20 @@ export class Horses {
             const placed = list.getByPlacement();
             if (!placed.length) return;
 
-            // 1) on first tick: build layers & init lastPos
             if (!this.layers.length) {
-                list.getAll().forEach((h, i) => {
-                    const laneY   = 148 + i * 10;
+                list.getAll().forEach((h) => {
+                    const laneY   = 148 + h.slot * 10;
                     const originX = 400;
                     const layer = new HorseLayer(this.scene, {
-                        index:          h.horse.index,
+                        index:          h.slot, // using slot now
                         originX,
                         y:             laneY,
-                        showMarker:    true,  // toggle per-horse as needed
-                        markerOffsetX: 88,     // adjust to align with nose
-                        markerOffsetY: 19     // adjust to align vertically
+                        showMarker:    true,
+                        markerOffsetX: 88,
+                        markerOffsetY: 19
                     });
                     this.layers.push(layer);
-                    this.lastPos[h.horse.index] = h.position!;
+                    this.lastPos[h.slot] = h.position!;
                 });
             }
 
@@ -131,39 +119,37 @@ export class Horses {
             const finishDist   = this.raceSvc.winningDistance;
             const cameraAnchor = Math.min(leaderPos, finishDist);
 
-            // 2) snapshot on first crossing
             if (!this.finished && leaderPos >= finishDist) {
                 this.finished = true;
                 this.layers.forEach(layer => {
-                    const idx = layer.cfg.index;
-                    this.baselineX[idx] = layer.sprite.x;
-                    const horse = placed.find(p => p.horse.index === idx)!;
-                    this.lastPos[idx]   = horse.position!;
+                    const slot = layer.cfg.index;
+                    this.baselineX[slot] = layer.sprite.x;
+                    const horse = placed.find(p => p.slot === slot)!;
+                    this.lastPos[slot]   = horse.position!;
                 });
             }
 
-            // 3) compute targetX per horse
             this.layers.forEach(layer => {
-                const idx = layer.cfg.index;
-                const h   = placed.find(p => p.horse.index === idx)!;
+                const slot = layer.cfg.index;
+                const h    = placed.find(p => p.slot === slot);
+                if (!h) return;
 
                 if (!this.finished) {
                     const delta = h.position! - cameraAnchor;
                     layer.targetX = layer.cfg.originX + this.pxFactor * delta;
                 } else {
-                    const deltaPos = h.position! - this.lastPos[idx];
+                    const deltaPos = h.position! - this.lastPos[slot];
                     const extraPx  = deltaPos * this.pxFactorMultiplier;
-                    layer.targetX = this.baselineX[idx] + extraPx;
-                    this.baselineX[idx] = layer.targetX;
+                    layer.targetX = this.baselineX[slot] + extraPx;
+                    this.baselineX[slot] = layer.targetX;
                 }
 
-                this.lastPos[idx] = h.position!;
+                this.lastPos[slot] = h.position!;
             });
         });
     }
 
     update(_time: number, delta: number): void {
-        // choose velocity based on finished state
         const velocity = this.finished
             ? this.slideVelocity * this.slideVelocityMultiplier
             : this.slideVelocity;

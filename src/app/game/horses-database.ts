@@ -25,4 +25,5 @@ export const ALL_HORSES: Horse[] = [
     { index: 18,  name: 'Onyx Spirit'      },
     { index: 19,  name: 'Diamond Dancer'   },
     { index: 20,  name: 'Celestial Runner' },
+    { index: 21,  name: 'Babe Michelangelo' },
 ];

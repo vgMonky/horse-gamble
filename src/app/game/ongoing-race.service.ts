@@ -6,6 +6,7 @@ import { ALL_HORSES, Horse } from './horses-database';
 export type OngoingRaceState = 'pre' | 'in' | 'post';
 
 export interface OngoingHorse {
+    slot:        number;
     horse:       Horse;
     position:    number | null;
     finalPlace:  number | null;
@@ -16,10 +17,11 @@ export class OngoingHorsesList {
 
     constructor(allHorses: Horse[], count: number) {
         const selected = this.shuffle(allHorses).slice(0, count);
-        this.list = selected.map(h => ({
-            horse:      h,
-            position:   0,
-            finalPlace: null
+        this.list = selected.map((h, i) => ({
+            slot:        i,
+            horse:       h,
+            position:    0,
+            finalPlace:  null
         }));
     }
 
