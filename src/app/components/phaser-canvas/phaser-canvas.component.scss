@@ -18,6 +18,10 @@
         }
     }
 
+    label{
+        @include text-smaller
+    }
+
     input[type="range"] {
         @include input-range;
 

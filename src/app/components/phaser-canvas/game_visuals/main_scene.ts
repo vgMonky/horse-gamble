@@ -8,9 +8,13 @@ export class MainScene extends Phaser.Scene {
     private bg!: ParallaxBackground;
     private horses!: Horses;
 
+    // Optional: store overlay for dynamic updates
+    private filterOverlay!: Phaser.GameObjects.Graphics;
+
     constructor(
         private ongoingRaceService: OngoingRaceService,
-        private markerOpacityGetter: () => number
+        private markerOpacityGetter: () => number,
+        private filterLightnessGetter: () => number
     ) {
         super('MainScene');
     }
@@ -39,8 +43,25 @@ export class MainScene extends Phaser.Scene {
         g.fillRect(-100, 0, width + 100, height);
         g.setDepth(-10);
 
-        // parallax
+        // parallax background
         this.bg.create();
+
+        // filter overlay (color tint plane)
+        const filter = {
+            h: 0.1,
+            s: 0.2,
+            // l
+            alpha: 0.2
+        };
+
+        const initialLightness = this.filterLightnessGetter();
+        const filterColor = Phaser.Display.Color.HSLToColor(filter.h, filter.s, initialLightness).color;
+
+        this.filterOverlay = this.add.graphics();
+        this.filterOverlay.fillStyle(filterColor, filter.alpha);
+        this.filterOverlay.fillRect(0, 0, width, height);
+        this.filterOverlay.setScrollFactor(0);
+        this.filterOverlay.setDepth(0);
 
         // horses
         this.horses.create();
@@ -48,6 +69,14 @@ export class MainScene extends Phaser.Scene {
 
     override update(time: number, delta: number): void {
         this.bg.update(time, delta);
+
+        const light = Phaser.Math.Clamp(this.filterLightnessGetter(), 0, 0.5);
+        const dynamicColor = Phaser.Display.Color.HSLToColor(0.1, 0.2, light).color;
+
+        this.filterOverlay.clear();
+        this.filterOverlay.fillStyle(dynamicColor, 0.2);
+        this.filterOverlay.fillRect(0, 0, this.scale.width, this.scale.height);
+
         this.horses.update(time, delta);
     }
 }

@@ -13,7 +13,7 @@ export interface HorseAnimConfig {
     y:              number;
     scale?:         number;
     frames?:        number[];
-    frameRate?:     number; // ✅ NEW
+    frameRate?:     number;
     showMarker?:    boolean;
     markerOffsetX?: number;
     markerOffsetY?: number;
@@ -34,7 +34,7 @@ class HorseLayer {
             y,
             scale           = 0.33,
             frames          = [0,1,2,3,4,5,6,7,8],
-            frameRate       = 16, // ✅ default if not passed
+            frameRate       = 20, // default if not passed
             showMarker      = false,
             markerOffsetX   = 0,
             markerOffsetY   = -10
@@ -63,7 +63,7 @@ class HorseLayer {
                     y + markerOffsetY,
                     3,
                     20,
-                    hslStringToPhaserColor(SLOT_COLOR_MAP[cfg.index], +25)
+                    hslStringToPhaserColor(SLOT_COLOR_MAP[cfg.index], +30)
                 )
                 .setOrigin(0.5, 1)
                 .setDepth(10)

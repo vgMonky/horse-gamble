@@ -29,7 +29,9 @@ export class PhaserCanvasComponent implements OnInit, OnDestroy {
     containerRef!: ElementRef;
     isMobileView$: Observable<boolean>;
     private game?: Phaser.Game;
-    markerOpacity = 1; // default full opacity (range: 0–1)
+    markerOpacity = 1; // default full opacity
+    lightnessValue = 0.1; // default starting value
+
 
     constructor(
         private breakpointObserver: BreakpointObserver,
@@ -53,11 +55,11 @@ export class PhaserCanvasComponent implements OnInit, OnDestroy {
 
     private startGame(): void {
         // pass the race service so MainScene can grab horses$
-        const scene = new MainScene(this.ongoingRaceService, () => this.markerOpacity);
+        const scene = new MainScene(this.ongoingRaceService, () => this.markerOpacity, () => this.lightnessValue);
 
         this.game = new Phaser.Game({
             type: Phaser.AUTO,
-            width: 950,
+            width: 1000,
             height: 250,
             parent: this.containerRef.nativeElement,
             scene: scene
