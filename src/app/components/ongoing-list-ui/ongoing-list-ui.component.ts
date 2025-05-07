@@ -1,4 +1,3 @@
-// src/app/components/ongoing-list-ui/ongoing-list-ui.component.ts
 import {
     Component,
     AfterViewInit,
@@ -15,7 +14,8 @@ import { Subject, takeUntil } from 'rxjs';
 import {
     OngoingRaceService,
     OngoingHorse,
-    OngoingHorsesList
+    OngoingHorsesList,
+    SLOT_COLOR_MAP
 } from '@app/game/ongoing-race.service';
 import { OngoingHorseUiComponent } from '@app/components/ongoing-horse-ui/ongoing-horse-ui.component';
 import { BREAKPOINT } from 'src/types';
@@ -31,15 +31,7 @@ export class OngoingListUiComponent implements AfterViewInit, OnDestroy {
     horsesList: OngoingHorse[] = [];
     isMobileView = false;
 
-    readonly colors = [
-        'hsl(0,70%,35%)',
-        'hsl(90,70%,35%)',
-        'hsl(180,70%,35%)',
-        'hsl(270,70%,35%)'
-    ];
-    public horseColorMap = new Map<number, string>();
     private lastListInstance?: OngoingHorsesList;
-
     private destroy$ = new Subject<void>();
     private prevPos = new Map<number, { x: number; y: number }>();
 
@@ -57,25 +49,13 @@ export class OngoingListUiComponent implements AfterViewInit, OnDestroy {
             .pipe(takeUntil(this.destroy$))
             .subscribe(r => this.isMobileView = r.matches);
 
-        // on each new OngoingHorsesList
         this.ongoingRaceService.horsesList$
             .pipe(takeUntil(this.destroy$))
             .subscribe(listInstance => {
                 if (listInstance !== this.lastListInstance) {
-                    this.horseColorMap.clear();
                     this.lastListInstance = listInstance;
                 }
-                const sorted = listInstance.getByPlacement();
-                sorted.forEach((h, idx) => {
-                    if (!this.horseColorMap.has(h.horse.index)) {
-                        this.horseColorMap.set(
-                            h.horse.index,
-                            this.colors[this.horseColorMap.size % this.colors.length]
-                        );
-                    }
-                });
-
-                this.runFLIP(sorted);
+                this.runFLIP(listInstance.getByPlacement());
             });
     }
 
@@ -140,5 +120,9 @@ export class OngoingListUiComponent implements AfterViewInit, OnDestroy {
                 });
             });
         });
+    }
+
+    getColor(slot: number): string {
+        return SLOT_COLOR_MAP[slot] ?? 'black';
     }
 }

@@ -5,6 +5,8 @@ import type {
     OngoingHorsesList,
     OngoingHorse
 } from '@app/game/ongoing-race.service';
+import { SLOT_COLOR_MAP } from '@app/game/ongoing-race.service';
+
 
 export interface HorseAnimConfig {
     index:          number; // this is now `slot`
@@ -59,7 +61,7 @@ class HorseLayer {
                     y + markerOffsetY,
                     3,
                     20,
-                    0xff0000
+                    hslStringToPhaserColor(SLOT_COLOR_MAP[cfg.index], +25)
                 )
                 .setOrigin(0.5, 1)
                 .setDepth(10);
@@ -173,4 +175,18 @@ export class Horses {
     destroy(): void {
         this.sub?.unsubscribe();
     }
+}
+
+function hslStringToPhaserColor(hslStr: string, lightnessAdjust = 0): number {
+    const match = /^hsl\((\d+),\s*(\d+)%?,\s*(\d+)%?\)$/.exec(hslStr);
+    if (!match) return 0x000000;
+
+    const h = parseInt(match[1], 10) / 360;
+    const s = parseInt(match[2], 10) / 100;
+    let l   = parseInt(match[3], 10) / 100;
+
+    // Adjust lightness
+    l = Math.max(0, Math.min(1, l + lightnessAdjust / 100));
+
+    return Phaser.Display.Color.HSLToColor(h, s, l).color;
 }

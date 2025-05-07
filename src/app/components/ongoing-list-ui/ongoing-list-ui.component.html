@@ -4,11 +4,11 @@
         #horseTrack
         *ngFor="let h of horsesList"
         class="c-ongoing-horse-wrapper"
-        [attr.data-index]="h.horse.index"
+        [attr.data-index]="h.slot"
     >
         <app-ongoing-horse-ui
             [ongoingHorse]="h"
-            [color]="horseColorMap.get(h.horse.index)!"
+            [color]="getColor(h.slot)"
         ></app-ongoing-horse-ui>
     </div>
 </div>

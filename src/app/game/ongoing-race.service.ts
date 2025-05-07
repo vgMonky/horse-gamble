@@ -3,6 +3,13 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject, interval, Subscription } from 'rxjs';
 import { ALL_HORSES, Horse } from './horses-database';
 
+export const SLOT_COLOR_MAP: Record<number, string> = {
+    0: 'hsl(0,70%,30%)',
+    1: 'hsl(90,70%,30%)',
+    2: 'hsl(180,70%,30%)',
+    3: 'hsl(300,70%,30%)'
+};
+
 export type OngoingRaceState = 'pre' | 'in' | 'post';
 
 export interface OngoingHorse {
