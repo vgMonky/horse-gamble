@@ -30,6 +30,7 @@
 
     &__position {
         min-width: 60px ;
+        text-align: right;
     }
 
     &__placement {
@@ -37,5 +38,6 @@
         font-size: 1.3rem;
         color: var(--c-accent-0);
         min-width: 60px ;
+        text-align: right;
     }
 }

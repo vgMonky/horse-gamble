@@ -88,7 +88,7 @@ export class Horses {
     private readonly pxFactor              = 10;
     private readonly pxFactorMultiplier   = 20;
     private readonly slideVelocity        = 0.05;
-    private readonly slideVelocityMultiplier = 10;
+    private readonly slideVelocityMultiplier = 15;
 
     constructor(
         private scene:   Phaser.Scene,

@@ -42,7 +42,9 @@ export class ParallaxBackground {
             { key: 'cloud2', path: 'assets/game-img/background/cloud_2.png' },
             { key: 'cloud3', path: 'assets/game-img/background/cloud_3.png' },
             { key: 'forest', path: 'assets/game-img/background/forest_bg.png' },
-            { key: 'trees',  path: 'assets/game-img/background/darken/grass_trees.png' },
+            { key: 'trees3',  path: 'assets/game-img/background/darken/grass_trees.png' },
+            { key: 'trees2',  path: 'assets/game-img/background/darken/grass_trees.png' },
+            { key: 'trees1',  path: 'assets/game-img/background/darken/grass_trees.png' },
             { key: 'fence',  path: 'assets/game-img/background/darken/fence.png' },
         ];
         assets.forEach(a => this.scene.load.image(a.key, a.path));
@@ -51,11 +53,13 @@ export class ParallaxBackground {
     create(): void {
         const { width, height } = this.scene.scale;
         const configs: LayerConfig[] = [
-            { key: 'forest', speed: 0.02, yFactor: 0.70, scale: 1.4, offsetTileY: 1, xRepeatFactor: 2 },
+            { key: 'forest', speed: 0.02, yFactor: 0.58, scale: 1, offsetTileY: 1, xRepeatFactor: 2 },
             { key: 'cloud1', speed: 0.04, yFactor: 0.25, scale: 0.5, spacing: 500, offsetX: 0, tileOffsetX: 0, xRepeatFactor: 2 },
             { key: 'cloud2', speed: 0.02, yFactor: 0.25, scale: 0.2, spacing: 1500, offsetX: 0, tileOffsetX: 0, xRepeatFactor: 5 },
             { key: 'cloud3', speed: 0.03, yFactor: 0.30, scale: 0.4, spacing: 950, offsetX: 0, tileOffsetX: 0, xRepeatFactor: 3 },
-            { key: 'trees',  speed: 0.23, yFactor: 0.78, scale: 0.5, offsetTileY: 1, xRepeatFactor: 2 },
+            { key: 'trees3',  speed: 0.17, yFactor: 0.60, scale: 0.30, offsetTileY: 1, xRepeatFactor: 6 },
+            { key: 'trees2',  speed: 0.20, yFactor: 0.67, scale: 0.45, offsetTileY: 1, xRepeatFactor: 3 },
+            { key: 'trees1',  speed: 0.23, yFactor: 0.81, scale: 0.7, offsetTileY: 1, xRepeatFactor: 2 },
             { key: 'fence',  speed: 0.92, yFactor: 1.00, scale: 0.65, xRepeatFactor: 2 },
         ];
 
