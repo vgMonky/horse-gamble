@@ -114,7 +114,7 @@ export class ParallaxBackground {
             const done   = leader.position! >= this.raceSvc.winningDistance;
 
             this.layers.forEach(l => {
-                if (['forest','trees','fence'].includes(l.key)) {
+                if (['forest', 'trees3', 'trees2', 'trees1','fence'].includes(l.key)) {
                     l.speed = done ? 0 : l.original;
                 }
             });
