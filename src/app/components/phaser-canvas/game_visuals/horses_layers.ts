@@ -34,28 +34,31 @@ class HorseLayer {
             y,
             scale           = 0.33,
             frames          = [0,1,2,3,4,5,6,7,8],
-            frameRate       = 20, // default if not passed
+            frameRate       = 20,
             showMarker      = false,
             markerOffsetX   = 0,
             markerOffsetY   = -10
         } = cfg;
 
-        const key = `horse_anim_${cfg.index}`;
-        if (!scene.anims.exists(key)) {
+        const spriteSheetKey = `horseSpriteSheet${cfg.index}`;
+        const animKey = `horse_anim_${cfg.index}`;
+
+        if (!scene.anims.exists(animKey)) {
             scene.anims.create({
-                key,
-                frames:    scene.anims.generateFrameNumbers('horseSpriteSheet', { frames }),
+                key: animKey,
+                frames: scene.anims.generateFrameNumbers(spriteSheetKey, { frames }),
                 frameRate,
-                repeat:    -1
+                repeat: -1
             });
         }
 
         this.sprite = scene.add
-            .sprite(originX, y, 'horseSpriteSheet')
+            .sprite(originX, y, spriteSheetKey)
             .setScale(scale)
-            .play(key);
+            .play(animKey);
 
         this.targetX = originX;
+
         if (showMarker) {
             this.marker = scene.add
                 .rectangle(
@@ -86,22 +89,24 @@ export class Horses {
     private lastPos:   Record<number, number> = {};
 
     private readonly pxFactor              = 10;
-    private readonly pxFactorMultiplier   = 20;
-    private readonly slideVelocity        = 0.05;
+    private readonly pxFactorMultiplier    = 20;
+    private readonly slideVelocity         = 0.05;
     private readonly slideVelocityMultiplier = 15;
 
     constructor(
-        private scene:   Phaser.Scene,
+        private scene: Phaser.Scene,
         private raceSvc: OngoingRaceService,
         private markerOpacityGetter: () => number
     ) {}
 
     preload(): void {
-        this.scene.load.spritesheet(
-            'horseSpriteSheet',
-            'assets/game-img/sprite-sheet/horse-sprite-sheet-0.png',
-            { frameWidth: 575, frameHeight: 434 }
-        );
+        for (let i = 0; i <= 3; i++) {
+            this.scene.load.spritesheet(
+                `horseSpriteSheet${i}`,
+                `assets/game-img/sprite-sheet/horse-sprite-sheet-${i}.png`,
+                { frameWidth: 575, frameHeight: 434 }
+            );
+        }
     }
 
     create(): void {
@@ -109,7 +114,6 @@ export class Horses {
             const placed = list.getByPlacement();
             if (!placed.length) return;
 
-            // build slot → placement rank map
             const slotToRank = new Map<number, number>();
             placed.forEach((h, i) => slotToRank.set(h.slot, i));
 
