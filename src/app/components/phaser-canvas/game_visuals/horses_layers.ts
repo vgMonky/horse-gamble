@@ -1,88 +1,99 @@
-// src/app/components/phaser-canvas/game_visuals/horses_layers.ts
 import Phaser from 'phaser';
-import type { Horse } from '@app/game/ongoing-race.service';
-import type { Observable, Subscription } from 'rxjs';
+import type { Subscription } from 'rxjs';
+import type {
+    OngoingRaceService,
+    OngoingHorsesList,
+    OngoingHorse
+} from '@app/game/ongoing-race.service';
+import { SLOT_COLOR_MAP } from '@app/game/ongoing-race.service';
 
 export interface HorseAnimConfig {
-    index: number;
-    x: number;
-    y: number;
-    rate: number;
-    scale?: number;
-    frames?: number[];
-    luminosity?: number;
+    index:          number;
+    originX:        number;
+    y:              number;
+    scale?:         number;
+    frames?:        number[];
+    frameRate?:     number;
+    showMarker?:    boolean;
+    markerOffsetX?: number;
+    markerOffsetY?: number;
 }
 
 class HorseLayer {
-    public sprite: Phaser.GameObjects.Sprite;
-    public readonly config: HorseAnimConfig;
-    private animKey: string;
+    public sprite:   Phaser.GameObjects.Sprite;
+    public marker?:  Phaser.GameObjects.Rectangle;
+    public targetX!: number;
 
     constructor(
         private scene: Phaser.Scene,
-        config: HorseAnimConfig
+        public  cfg:   HorseAnimConfig,
+        private markerOpacityGetter: () => number
     ) {
-        this.config = config;
         const {
-            x,
+            originX,
             y,
-            rate,
-            scale = 0.33,
-            frames = [0, 1, 2, 3, 4, 5, 6, 7, 8],
-            luminosity
-        } = config;
+            scale           = 0.33,
+            frames          = [0,1,2,3,4,5,6,7,8],
+            frameRate       = 20, // default if not passed
+            showMarker      = false,
+            markerOffsetX   = 0,
+            markerOffsetY   = -10
+        } = cfg;
 
-        this.animKey = `horse_${rate}`;
-
-        if (!this.scene.anims.exists(this.animKey)) {
-            this.scene.anims.create({
-                key: this.animKey,
-                frames: this.scene.anims.generateFrameNumbers('horseSpriteSheet', { frames }),
-                frameRate: rate,
-                repeat: -1
+        const key = `horse_anim_${cfg.index}`;
+        if (!scene.anims.exists(key)) {
+            scene.anims.create({
+                key,
+                frames:    scene.anims.generateFrameNumbers('horseSpriteSheet', { frames }),
+                frameRate,
+                repeat:    -1
             });
         }
 
-        this.sprite = this.scene.add
-            .sprite(x, y, 'horseSpriteSheet')
-            .setScale(scale);
+        this.sprite = scene.add
+            .sprite(originX, y, 'horseSpriteSheet')
+            .setScale(scale)
+            .play(key);
 
-        if (luminosity !== undefined) {
-            const color = Phaser.Display.Color
-                .HSLToColor(0, 0, luminosity)
-                .color;
-            this.sprite.setTint(color);
+        this.targetX = originX;
+        if (showMarker) {
+            this.marker = scene.add
+                .rectangle(
+                    originX + markerOffsetX,
+                    y + markerOffsetY,
+                    3,
+                    20,
+                    hslStringToPhaserColor(SLOT_COLOR_MAP[cfg.index], +30)
+                )
+                .setOrigin(0.5, 1)
+                .setDepth(10)
+                .setAlpha(this.markerOpacityGetter());
         }
-
-        this.sprite.play(this.animKey);
     }
 
-    /** tween the sprite’s X to `targetX` over `duration`ms with Linear ease */
-    public slideTo(targetX: number, duration: number): void {
-        this.scene.tweens.add({
-            targets: this.sprite,
-            x:       targetX,
-            duration,
-            ease:    'Linear'
-        });
+    updateMarkerOpacity(): void {
+        if (this.marker) {
+            this.marker.setAlpha(this.markerOpacityGetter());
+        }
     }
 }
 
 export class Horses {
-    private layers: HorseLayer[] = [];
-    private sub!: Subscription;
-    private readonly marchDistancePerTick = 50; // pixels per tick for winners
+    private layers:    HorseLayer[] = [];
+    private sub?:      Subscription;
+    private finished   = false;
+    private baselineX: Record<number, number> = {};
+    private lastPos:   Record<number, number> = {};
 
-    private configs: HorseAnimConfig[] = [
-        { index: 1,  x: 400, y: 160, rate: 17, luminosity: 0.76 },
-        { index: 8,  x: 400, y: 170, rate: 14, luminosity: 0.84 },
-        { index: 3,  x: 400, y: 180, rate: 16, luminosity: 0.92 },
-        { index: 14, x: 400, y: 190, rate: 15, luminosity: 1.00 },
-    ];
+    private readonly pxFactor              = 10;
+    private readonly pxFactorMultiplier   = 20;
+    private readonly slideVelocity        = 0.05;
+    private readonly slideVelocityMultiplier = 15;
 
     constructor(
-        private scene: Phaser.Scene,
-        private horses$: Observable<Horse[]>
+        private scene:   Phaser.Scene,
+        private raceSvc: OngoingRaceService,
+        private markerOpacityGetter: () => number
     ) {}
 
     preload(): void {
@@ -94,45 +105,109 @@ export class Horses {
     }
 
     create(): void {
-        this.layers = this.configs.map(cfg => new HorseLayer(this.scene, cfg));
-        this.sub = this.horses$.subscribe(horses => this.positionSprites(horses));
+        this.sub = this.raceSvc.horsesList$.subscribe((list: OngoingHorsesList) => {
+            const placed = list.getByPlacement();
+            if (!placed.length) return;
+
+            // build slot → placement rank map
+            const slotToRank = new Map<number, number>();
+            placed.forEach((h, i) => slotToRank.set(h.slot, i));
+
+            if (!this.layers.length) {
+                list.getAll().forEach((h) => {
+                    const laneY     = 148 + h.slot * 10;
+                    const originX   = 400;
+                    const rank      = slotToRank.get(h.slot) ?? 3;
+                    const frameRate = 20 - rank;
+
+                    const layer = new HorseLayer(
+                        this.scene,
+                        {
+                            index: h.slot,
+                            originX,
+                            y: laneY,
+                            frameRate,
+                            showMarker: true,
+                            markerOffsetX: 88,
+                            markerOffsetY: 19
+                        },
+                        this.markerOpacityGetter
+                    );
+
+                    this.layers.push(layer);
+                    this.lastPos[h.slot] = h.position!;
+                });
+            }
+
+            const leaderPos    = placed[0].position!;
+            const finishDist   = this.raceSvc.winningDistance;
+            const cameraAnchor = Math.min(leaderPos, finishDist);
+
+            if (!this.finished && leaderPos >= finishDist) {
+                this.finished = true;
+                this.layers.forEach(layer => {
+                    const slot = layer.cfg.index;
+                    this.baselineX[slot] = layer.sprite.x;
+                    const horse = placed.find(p => p.slot === slot)!;
+                    this.lastPos[slot]   = horse.position!;
+                });
+            }
+
+            this.layers.forEach(layer => {
+                const slot = layer.cfg.index;
+                const h    = placed.find(p => p.slot === slot);
+                if (!h) return;
+
+                if (!this.finished) {
+                    const delta = h.position! - cameraAnchor;
+                    layer.targetX = layer.cfg.originX + this.pxFactor * delta;
+                } else {
+                    const deltaPos = h.position! - this.lastPos[slot];
+                    const extraPx  = deltaPos * this.pxFactorMultiplier;
+                    layer.targetX = this.baselineX[slot] + extraPx;
+                    this.baselineX[slot] = layer.targetX;
+                }
+
+                this.lastPos[slot] = h.position!;
+            });
+        });
     }
 
-    update(_time: number, _delta: number): void {}
+    update(_time: number, delta: number): void {
+        const velocity = this.finished
+            ? this.slideVelocity * this.slideVelocityMultiplier
+            : this.slideVelocity;
 
-    private positionSprites(horses: Horse[]) {
-        const maxPos = Math.max(...horses.map(h => h.position ?? 0));
-        const d =  400;
-
-        for (let layer of this.layers) {
-            const horse = horses.find(h => h.index === layer.config.index)!;
-
-            if (horse.position != null) {
-                // in-race: compute target X
-                const baseX   = layer.config.x;
-                const deltaX  = (horse.position - maxPos) * 4;
-                const targetX = baseX + deltaX;
-
-                // distance to travel
-                const distance = Math.abs(targetX - layer.sprite.x);
-                // duration = distance ÷ speed
-                const duration = d;
-
-                layer.slideTo(targetX, duration);
+        this.layers.forEach(layer => {
+            const diff = layer.targetX - layer.sprite.x;
+            if (Math.abs(diff) < velocity * delta) {
+                layer.sprite.x = layer.targetX;
             } else {
-                // winner: march off-screen by fixed marchDistancePerTick each tick
-                const currentX = layer.sprite.x;
-                const targetX  = currentX + this.marchDistancePerTick;
-
-                const distance = Math.abs(targetX - currentX);
-                const duration = d;
-
-                layer.slideTo(targetX, duration);
+                layer.sprite.x += Math.sign(diff) * velocity * delta;
             }
-        }
+            if (layer.marker) {
+                const ox = layer.cfg.markerOffsetX ?? 0;
+                const oy = layer.cfg.markerOffsetY ?? 0;
+                layer.marker.x = layer.targetX + ox;
+                layer.marker.y = layer.sprite.y + oy;
+                layer.updateMarkerOpacity();
+            }
+        });
     }
 
     destroy(): void {
-        this.sub.unsubscribe();
+        this.sub?.unsubscribe();
     }
+}
+
+function hslStringToPhaserColor(hslStr: string, lightnessAdjust = 0): number {
+    const match = /^hsl\((\d+),\s*(\d+)%?,\s*(\d+)%?\)$/.exec(hslStr);
+    if (!match) return 0x000000;
+
+    const h = parseInt(match[1], 10) / 360;
+    const s = parseInt(match[2], 10) / 100;
+    let l   = parseInt(match[3], 10) / 100;
+
+    l = Math.max(0, Math.min(1, l + lightnessAdjust / 100));
+    return Phaser.Display.Color.HSLToColor(h, s, l).color;
 }

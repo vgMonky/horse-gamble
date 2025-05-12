@@ -1,40 +1,32 @@
+<!-- src/app/pages/ongoing/ongoing.component.html -->
 <div class="p-ongoing">
-    <div *ngIf="raceState === 'pre'" class="p-ongoing__pre">
+    <div *ngIf="(raceState$ | async) === 'pre'" class="p-ongoing__pre">
         <div class="p-ongoing__top">
             <p>*canvas art*</p>
             <h2>🏁 Race Starting Soon</h2>
-            <p>Countdown: {{ countdown }}s</p>
+            <p>Countdown: {{ countdown$ | async }}s</p>
         </div>
     </div>
 
-    <div *ngIf="raceState === 'in'" class="p-ongoing__in">
+    <div *ngIf="(raceState$ | async) === 'in'" class="p-ongoing__in">
         <div class="p-ongoing__top">
-            <app-phaser-canvas />
+            <app-phaser-canvas></app-phaser-canvas>
         </div>
     </div>
 
-    <div *ngIf="raceState === 'post'" class="p-ongoing__post">
+    <div *ngIf="(raceState$ | async) === 'post'" class="p-ongoing__post">
         <div class="p-ongoing__top">
             <p>*canvas art*</p>
             <h2>🏆 Race Complete</h2>
-            <p>Next race starts in {{ countdown }}s</p>
-
-            <div class="p-ongoing__podium">
-                <h3>🥇 Final Standings</h3>
-                <ol>
-                    <li *ngFor="let h of podium">
-                        Horse {{ h.index }} — {{ h.position }}m
-                    </li>
-                </ol>
-            </div>
+            <p>Next race starts in {{ countdown$ | async }}s</p>
         </div>
     </div>
 
     <div class="p-ongoing__bottom">
-        <app-ongoing-list-ui />
+        <app-ongoing-list-ui></app-ongoing-list-ui>
     </div>
 
     <div class="p-ongoing__subtitle">
-        Race Distance: {{ finalPosition }}m
+        Race Distance: {{ winPos / 10}}m
     </div>
 </div>
