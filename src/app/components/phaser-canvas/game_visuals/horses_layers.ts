@@ -120,7 +120,7 @@ export class Horses {
             if (!this.layers.length) {
                 list.getAll().forEach((h) => {
                     const laneY     = 148 + h.slot * 10;
-                    const originX   = 400;
+                    const originX   = 480;
                     const rank      = slotToRank.get(h.slot) ?? 3;
                     const frameRate = 20 - rank;
 
