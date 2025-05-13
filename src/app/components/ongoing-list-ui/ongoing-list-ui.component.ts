@@ -98,13 +98,13 @@ export class OngoingListUiComponent implements AfterViewInit, OnDestroy {
 
                     const delta = this.isMobileView
                         ? (old.y - now.y)
-                        : (old.x - now.x);
+                        : (old.y - now.y);
 
                     if (delta) {
                         this.renderer.setStyle(el.nativeElement, 'transition', 'none');
                         const transform = this.isMobileView
                             ? `translateY(${delta}px)`
-                            : `translateX(${delta}px)`;
+                            : `translateY(${delta}px)`;
                         this.renderer.setStyle(el.nativeElement, 'transform', transform);
                     }
                 });
