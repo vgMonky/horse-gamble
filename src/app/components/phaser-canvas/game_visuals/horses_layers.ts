@@ -84,6 +84,8 @@ class HorseLayer {
 export class Horses {
     private layers:    HorseLayer[] = [];
     private sub?:      Subscription;
+    private raceStateSub?: Subscription;
+    private raceState: 'pre' | 'in' | 'post' = 'pre';
     private finished   = false;
     private baselineX: Record<number, number> = {};
     private lastPos:   Record<number, number> = {};
@@ -141,6 +143,13 @@ export class Horses {
                     this.layers.push(layer);
                     this.lastPos[h.slot] = h.position!;
                 });
+
+                // Immediately apply current raceState
+                if (this.raceState === 'pre') {
+                    this.layers.forEach(layer => {
+                        layer.sprite.anims.pause();
+                    });
+                }
             }
 
             const leaderPos    = placed[0].position!;
@@ -175,6 +184,21 @@ export class Horses {
                 this.lastPos[slot] = h.position!;
             });
         });
+
+        this.raceStateSub = this.raceSvc.raceState$.subscribe(state => {
+            this.raceState = state;
+            if (state === 'pre') {
+                this.layers.forEach(layer => {
+                    layer.sprite.anims.pause();
+                    layer.sprite.setFrame(3);
+
+                });
+            } else if (state === 'in') {
+                this.layers.forEach(layer => {
+                    layer.sprite.anims.resume();
+                });
+            }
+        });
     }
 
     update(_time: number, delta: number): void {
@@ -201,6 +225,7 @@ export class Horses {
 
     destroy(): void {
         this.sub?.unsubscribe();
+        this.raceStateSub?.unsubscribe();
     }
 }
 
