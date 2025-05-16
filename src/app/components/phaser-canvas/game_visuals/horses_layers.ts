@@ -222,7 +222,7 @@ export class Horses {
             const finishDist = this.raceSvc.winningDistance;
 
             // slide in finish-post when within threshold
-            const slideThreshold = 32;
+            const slideThreshold = 50;
             if (!this.finishTweened && leaderPos >= finishDist - slideThreshold) {
                 this.finishTweened = true;
                 this.finishPost.setVisible(true);
