@@ -1,3 +1,4 @@
+// src/app/components/phaser-canvas/game_visuals/horses_layers.ts
 import Phaser from 'phaser';
 import type { Subscription } from 'rxjs';
 import type {
@@ -67,7 +68,6 @@ class HorseLayer {
             });
         }
 
-        // horse sprite with depth = index*2
         this.sprite = scene.add
             .sprite(originX, y, spriteSheetKey)
             .setScale(scale)
@@ -76,7 +76,6 @@ class HorseLayer {
 
         this.targetX = originX;
 
-        // starting gate sprite with depth = index*2 + 1
         if (showGate) {
             this.gate = scene.add
                 .sprite(gateOriginX, y + gateOffsetY, 'startingGate')
@@ -85,7 +84,6 @@ class HorseLayer {
                 .setDepth(index * 2 + 1);
         }
 
-        // optional marker (kept at high fixed depth)
         if (showMarker) {
             this.marker = scene.add
                 .rectangle(
@@ -187,18 +185,15 @@ export class Horses {
                 }
             }
 
-            // finish-line & camera logic…
             const leaderPos    = placed[0].position!;
             const finishDist   = this.raceSvc.winningDistance;
-            const cameraAnchor = Math.min(leaderPos, finishDist);
 
             if (!this.finished && leaderPos >= finishDist) {
                 this.finished = true;
                 this.layers.forEach(layer => {
                     const slot = layer.cfg.index;
                     this.baselineX[slot] = layer.sprite.x;
-                    const horse = placed.find(p => p.slot === slot)!;
-                    this.lastPos[slot]   = horse.position!;
+                    this.lastPos[slot]   = placed.find(p => p.slot === slot)!.position!;
                 });
             }
 
@@ -208,12 +203,13 @@ export class Horses {
                 if (!h) return;
 
                 if (!this.finished) {
-                    const delta = h.position! - cameraAnchor;
-                    layer.targetX = layer.cfg.originX + this.pxFactor * delta;
+                    const cameraAnchor = Math.min(leaderPos, finishDist);
+                    const delta        = h.position! - cameraAnchor;
+                    layer.targetX      = layer.cfg.originX + this.pxFactor * delta;
                 } else {
                     const deltaPos = h.position! - this.lastPos[slot];
                     const extraPx  = deltaPos * this.pxFactorMultiplier;
-                    layer.targetX = this.baselineX[slot] + extraPx;
+                    layer.targetX  = this.baselineX[slot] + extraPx;
                     this.baselineX[slot] = layer.targetX;
                 }
 
@@ -228,7 +224,8 @@ export class Horses {
                     layer.sprite.anims.pause();
                     layer.sprite.setFrame(3);
                 });
-            } else if (state === 'in') {
+            } else if (state === 'in' || state === 'post') {
+                // resume animation for both 'in' and 'post'
                 this.layers.forEach(layer => {
                     layer.sprite.anims.resume();
                 });
@@ -237,27 +234,32 @@ export class Horses {
     }
 
     update(_time: number, delta: number): void {
-        const velocity = this.finished
-            ? this.slideVelocity * this.slideVelocityMultiplier
-            : this.slideVelocity;
+        const runVel    = this.slideVelocity;
+        const finishVel = this.slideVelocity * this.slideVelocityMultiplier;
 
         this.layers.forEach(layer => {
-            const diff = layer.targetX - layer.sprite.x;
-            if (Math.abs(diff) < velocity * delta) {
-                layer.sprite.x = layer.targetX;
+            if (this.raceState === 'post') {
+                // keep running forward at constant speed
+                layer.sprite.x += finishVel * delta;
             } else {
-                layer.sprite.x += Math.sign(diff) * velocity * delta;
+                const velocity = this.finished ? finishVel : runVel;
+                const diff     = layer.targetX - layer.sprite.x;
+                if (Math.abs(diff) < velocity * delta) {
+                    layer.sprite.x = layer.targetX;
+                } else {
+                    layer.sprite.x += Math.sign(diff) * velocity * delta;
+                }
             }
 
             if (layer.marker) {
                 const ox = layer.cfg.markerOffsetX ?? 0;
                 const oy = layer.cfg.markerOffsetY ?? 0;
-                layer.marker.x = layer.targetX + ox;
+                layer.marker.x = layer.sprite.x + ox;
                 layer.marker.y = layer.sprite.y + oy;
                 layer.updateMarkerOpacity();
             }
 
-            if (this.raceState === 'in' && layer.gate) {
+            if ((this.raceState === 'in' || this.raceState === 'post') && layer.gate) {
                 layer.gate.x -= layer['gateSlideSpeed'] * delta;
             }
         });
