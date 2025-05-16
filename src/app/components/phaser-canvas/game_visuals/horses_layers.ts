@@ -138,7 +138,7 @@ export class Horses {
         }
         this.scene.load.image(
             'startingGate',
-            'assets/game-img/sprite-sheet/starting-gate-mirror.png'
+            'assets/game-img/sprite-sheet/starting-gate.png'
         );
     }
 
@@ -169,9 +169,9 @@ export class Horses {
                             markerOffsetY:   19,
                             showGate:        true,
                             gateScale:       0.20,
-                            gateOriginX:     480,
-                            gateOffsetY:     -200,
-                            gateSlideSpeed:  0.7
+                            gateOriginX:     450,
+                            gateOffsetY:     -116,
+                            gateSlideSpeed:  0.77
                         },
                         this.markerOpacityGetter
                     );
