@@ -1,8 +1,8 @@
-// // src/app/pages/ongoing/ongoing.component.ts
 import {
     Component,
     AfterViewInit,
-    OnDestroy
+    OnDestroy,
+    ViewChild
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -10,7 +10,7 @@ import { SharedModule } from '@app/shared/shared.module';
 import { PhaserCanvasComponent } from '@app/components/phaser-canvas/phaser-canvas.component';
 import { OngoingListUiComponent } from '@app/components/ongoing-list-ui/ongoing-list-ui.component';
 import { OngoingRaceService } from '@app/game/ongoing-race.service';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 @Component({
     standalone: true,
@@ -26,24 +26,41 @@ import { Observable } from 'rxjs';
     styleUrls: ['./ongoing.component.scss']
 })
 export class OngoingComponent implements AfterViewInit, OnDestroy {
+    @ViewChild(PhaserCanvasComponent) private canvasCmp!: PhaserCanvasComponent;
+
     readonly raceState$: Observable<'pre' | 'in' | 'post'>;
     readonly countdown$:  Observable<number>;
     readonly winPos: number;
 
+    private stateSub!: Subscription;
+    showCanvas = true;
+
     constructor(private ongoingRaceService: OngoingRaceService) {
         this.raceState$ = this.ongoingRaceService.raceState$;
         this.countdown$ = this.ongoingRaceService.countdown$;
-        this.winPos = this.ongoingRaceService.winningDistance
-    }
-
-    ngOnInit(): void {
+        this.winPos     = this.ongoingRaceService.winningDistance;
     }
 
     ngAfterViewInit(): void {
+        // kick off the first race
         this.ongoingRaceService.startOngoingRace();
+
+        // whenever we re-enter 'pre', reload the canvas
+        this.stateSub = this.raceState$.subscribe(state => {
+            if (state === 'pre') {
+                this.reloadCanvas();
+            }
+        });
+    }
+
+    private reloadCanvas(): void {
+        // turn off → turn on to force Angular to destroy & re-create the PhaserCanvasComponent
+        this.showCanvas = false;
+        setTimeout(() => this.showCanvas = true, 0);
     }
 
     ngOnDestroy(): void {
+        this.stateSub.unsubscribe();
         this.ongoingRaceService.stopOngoingRace();
     }
 }

@@ -1,19 +1,17 @@
-<!-- src/app/pages/ongoing/ongoing.component.html -->
 <div class="p-ongoing">
-    <div *ngIf="(raceState$ | async) as raceState">
-        <div *ngIf="raceState === 'pre' || raceState === 'in'" class="p-ongoing__in">
-            <div class="p-ongoing__top">
-                <app-phaser-canvas></app-phaser-canvas>
-            </div>
-        </div>
+    <div class="p-ongoing__top">
+        <!-- always show the canvas -->
+        <ng-container *ngIf="showCanvas">
+            <app-phaser-canvas></app-phaser-canvas>
+        </ng-container>
 
-        <div *ngIf="raceState === 'post'" class="p-ongoing__post">
-            <div class="p-ongoing__top">
-                <p>*canvas art*</p>
+        <!-- only overlay the post-race message when in 'post' -->
+        <ng-container *ngIf="raceState$ | async as raceState">
+            <div *ngIf="raceState === 'post'" class="p-ongoing__post-overlay">
                 <h2>🏆 Race Complete</h2>
                 <p>Next race starts in {{ countdown$ | async }}s</p>
             </div>
-        </div>
+        </ng-container>
     </div>
 
     <div class="p-ongoing__bottom">
