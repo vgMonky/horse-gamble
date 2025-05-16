@@ -63,9 +63,6 @@ export class MainScene extends Phaser.Scene {
         // countdown text layer
         const textLayer = new TextLayer(this, this.ongoingRaceService, 0.7);
         textLayer.create();
-        this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
-            textLayer.destroy();
-        });
 
         // horses
         this.horses.create();

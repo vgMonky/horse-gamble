@@ -31,15 +31,16 @@ export class TextLayer {
             .setScrollFactor(0)
             .setDepth(100);
 
-        // 2) countdown text
+        // 2) countdown text (monospace to avoid jitter)
         this.countdownText = this.scene.add.text(width / 2, height / 2, '', {
-            font: '48px Arial',
+            fontFamily: 'Courier, monospace',
+            fontSize: '48px',
             color: '#ffffff',
             align: 'center'
         })
-        .setOrigin(0.5)
-        .setScrollFactor(0)
-        .setDepth(101);
+            .setOrigin(0.5)
+            .setScrollFactor(0)
+            .setDepth(101);
 
         // show/hide based on race state
         this.stateSub = this.raceSvc.raceState$.subscribe((state: OngoingRaceState) => {
@@ -52,9 +53,13 @@ export class TextLayer {
         this.countdownSub = this.raceSvc.countdown$.subscribe(count => {
             this.countdownText.setText(count.toString());
         });
+
+        // clean up on both shutdown and destroy
+        this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.destroy());
+        this.scene.events.once(Phaser.Scenes.Events.DESTROY, () => this.destroy());
     }
 
-    /** Clean up when the scene shuts down */
+    /** Clean up */
     destroy(): void {
         this.stateSub?.unsubscribe();
         this.countdownSub?.unsubscribe();
