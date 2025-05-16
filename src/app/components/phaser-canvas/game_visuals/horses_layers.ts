@@ -25,6 +25,13 @@ export interface HorseAnimConfig {
     gateSlideSpeed?:  number;
 }
 
+/** optional finish‐post configuration */
+interface FinishConfig {
+    scale?:   number;
+    yOffset?: number;
+    depth?:   number;
+}
+
 class HorseLayer {
     public sprite:           Phaser.GameObjects.Sprite;
     public marker?:          Phaser.GameObjects.Rectangle;
@@ -107,13 +114,20 @@ class HorseLayer {
 }
 
 export class Horses {
-    private layers:         HorseLayer[] = [];
+    private layers:         HorseLayer[]      = [];
     private sub?:           Subscription;
     private raceStateSub?:  Subscription;
     private raceState:      'pre' | 'in' | 'post' = 'pre';
     private finished        = false;
     private baselineX:      Record<number, number> = {};
     private lastPos:        Record<number, number> = {};
+    private finishPost!:    Phaser.GameObjects.Image;
+    private finishTweened   = false;
+
+    /** default finish‐post settings */
+    private finishScale   = 0.145;
+    private finishYOffset = -35;
+    private finishDepth   = -1;
 
     private readonly pxFactor                = 10;
     private readonly pxFactorMultiplier      = 20;
@@ -123,8 +137,15 @@ export class Horses {
     constructor(
         private scene:    Phaser.Scene,
         private raceSvc:  OngoingRaceService,
-        private markerOpacityGetter: () => number
-    ) {}
+        private markerOpacityGetter: () => number,
+        finishConfig?: FinishConfig
+    ) {
+        if (finishConfig) {
+            this.finishScale   = finishConfig.scale   ?? this.finishScale;
+            this.finishYOffset = finishConfig.yOffset ?? this.finishYOffset;
+            this.finishDepth   = finishConfig.depth   ?? this.finishDepth;
+        }
+    }
 
     preload(): void {
         for (let i = 0; i <= 3; i++) {
@@ -138,22 +159,36 @@ export class Horses {
             'startingGate',
             'assets/game-img/sprite-sheet/starting-gate.png'
         );
+        this.scene.load.image(
+            'finishPost',
+            'assets/game-img/sprite-sheet/finish-post.png'
+        );
     }
 
     create(): void {
+        // pre‐create finish-post off-screen, hidden
+        const originX    = 480;
+        // use full screen width, not half, so it starts truly off-screen
+        const offscreenX = originX + this.scene.scale.width;
+        const finishY    = this.scene.scale.height + this.finishYOffset;
+        this.finishPost = this.scene.add.image(offscreenX, finishY, 'finishPost')
+            .setOrigin(0.5, 1)
+            .setScale(this.finishScale)
+            .setScrollFactor(0)
+            .setDepth(this.finishDepth)
+            .setVisible(false);
+
         this.sub = this.raceSvc.horsesList$.subscribe((list: OngoingHorsesList) => {
-            const placed = list.getByPlacement();
+            const placed    = list.getByPlacement();
             if (!placed.length) return;
 
             const slotToRank = new Map<number, number>();
             placed.forEach((h, i) => slotToRank.set(h.slot, i));
 
             if (!this.layers.length) {
-                list.getAll().forEach((h) => {
+                list.getAll().forEach(h => {
                     const laneY     = 148 + h.slot * 10;
-                    const originX   = 480;
-                    const rank      = slotToRank.get(h.slot) ?? 3;
-                    const frameRate = 20 - rank;
+                    const frameRate = 20 - (slotToRank.get(h.slot) ?? 3);
 
                     const layer = new HorseLayer(
                         this.scene,
@@ -179,15 +214,33 @@ export class Horses {
                 });
 
                 if (this.raceState === 'pre') {
-                    this.layers.forEach(layer => {
-                        layer.sprite.anims.pause();
-                    });
+                    this.layers.forEach(layer => layer.sprite.anims.pause());
                 }
             }
 
-            const leaderPos    = placed[0].position!;
-            const finishDist   = this.raceSvc.winningDistance;
+            const leaderPos  = placed[0].position!;
+            const finishDist = this.raceSvc.winningDistance;
 
+            // slide in finish-post when within threshold
+            const slideThreshold = 32;
+            if (!this.finishTweened && leaderPos >= finishDist - slideThreshold) {
+                this.finishTweened = true;
+                this.finishPost.setVisible(true);
+
+                const finishX    = originX;
+                const distancePx = this.finishPost.x - finishX;
+                const finishVel  = this.slideVelocity * this.slideVelocityMultiplier;
+                const duration   = distancePx / finishVel;
+
+                this.scene.tweens.add({
+                    targets: this.finishPost,
+                    x:       finishX,
+                    duration,
+                    ease:    'Linear'
+                });
+            }
+
+            // once fully crossed, mark finished baseline
             if (!this.finished && leaderPos >= finishDist) {
                 this.finished = true;
                 this.layers.forEach(layer => {
@@ -197,6 +250,7 @@ export class Horses {
                 });
             }
 
+            // update horse targetX
             this.layers.forEach(layer => {
                 const slot = layer.cfg.index;
                 const h    = placed.find(p => p.slot === slot);
@@ -207,9 +261,9 @@ export class Horses {
                     const delta        = h.position! - cameraAnchor;
                     layer.targetX      = layer.cfg.originX + this.pxFactor * delta;
                 } else {
-                    const deltaPos = h.position! - this.lastPos[slot];
-                    const extraPx  = deltaPos * this.pxFactorMultiplier;
-                    layer.targetX  = this.baselineX[slot] + extraPx;
+                    const deltaPos  = h.position! - this.lastPos[slot];
+                    const extraPx   = deltaPos * this.pxFactorMultiplier;
+                    layer.targetX   = this.baselineX[slot] + extraPx;
                     this.baselineX[slot] = layer.targetX;
                 }
 
@@ -224,11 +278,8 @@ export class Horses {
                     layer.sprite.anims.pause();
                     layer.sprite.setFrame(3);
                 });
-            } else if (state === 'in' || state === 'post') {
-                // resume animation for both 'in' and 'post'
-                this.layers.forEach(layer => {
-                    layer.sprite.anims.resume();
-                });
+            } else {
+                this.layers.forEach(layer => layer.sprite.anims.resume());
             }
         });
     }
@@ -239,7 +290,6 @@ export class Horses {
 
         this.layers.forEach(layer => {
             if (this.raceState === 'post') {
-                // keep running forward at constant speed
                 layer.sprite.x += finishVel * delta;
             } else {
                 const velocity = this.finished ? finishVel : runVel;
@@ -268,17 +318,16 @@ export class Horses {
     destroy(): void {
         this.sub?.unsubscribe();
         this.raceStateSub?.unsubscribe();
+        this.finishPost?.destroy();
     }
 }
 
 function hslStringToPhaserColor(hslStr: string, lightnessAdjust = 0): number {
     const match = /^hsl\((\d+),\s*(\d+)%?,\s*(\d+)%?\)$/.exec(hslStr);
     if (!match) return 0x000000;
-
     const h = parseInt(match[1], 10) / 360;
     const s = parseInt(match[2], 10) / 100;
     let l = parseInt(match[3], 10) / 100;
-
     l = Math.max(0, Math.min(1, l + lightnessAdjust / 100));
     return Phaser.Display.Color.HSLToColor(h, s, l).color;
 }
