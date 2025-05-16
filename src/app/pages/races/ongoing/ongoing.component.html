@@ -4,14 +4,6 @@
         <ng-container *ngIf="showCanvas">
             <app-phaser-canvas></app-phaser-canvas>
         </ng-container>
-
-        <!-- only overlay the post-race message when in 'post' -->
-        <ng-container *ngIf="raceState$ | async as raceState">
-            <div *ngIf="raceState === 'post'" class="p-ongoing__post-overlay">
-                <h2>🏆 Race Complete</h2>
-                <p>Next race starts in {{ countdown$ | async }}s</p>
-            </div>
-        </ng-container>
     </div>
 
     <div class="p-ongoing__bottom">
