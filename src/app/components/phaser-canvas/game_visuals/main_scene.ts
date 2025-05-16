@@ -2,13 +2,12 @@
 import Phaser from 'phaser';
 import { ParallaxBackground } from './parallax_background';
 import { Horses } from './horses_layers';
+import { TextLayer } from './text_layer';
 import type { OngoingRaceService } from '@app/game/ongoing-race.service';
 
 export class MainScene extends Phaser.Scene {
     private bg!: ParallaxBackground;
     private horses!: Horses;
-
-    // Optional: store overlay for dynamic updates
     private filterOverlay!: Phaser.GameObjects.Graphics;
 
     constructor(
@@ -50,10 +49,8 @@ export class MainScene extends Phaser.Scene {
         const filter = {
             h: 0.1,
             s: 0.2,
-            // l
             alpha: 0.2
         };
-
         const initialLightness = this.filterLightnessGetter();
         const filterColor = Phaser.Display.Color.HSLToColor(filter.h, filter.s, initialLightness).color;
 
@@ -62,6 +59,13 @@ export class MainScene extends Phaser.Scene {
         this.filterOverlay.fillRect(0, 0, width, height);
         this.filterOverlay.setScrollFactor(0);
         this.filterOverlay.setDepth(0);
+
+        // countdown text layer
+        const textLayer = new TextLayer(this, this.ongoingRaceService, 0.7);
+        textLayer.create();
+        this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+            textLayer.destroy();
+        });
 
         // horses
         this.horses.create();
