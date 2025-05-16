@@ -8,40 +8,55 @@ import type {
 import { SLOT_COLOR_MAP } from '@app/game/ongoing-race.service';
 
 export interface HorseAnimConfig {
-    index:          number;
-    originX:        number;
-    y:              number;
-    scale?:         number;
-    frames?:        number[];
-    frameRate?:     number;
-    showMarker?:    boolean;
-    markerOffsetX?: number;
-    markerOffsetY?: number;
+    index:            number;
+    originX:          number;
+    y:                number;
+    scale?:           number;
+    frames?:          number[];
+    frameRate?:       number;
+    showMarker?:      boolean;
+    markerOffsetX?:   number;
+    markerOffsetY?:   number;
+    showGate?:        boolean;
+    gateScale?:       number;
+    gateOriginX?:     number;
+    gateOffsetY?:     number;
+    gateSlideSpeed?:  number;
 }
 
 class HorseLayer {
-    public sprite:   Phaser.GameObjects.Sprite;
-    public marker?:  Phaser.GameObjects.Rectangle;
-    public targetX!: number;
+    public sprite:           Phaser.GameObjects.Sprite;
+    public marker?:          Phaser.GameObjects.Rectangle;
+    public gate?:            Phaser.GameObjects.Sprite;
+    public targetX!:         number;
+    private gateSlideSpeed:  number;
 
     constructor(
-        private scene: Phaser.Scene,
-        public  cfg:   HorseAnimConfig,
+        private scene:           Phaser.Scene,
+        public  cfg:             HorseAnimConfig,
         private markerOpacityGetter: () => number
     ) {
         const {
+            index,
             originX,
             y,
-            scale           = 0.33,
-            frames          = [0,1,2,3,4,5,6,7,8],
-            frameRate       = 20,
-            showMarker      = false,
-            markerOffsetX   = 0,
-            markerOffsetY   = -10
+            scale            = 0.33,
+            frames           = [0,1,2,3,4,5,6,7,8],
+            frameRate        = 20,
+            showMarker       = false,
+            markerOffsetX    = 0,
+            markerOffsetY    = -10,
+            showGate         = false,
+            gateScale        = scale,
+            gateOriginX      = originX,
+            gateOffsetY      = 0,
+            gateSlideSpeed   = 0.05
         } = cfg;
 
-        const spriteSheetKey = `horseSpriteSheet${cfg.index}`;
-        const animKey = `horse_anim_${cfg.index}`;
+        this.gateSlideSpeed = gateSlideSpeed;
+
+        const spriteSheetKey = `horseSpriteSheet${index}`;
+        const animKey        = `horse_anim_${index}`;
 
         if (!scene.anims.exists(animKey)) {
             scene.anims.create({
@@ -52,13 +67,25 @@ class HorseLayer {
             });
         }
 
+        // horse sprite with depth = index*2
         this.sprite = scene.add
             .sprite(originX, y, spriteSheetKey)
             .setScale(scale)
-            .play(animKey);
+            .play(animKey)
+            .setDepth(index * 2);
 
         this.targetX = originX;
 
+        // starting gate sprite with depth = index*2 + 1
+        if (showGate) {
+            this.gate = scene.add
+                .sprite(gateOriginX, y + gateOffsetY, 'startingGate')
+                .setScale(gateScale)
+                .setOrigin(0.5, 0)
+                .setDepth(index * 2 + 1);
+        }
+
+        // optional marker (kept at high fixed depth)
         if (showMarker) {
             this.marker = scene.add
                 .rectangle(
@@ -66,10 +93,10 @@ class HorseLayer {
                     y + markerOffsetY,
                     3,
                     20,
-                    hslStringToPhaserColor(SLOT_COLOR_MAP[cfg.index], +30)
+                    hslStringToPhaserColor(SLOT_COLOR_MAP[index], +30)
                 )
                 .setOrigin(0.5, 1)
-                .setDepth(10)
+                .setDepth(100)
                 .setAlpha(this.markerOpacityGetter());
         }
     }
@@ -82,22 +109,22 @@ class HorseLayer {
 }
 
 export class Horses {
-    private layers:    HorseLayer[] = [];
-    private sub?:      Subscription;
-    private raceStateSub?: Subscription;
-    private raceState: 'pre' | 'in' | 'post' = 'pre';
-    private finished   = false;
-    private baselineX: Record<number, number> = {};
-    private lastPos:   Record<number, number> = {};
+    private layers:         HorseLayer[] = [];
+    private sub?:           Subscription;
+    private raceStateSub?:  Subscription;
+    private raceState:      'pre' | 'in' | 'post' = 'pre';
+    private finished        = false;
+    private baselineX:      Record<number, number> = {};
+    private lastPos:        Record<number, number> = {};
 
-    private readonly pxFactor              = 10;
-    private readonly pxFactorMultiplier    = 20;
-    private readonly slideVelocity         = 0.05;
+    private readonly pxFactor                = 10;
+    private readonly pxFactorMultiplier      = 20;
+    private readonly slideVelocity           = 0.05;
     private readonly slideVelocityMultiplier = 15;
 
     constructor(
-        private scene: Phaser.Scene,
-        private raceSvc: OngoingRaceService,
+        private scene:    Phaser.Scene,
+        private raceSvc:  OngoingRaceService,
         private markerOpacityGetter: () => number
     ) {}
 
@@ -109,6 +136,10 @@ export class Horses {
                 { frameWidth: 575, frameHeight: 434 }
             );
         }
+        this.scene.load.image(
+            'startingGate',
+            'assets/game-img/sprite-sheet/starting-gate-mirror.png'
+        );
     }
 
     create(): void {
@@ -129,13 +160,18 @@ export class Horses {
                     const layer = new HorseLayer(
                         this.scene,
                         {
-                            index: h.slot,
+                            index:           h.slot,
                             originX,
-                            y: laneY,
+                            y:               laneY,
                             frameRate,
-                            showMarker: true,
-                            markerOffsetX: 88,
-                            markerOffsetY: 19
+                            showMarker:      true,
+                            markerOffsetX:   88,
+                            markerOffsetY:   19,
+                            showGate:        true,
+                            gateScale:       0.20,
+                            gateOriginX:     480,
+                            gateOffsetY:     -200,
+                            gateSlideSpeed:  0.7
                         },
                         this.markerOpacityGetter
                     );
@@ -144,7 +180,6 @@ export class Horses {
                     this.lastPos[h.slot] = h.position!;
                 });
 
-                // Immediately apply current raceState
                 if (this.raceState === 'pre') {
                     this.layers.forEach(layer => {
                         layer.sprite.anims.pause();
@@ -152,6 +187,7 @@ export class Horses {
                 }
             }
 
+            // finish-line & camera logic…
             const leaderPos    = placed[0].position!;
             const finishDist   = this.raceSvc.winningDistance;
             const cameraAnchor = Math.min(leaderPos, finishDist);
@@ -191,7 +227,6 @@ export class Horses {
                 this.layers.forEach(layer => {
                     layer.sprite.anims.pause();
                     layer.sprite.setFrame(3);
-
                 });
             } else if (state === 'in') {
                 this.layers.forEach(layer => {
@@ -213,12 +248,17 @@ export class Horses {
             } else {
                 layer.sprite.x += Math.sign(diff) * velocity * delta;
             }
+
             if (layer.marker) {
                 const ox = layer.cfg.markerOffsetX ?? 0;
                 const oy = layer.cfg.markerOffsetY ?? 0;
                 layer.marker.x = layer.targetX + ox;
                 layer.marker.y = layer.sprite.y + oy;
                 layer.updateMarkerOpacity();
+            }
+
+            if (this.raceState === 'in' && layer.gate) {
+                layer.gate.x -= layer['gateSlideSpeed'] * delta;
             }
         });
     }
@@ -235,7 +275,7 @@ function hslStringToPhaserColor(hslStr: string, lightnessAdjust = 0): number {
 
     const h = parseInt(match[1], 10) / 360;
     const s = parseInt(match[2], 10) / 100;
-    let l   = parseInt(match[3], 10) / 100;
+    let l = parseInt(match[3], 10) / 100;
 
     l = Math.max(0, Math.min(1, l + lightnessAdjust / 100));
     return Phaser.Display.Color.HSLToColor(h, s, l).color;

@@ -115,7 +115,7 @@ export class OngoingHorsesList {
 export class OngoingRaceService implements OnDestroy {
     public readonly winningDistance       = 500; // dm
     private readonly tickSpeed             = 100; // ms
-    private readonly preCountdownDuration  = 3;
+    private readonly preCountdownDuration  = 10;
     private readonly postCountdownDuration = 3;
 
     private raceInterval$!: Subscription;
