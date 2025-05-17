@@ -4,12 +4,14 @@ import { ParallaxBackground } from './parallax_background';
 import { SkyBackground } from './sky_background';
 import { FilterScreen } from './filter_screen';
 import { TextLayer } from './text_layer';
+import { RaceLineLayer } from './race_line';
 import type { OngoingRaceService } from '@app/game/ongoing-race.service';
 
 export class MainScene extends Phaser.Scene {
     private sky!: SkyBackground;
     private bg!: ParallaxBackground;
     private filterScreen!: FilterScreen;
+    private raceLine!: RaceLineLayer;
 
     constructor(
         private ongoingRaceService: OngoingRaceService,
@@ -22,6 +24,9 @@ export class MainScene extends Phaser.Scene {
     preload(): void {
         this.bg = new ParallaxBackground(this, this.ongoingRaceService);
         this.bg.preload();
+
+        this.raceLine = new RaceLineLayer(this, this.ongoingRaceService, this.markerOpacityGetter);
+        this.raceLine.preload();
     }
 
     create(): void {
@@ -36,7 +41,8 @@ export class MainScene extends Phaser.Scene {
         this.filterScreen = new FilterScreen(this, this.filterLightnessGetter);
         this.filterScreen.create();
 
-        // race line
+        // race line (gates, finish post, camera setup, horses, etc.)
+        this.raceLine.create();
 
         // countdown text
         const textLayer = new TextLayer(this, this.ongoingRaceService, 0.7);
@@ -46,5 +52,6 @@ export class MainScene extends Phaser.Scene {
     override update(time: number, delta: number): void {
         this.bg.update(time, delta);
         this.filterScreen.update(time, delta);
+        this.raceLine.update(time, delta);
     }
 }
