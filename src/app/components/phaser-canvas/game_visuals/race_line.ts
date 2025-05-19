@@ -2,7 +2,6 @@
 import Phaser from 'phaser';
 import type {
     OngoingRaceService,
-    OngoingHorse,
     OngoingHorsesList
 } from '@app/game/ongoing-race.service';
 import { Subscription } from 'rxjs';
@@ -15,27 +14,32 @@ export class RaceLineLayer {
         private ongoingRaceService: OngoingRaceService,
         private getMarkerOpacity: () => number
     ) {
-        this.cam = new Camera(this.scene, this.ongoingRaceService);
+        this.cam = new Camera(this.scene, this.ongoingRaceService, this.getMarkerOpacity);
+        // ensure we clean up when the scene shuts down
+        this.scene.events.once('shutdown', () => this.destroy());
     }
 
-    preload(): void {
-    }
+    preload(): void {}
 
     create(): void {
-        // initial draw
         this.cam.updateCam();
     }
 
     update(time: number, delta: number): void {
         this.cam.updateCam();
     }
+
+    /** clean up subscription & graphics */
+    destroy(): void {
+        this.cam.destroy();
+    }
 }
 
 class Camera {
-    public pos: number = 0;
+    public pos = 0;
     public origin: { x: number; y: number };
     private graphics: Phaser.GameObjects.Graphics;
-    private posToPx: number = 10;
+    private posToPx = 10;
     private raceSvc: OngoingRaceService;
     private horsesList!: OngoingHorsesList;
     private sub: Subscription;
@@ -43,39 +47,34 @@ class Camera {
     constructor(
         private scene: Phaser.Scene,
         raceSvc: OngoingRaceService,
+        private getMarkerOpacity: () => number,
         origin?: { x: number; y: number }
     ) {
         this.raceSvc = raceSvc;
-        // subscribe to the OngoingHorsesList directly
+        this.origin = origin ?? { x: 0.5, y: 0.5 };
+        this.graphics = this.scene.add.graphics();
+
+        // subscribe to the live list
         this.sub = this.raceSvc.horsesList$.subscribe(list => {
             this.horsesList = list;
         });
-        // default origin to center of viewport
-        this.origin = origin ?? { x: 0.5, y: 0.5 };
-        this.graphics = this.scene.add.graphics();
     }
 
-    // Recompute camera‐related state, then redraw everything.
     updateCam(): void {
         if (this.pos < this.raceSvc.winningDistance) {
-            let firstPlacePos = this.horsesList.getByPlacement()[0].position
-            this.pos = firstPlacePos;
+            const first = this.horsesList.getByPlacement()[0].position;
+            this.pos = first;
         }
         this.drawView();
     }
 
-    // DRAW FUNCS:
     private drawView(): void {
         this.graphics.clear();
-
         this.drawCamCross();
-        this.drawCamPoint(0); // draw starting point
-        this.drawCamPoint(this.raceSvc.winningDistance); // draw final point
-        // draw a point for each horse pos
+        this.drawCamPoint(0);
+        this.drawCamPoint(this.raceSvc.winningDistance);
         this.horsesList.getAll().forEach(h => {
-            if (h.position != null) {
-                this.drawCamPoint(h.position);
-            }
+            if (h.position != null) this.drawCamPoint(h.position);
         });
     }
 
@@ -87,10 +86,8 @@ class Camera {
 
         this.graphics.lineStyle(2, 0xffffff, 1);
         this.graphics.beginPath();
-        // horizontal
         this.graphics.moveTo(worldX - size, worldY);
         this.graphics.lineTo(worldX + size, worldY);
-        // vertical
         this.graphics.moveTo(worldX, worldY - size);
         this.graphics.lineTo(worldX, worldY + size);
         this.graphics.strokePath();
@@ -98,19 +95,21 @@ class Camera {
 
     private drawCamPoint(pointPos: number): void {
         const cam = this.scene.cameras.main;
-        // compute world‐space origin
         const worldX0 = cam.worldView.x + cam.width * this.origin.x;
         const worldY0 = cam.worldView.y + cam.height * this.origin.y;
 
-        // convert logical delta to pixels
-        const deltaPos = pointPos - this.pos;
-        const deltaX = deltaPos * this.posToPx;
-
+        const deltaX = (pointPos - this.pos) * this.posToPx;
         const x = worldX0 + deltaX;
         const y = worldY0;
         const radius = 4;
 
-        this.graphics.fillStyle(0x00ff00, 1);
+        this.graphics.fillStyle(0x00ff00, this.getMarkerOpacity());
         this.graphics.fillCircle(x, y, radius);
+    }
+
+    /** tear down subscription and graphics */
+    destroy(): void {
+        this.sub.unsubscribe();
+        this.graphics.destroy();
     }
 }

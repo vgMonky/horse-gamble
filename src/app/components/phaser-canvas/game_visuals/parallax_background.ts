@@ -36,7 +36,9 @@ export class ParallaxBackground {
     constructor(
         private scene: Phaser.Scene,
         private raceSvc: OngoingRaceService
-    ) {}
+    ) {
+        this.scene.events.once('shutdown', () => this.destroy());
+    }
 
     preload(): void {
         const assets = [
