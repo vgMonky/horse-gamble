@@ -15,7 +15,7 @@ export type OngoingRaceState = 'pre' | 'in' | 'post';
 export interface OngoingHorse {
     slot:        number;
     horse:       Horse;
-    position:    number | null;
+    position:    number;
     finalPlace:  number | null;
 }
 
