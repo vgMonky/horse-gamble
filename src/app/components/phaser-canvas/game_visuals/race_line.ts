@@ -71,8 +71,9 @@ class Camera {
     private drawView(): void {
         this.graphics.clear();
         this.drawCamCross();
-        this.drawCamPoint(0);
-        this.drawCamPoint(this.raceSvc.winningDistance);
+        this.drawCamPoint(0); // Draw starting point
+        this.drawCamPoint(this.raceSvc.winningDistance); // Draw ending point
+        //Draw point for each horse current pos
         this.horsesList.getAll().forEach(h => {
             if (h.position != null) this.drawCamPoint(h.position);
         });
