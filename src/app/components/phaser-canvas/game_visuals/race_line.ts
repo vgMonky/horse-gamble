@@ -39,7 +39,7 @@ class Camera {
     public pos = 0;
     public origin: { x: number; y: number };
     private graphics: Phaser.GameObjects.Graphics;
-    private posToPx = 10;
+    private posToPx = 15;
     private raceSvc: OngoingRaceService;
     private horsesList!: OngoingHorsesList;
     private sub: Subscription;
@@ -70,13 +70,16 @@ class Camera {
 
     private drawView(): void {
         this.graphics.clear();
-        this.drawCamCross();
+
         this.drawCamPoint(0); // Draw starting point
         this.drawCamPoint(this.raceSvc.winningDistance); // Draw ending point
         //Draw point for each horse current pos
         this.horsesList.getAll().forEach(h => {
             if (h.position != null) this.drawCamPoint(h.position);
         });
+
+        this.drawCamCross();
+
     }
 
     private drawCamCross(): void {
