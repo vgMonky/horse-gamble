@@ -158,12 +158,16 @@ export class OngoingRaceService implements OnDestroy {
             this._horsesList.next(list);
             list.consoleLog();
 
-            if (finished === list.getAll().length) {
+            if (finished === list.getAll().length
+            && this._raceState.getValue() === 'in'
+            ) {
                 this._raceState.next('post');
-                this.stopRaceInterval();
                 this.postTimer.start(
                     this.postCountdownDuration,
-                    () => this.startOngoingRace(),
+                    () => {
+                        this.stopRaceInterval();
+                        this.startOngoingRace();
+                    },
                     this._countdown
                 );
             }
