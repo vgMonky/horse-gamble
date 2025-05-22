@@ -83,13 +83,13 @@ class Camera {
         this.drawCamCross();
 
         // Draw race end
-        this.drawCamImg(this.raceSvc.winningDistance, 'img_final_post', 'p0', 0.14, -20, 0, 0);
+        this.drawCamImg(this.raceSvc.winningDistance, 'img_final_post', 'p0', 0.14, -18, 0, 0);
         this.drawCamPoint(this.raceSvc.winningDistance);
 
         // Draw race start
         this.drawCamImg(0, 'img_start_gate', 'g0', 0.20, 0, -110, 0);
-        this.drawCamImg(0, 'img_start_gate', 'g1', 0.20, 10, -110, 2);
-        this.drawCamImg(0, 'img_start_gate', 'g2', 0.20, 20, -110, 4);
+        this.drawCamImg(0, 'img_start_gate', 'g1', 0.20, 12, -110, 2);
+        this.drawCamImg(0, 'img_start_gate', 'g2', 0.20, 24, -110, 4);
         this.drawCamImg(0, 'img_start_gate', 'g3', 0.20, 36, -110, 6);
         this.drawCamPoint(0);
 
