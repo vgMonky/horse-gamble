@@ -2,7 +2,8 @@
 import Phaser from 'phaser';
 import type {
     OngoingRaceService,
-    OngoingHorsesList
+    OngoingHorsesList,
+    OngoingRaceState
 } from '@app/game/ongoing-race.service';
 import { Subscription } from 'rxjs';
 
@@ -53,7 +54,8 @@ class Camera {
     private posToPx = 20;
     private raceSvc: OngoingRaceService;
     private horsesList!: OngoingHorsesList;
-    private sub: Subscription;
+    private raceState: OngoingRaceState = 'pre';
+    private sub = new Subscription();
     private images: Map<string, Phaser.GameObjects.Image> = new Map();
     private sprites: Map<string, Phaser.GameObjects.Sprite> = new Map();
 
@@ -67,10 +69,17 @@ class Camera {
         this.origin = origin ?? { x: 0.5, y: 0.5 };
         this.graphics = this.scene.add.graphics();
 
-        // subscribe to the live list
-        this.sub = this.raceSvc.horsesList$.subscribe(list => {
-            this.horsesList = list;
-        });
+        // add both subscriptions to the composite
+        this.sub.add(
+            this.raceSvc.horsesList$.subscribe(list => {
+                this.horsesList = list;
+            })
+        );
+        this.sub.add(
+            this.raceSvc.raceState$.subscribe(state => {
+                this.raceState = state;
+            })
+        );
     }
 
     updateCam(): void {
@@ -111,11 +120,23 @@ class Camera {
 
                 const spriteSheetKey = `horseSpriteSheet${index}`;
                 const instanceId = `horse${index}`;
-                const offsetY = 18 + index * 10; // stack them vertically
+                const offsetY = 18 + index * 10;
                 const offsetX = -90;
                 const depth = index * 2;
+                const frameRate = 18 + index;
+                const idle    = this.raceState === 'pre';
 
-                this.drawCamHorse(h.position, spriteSheetKey, instanceId, 0.35, offsetY, offsetX, depth, 18 + index);
+                this.drawCamHorse(
+                    h.position,
+                    spriteSheetKey,
+                    instanceId,
+                    0.35,
+                    offsetY,
+                    offsetX,
+                    depth,
+                    frameRate,
+                    idle
+                );
             }
         });
     }
@@ -185,7 +206,7 @@ class Camera {
         offsetX = 0,
         depth = 1,
         frameRate = 19,
-        slideVelMultiplier = 0.04
+        idle = false
     ): void {
         const cam = this.scene.cameras.main;
         const worldX0 = cam.worldView.x + cam.width * this.origin.x;
@@ -193,39 +214,41 @@ class Camera {
         const deltaX = (pointPos - this.pos) * this.posToPx;
         const targetX = worldX0 + deltaX + offsetX;
         const y = worldY0 + offsetY;
-
         const key = `sprite:${instanceId}`;
         let sprite = this.sprites.get(key);
-
+        const animKey = `run:${spriteSheetKey}`;
+        if (!this.scene.anims.exists(animKey)) {
+            this.scene.anims.create({
+                key: animKey,
+                frames: this.scene.anims.generateFrameNumbers(spriteSheetKey),
+                frameRate,
+                repeat: -1
+            });
+        }
         if (!sprite) {
-            const animKey = `run:${spriteSheetKey}`;
-            if (!this.scene.anims.exists(animKey)) {
-                this.scene.anims.create({
-                    key: animKey,
-                    frames: this.scene.anims.generateFrameNumbers(spriteSheetKey, {}),
-                    frameRate,
-                    repeat: -1
-                });
-            }
-
             sprite = this.scene.add.sprite(targetX, y, spriteSheetKey)
                 .setScale(scale)
-                .setDepth(depth)
-                .play(animKey);
-
+                .setDepth(depth);
             this.sprites.set(key, sprite);
+            if (!idle) {
+                sprite.play(animKey);
+            }
         } else {
             const currentX = sprite.x;
             const dx = targetX - currentX;
-
             if (Math.abs(dx) > 1) {
-                const slideStep = dx * slideVelMultiplier;
-                sprite.x += slideStep;
+                sprite.x += dx * 0.04;
             } else {
-                sprite.x = targetX; // snap to final if close enough
+                sprite.x = targetX;
             }
-
             sprite.setY(y).setDepth(depth);
+            // Handle idle/animation switching
+            if (idle) {
+                if (sprite.anims.isPlaying) {sprite.anims.stop()}
+                sprite.setFrame(3);
+            } else if (!idle && !sprite.anims.isPlaying) {
+                sprite.play(animKey);
+            }
         }
     }
 
