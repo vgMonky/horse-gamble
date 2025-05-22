@@ -22,6 +22,14 @@ export class RaceLineLayer {
     preload(): void {
         this.scene.load.image('img_final_post', 'assets/game-img/sprite-sheet/finish-post.png');
         this.scene.load.image('img_start_gate', 'assets/game-img/sprite-sheet/starting-gate.png');
+
+        for (let i = 0; i <= 3; i++) {
+            this.scene.load.spritesheet(
+                `horseSpriteSheet${i}`,
+                `assets/game-img/sprite-sheet/horse-sprite-sheet-${i}.png`,
+                { frameWidth: 575, frameHeight: 434 }
+            );
+        }
     }
 
     create(): void {
@@ -47,6 +55,7 @@ class Camera {
     private horsesList!: OngoingHorsesList;
     private sub: Subscription;
     private images: Map<string, Phaser.GameObjects.Image> = new Map();
+    private sprites: Map<string, Phaser.GameObjects.Sprite> = new Map();
 
     constructor(
         private scene: Phaser.Scene,
@@ -87,15 +96,25 @@ class Camera {
         this.drawCamPoint(this.raceSvc.winningDistance);
 
         // Draw race start
-        this.drawCamImg(0, 'img_start_gate', 'g0', 0.20, 0, -110, 0);
-        this.drawCamImg(0, 'img_start_gate', 'g1', 0.20, 12, -110, 2);
-        this.drawCamImg(0, 'img_start_gate', 'g2', 0.20, 24, -110, 4);
-        this.drawCamImg(0, 'img_start_gate', 'g3', 0.20, 36, -110, 6);
+        this.drawCamImg(0, 'img_start_gate', 'g0', 0.20, 0, -110, 1);
+        this.drawCamImg(0, 'img_start_gate', 'g1', 0.20, 12, -110, 3);
+        this.drawCamImg(0, 'img_start_gate', 'g2', 0.20, 24, -110, 5);
+        this.drawCamImg(0, 'img_start_gate', 'g3', 0.20, 36, -110, 10);
         this.drawCamPoint(0);
 
-        //Draw point for each horse current pos
-        this.horsesList.getAll().forEach(h => {
-            if (h.position != null) this.drawCamPoint(h.position);
+        // Draw race horses
+        this.horsesList.getAll().forEach((h, index) => {
+            if (h.position != null) {
+                this.drawCamPoint(h.position);
+
+                const spriteSheetKey = `horseSpriteSheet${index}`;
+                const instanceId = `horse${index}`;
+                const offsetY = 18 + index * 10; // stack them vertically
+                const offsetX = -90;
+                const depth = index * 2;
+
+                this.drawCamHorse(h.position, spriteSheetKey, instanceId, 0.35, offsetY, offsetX, depth);
+            }
         });
     }
 
@@ -155,11 +174,56 @@ class Camera {
         }
     }
 
+    private drawCamHorse(
+        pointPos: number,
+        spriteSheetKey: string,
+        instanceId: string,
+        scale = 0.15,
+        offsetY = 0,
+        offsetX = 0,
+        depth = 1,
+        frameRate = 19
+    ): void {
+        const cam = this.scene.cameras.main;
+        const worldX0 = cam.worldView.x + cam.width * this.origin.x;
+        const worldY0 = cam.worldView.y + cam.height * this.origin.y;
+        const deltaX = (pointPos - this.pos) * this.posToPx;
+        const x = worldX0 + deltaX + offsetX;
+        const y = worldY0 + offsetY;
+
+        const key = `sprite:${instanceId}`;
+        let sprite = this.sprites.get(key);
+
+        if (!sprite) {
+            // define animation once per sheet
+            const animKey = `run:${spriteSheetKey}`;
+            if (!this.scene.anims.exists(animKey)) {
+                this.scene.anims.create({
+                    key: animKey,
+                    frames: this.scene.anims.generateFrameNumbers(spriteSheetKey, {}),
+                    frameRate,
+                    repeat: -1
+                });
+            }
+
+            sprite = this.scene.add.sprite(x, y, spriteSheetKey)
+                .setScale(scale)
+                .setDepth(depth)
+                .play(animKey);
+
+            this.sprites.set(key, sprite);
+        } else {
+            sprite.setPosition(x, y).setDepth(depth);
+        }
+    }
+
     /** tear down subscription and graphics */
     destroy(): void {
         this.sub.unsubscribe();
         this.graphics.destroy();
         this.images.forEach(img => img.destroy());
         this.images.clear();
+        this.sprites.forEach(sprite => sprite.destroy());
+        this.sprites.clear();
     }
 }
