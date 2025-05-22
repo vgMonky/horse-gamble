@@ -50,7 +50,7 @@ class Camera {
     public pos = 0;
     public origin: { x: number; y: number };
     private graphics: Phaser.GameObjects.Graphics;
-    private posToPx = 15;
+    private posToPx = 20;
     private raceSvc: OngoingRaceService;
     private horsesList!: OngoingHorsesList;
     private sub: Subscription;
@@ -77,8 +77,10 @@ class Camera {
         // Set cam game position
         if (this.pos < this.raceSvc.winningDistance) {
             const first = this.horsesList.getByPlacement()[0].position;
-            this.pos = first;
-        }else {this.pos = this.raceSvc.winningDistance}
+            if (first < this.raceSvc.winningDistance) {
+                this.pos = first;
+            }else {this.pos = this.raceSvc.winningDistance}
+        }
 
         // Calculate and draw cam point of view
         this.graphics.setDepth(100); // apply depth to current graphics(Cross and Points)
@@ -113,7 +115,7 @@ class Camera {
                 const offsetX = -90;
                 const depth = index * 2;
 
-                this.drawCamHorse(h.position, spriteSheetKey, instanceId, 0.35, offsetY, offsetX, depth);
+                this.drawCamHorse(h.position, spriteSheetKey, instanceId, 0.35, offsetY, offsetX, depth, 18 + index);
             }
         });
     }
@@ -182,20 +184,20 @@ class Camera {
         offsetY = 0,
         offsetX = 0,
         depth = 1,
-        frameRate = 19
+        frameRate = 19,
+        slideVelMultiplier = 0.04
     ): void {
         const cam = this.scene.cameras.main;
         const worldX0 = cam.worldView.x + cam.width * this.origin.x;
         const worldY0 = cam.worldView.y + cam.height * this.origin.y;
         const deltaX = (pointPos - this.pos) * this.posToPx;
-        const x = worldX0 + deltaX + offsetX;
+        const targetX = worldX0 + deltaX + offsetX;
         const y = worldY0 + offsetY;
 
         const key = `sprite:${instanceId}`;
         let sprite = this.sprites.get(key);
 
         if (!sprite) {
-            // define animation once per sheet
             const animKey = `run:${spriteSheetKey}`;
             if (!this.scene.anims.exists(animKey)) {
                 this.scene.anims.create({
@@ -206,14 +208,24 @@ class Camera {
                 });
             }
 
-            sprite = this.scene.add.sprite(x, y, spriteSheetKey)
+            sprite = this.scene.add.sprite(targetX, y, spriteSheetKey)
                 .setScale(scale)
                 .setDepth(depth)
                 .play(animKey);
 
             this.sprites.set(key, sprite);
         } else {
-            sprite.setPosition(x, y).setDepth(depth);
+            const currentX = sprite.x;
+            const dx = targetX - currentX;
+
+            if (Math.abs(dx) > 1) {
+                const slideStep = dx * slideVelMultiplier;
+                sprite.x += slideStep;
+            } else {
+                sprite.x = targetX; // snap to final if close enough
+            }
+
+            sprite.setY(y).setDepth(depth);
         }
     }
 
