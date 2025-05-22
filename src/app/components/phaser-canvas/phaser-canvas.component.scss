@@ -28,6 +28,12 @@
         }
     }
 
+    &__slider{
+        display: flex;
+        justify-content: center;
+        align-items: center
+    }
+
     label{
         @include text-smaller;
     }
