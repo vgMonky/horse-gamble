@@ -5,6 +5,7 @@ import type {
     OngoingHorsesList,
     OngoingRaceState
 } from '@app/game/ongoing-race.service';
+import { SLOT_COLOR_MAP } from '@app/game/ongoing-race.service';
 import { Subscription } from 'rxjs';
 
 export class RaceLineLayer {
@@ -104,19 +105,21 @@ class Camera {
 
         // Draw race end
         this.drawCamImg(this.raceSvc.winningDistance, 'img_final_post', 'p0', 0.14, -18, 0, 0);
-        this.drawCamPoint(this.raceSvc.winningDistance);
+        // this.drawCamPoint(this.raceSvc.winningDistance);
 
         // Draw race start
         this.drawCamImg(0, 'img_start_gate', 'g0', 0.20, 0, -110, 1);
         this.drawCamImg(0, 'img_start_gate', 'g1', 0.20, 12, -110, 3);
         this.drawCamImg(0, 'img_start_gate', 'g2', 0.20, 24, -110, 5);
         this.drawCamImg(0, 'img_start_gate', 'g3', 0.20, 36, -110, 10);
-        this.drawCamPoint(0);
+        // this.drawCamPoint(0);
 
         // Draw race horses
         this.horsesList.getAll().forEach((h, index) => {
             if (h.position != null) {
-                this.drawCamPoint(h.position);
+                const hsl = SLOT_COLOR_MAP[h.slot];
+                const color = this.hslStringToPhaserColor(hsl, 25);
+                this.drawCamPoint(h.position, color);
 
                 const spriteSheetKey = `horseSpriteSheet${index}`;
                 const instanceId = `horse${index}`;
@@ -141,6 +144,7 @@ class Camera {
         });
     }
 
+    // FUNCS TO DRAW RACE OBJECTS
     private drawCamCross(): void {
         const cam = this.scene.cameras.main;
         const worldX = cam.worldView.x + cam.width * this.origin.x;
@@ -156,19 +160,19 @@ class Camera {
         this.graphics.strokePath();
     }
 
-    private drawCamPoint(pointPos: number): void {
+    private drawCamPoint(pointPos: number,color: number = 0x00ff00): void {
         const cam = this.scene.cameras.main;
         const worldX0 = cam.worldView.x + cam.width * this.origin.x;
         const worldY0 = cam.worldView.y + cam.height * this.origin.y;
 
         const deltaX = (pointPos - this.pos) * this.posToPx;
         const x = worldX0 + deltaX;
-        const y = worldY0;
-        const radius = 4;
+        const y = worldY0 + 118;
 
-        this.graphics.fillStyle(0x00ff00, this.getMarkerOpacity());
-        this.graphics.fillCircle(x, y, radius);
+        this.graphics.fillStyle(color, this.getMarkerOpacity());
+        this.graphics.fillRect(x, y, 2, 8)
     }
+
 
     private drawCamImg(
         pointPos: number,
@@ -250,6 +254,19 @@ class Camera {
                 sprite.play(animKey);
             }
         }
+    }
+
+    /** parse “hsl( … )” into a Phaser-friendly color integer */
+    private hslStringToPhaserColor(hslStr: string, lightnessAdjust = 0): number {
+        const match = /^hsl\((\d+),\s*(\d+)%?,\s*(\d+)%?\)$/.exec(hslStr);
+        if (!match) {
+            return 0x000000;
+        }
+        const h = parseInt(match[1], 10) / 360;
+        const s = parseInt(match[2], 10) / 100;
+        let   l = parseInt(match[3], 10) / 100;
+        l = Phaser.Math.Clamp(l + lightnessAdjust / 100, 0, 1);
+        return Phaser.Display.Color.HSLToColor(h, s, l).color;
     }
 
     /** tear down subscription and graphics */
