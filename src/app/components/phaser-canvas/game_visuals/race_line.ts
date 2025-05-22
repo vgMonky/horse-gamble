@@ -21,6 +21,7 @@ export class RaceLineLayer {
 
     preload(): void {
         this.scene.load.image('img_final_post', 'assets/game-img/sprite-sheet/finish-post.png');
+        this.scene.load.image('img_start_gate', 'assets/game-img/sprite-sheet/starting-gate.png');
     }
 
     create(): void {
@@ -45,7 +46,7 @@ class Camera {
     private raceSvc: OngoingRaceService;
     private horsesList!: OngoingHorsesList;
     private sub: Subscription;
-    private finalPostImg?: Phaser.GameObjects.Image;
+    private images: Map<string, Phaser.GameObjects.Image> = new Map();
 
     constructor(
         private scene: Phaser.Scene,
@@ -71,27 +72,31 @@ class Camera {
         }else {this.pos = this.raceSvc.winningDistance}
 
         // Calculate and draw cam point of view
+        this.graphics.setDepth(100); // apply depth to current graphics(Cross and Points)
         this.drawView();
     }
 
     private drawView(): void {
         this.graphics.clear();
 
+        // Draw camera cross
+        this.drawCamCross();
+
         // Draw race end
-        this.drawCamImg(this.raceSvc.winningDistance, 'img_final_post', 0.14, -20, 0);
+        this.drawCamImg(this.raceSvc.winningDistance, 'img_final_post', 'p0', 0.14, -20, 0, 0);
         this.drawCamPoint(this.raceSvc.winningDistance);
 
         // Draw race start
+        this.drawCamImg(0, 'img_start_gate', 'g0', 0.20, 0, -110, 0);
+        this.drawCamImg(0, 'img_start_gate', 'g1', 0.20, 10, -110, 2);
+        this.drawCamImg(0, 'img_start_gate', 'g2', 0.20, 20, -110, 4);
+        this.drawCamImg(0, 'img_start_gate', 'g3', 0.20, 36, -110, 6);
         this.drawCamPoint(0);
 
         //Draw point for each horse current pos
         this.horsesList.getAll().forEach(h => {
             if (h.position != null) this.drawCamPoint(h.position);
         });
-
-        // Draw camera cross
-        this.drawCamCross();
-
     }
 
     private drawCamCross(): void {
@@ -123,22 +128,30 @@ class Camera {
         this.graphics.fillCircle(x, y, radius);
     }
 
-    private drawCamImg(pointPos: number, imgKey: string, scale = 0.5, offsetY = 0, offsetX = 0): void {
+    private drawCamImg(
+        pointPos: number,
+        imgKey: string,
+        instanceId: string = imgKey,
+        scale = 0.5,
+        offsetY = 0,
+        offsetX = 0,
+        depth = 1,
+    ): void {
         const cam = this.scene.cameras.main;
         const worldX0 = cam.worldView.x + cam.width * this.origin.x;
         const worldY0 = cam.worldView.y + cam.height * this.origin.y;
-
         const deltaX = (pointPos - this.pos) * this.posToPx;
         const x = worldX0 + deltaX + offsetX;
         const y = worldY0 + offsetY;
-
-        // Create or move the image
-        if (!this.finalPostImg) {
-            this.finalPostImg = this.scene.add.image(x, y, imgKey)
+        const key = `img:${instanceId}`;
+        let img = this.images.get(key);
+        if (!img) {
+            img = this.scene.add.image(x, y, imgKey)
                 .setScale(scale)
-                .setDepth(1000);
+                .setDepth(depth);
+            this.images.set(key, img);
         } else {
-            this.finalPostImg.setPosition(x, y);
+            img.setPosition(x, y).setDepth(depth);
         }
     }
 
@@ -146,6 +159,7 @@ class Camera {
     destroy(): void {
         this.sub.unsubscribe();
         this.graphics.destroy();
-        this.finalPostImg?.destroy();
+        this.images.forEach(img => img.destroy());
+        this.images.clear();
     }
 }
