@@ -19,7 +19,9 @@ export class RaceLineLayer {
         this.scene.events.once('shutdown', () => this.destroy());
     }
 
-    preload(): void {}
+    preload(): void {
+        this.scene.load.image('img_final_post', 'assets/game-img/sprite-sheet/finish-post.png');
+    }
 
     create(): void {
         this.cam.updateCam();
@@ -43,6 +45,7 @@ class Camera {
     private raceSvc: OngoingRaceService;
     private horsesList!: OngoingHorsesList;
     private sub: Subscription;
+    private finalPostImg?: Phaser.GameObjects.Image;
 
     constructor(
         private scene: Phaser.Scene,
@@ -61,23 +64,32 @@ class Camera {
     }
 
     updateCam(): void {
+        // Set cam game position
         if (this.pos < this.raceSvc.winningDistance) {
             const first = this.horsesList.getByPlacement()[0].position;
             this.pos = first;
-        }
+        }else {this.pos = this.raceSvc.winningDistance}
+
+        // Calculate and draw cam point of view
         this.drawView();
     }
 
     private drawView(): void {
         this.graphics.clear();
 
-        this.drawCamPoint(0); // Draw starting point
-        this.drawCamPoint(this.raceSvc.winningDistance); // Draw ending point
+        // Draw race end
+        this.drawCamImg(this.raceSvc.winningDistance, 'img_final_post', 0.14, -20, 0);
+        this.drawCamPoint(this.raceSvc.winningDistance);
+
+        // Draw race start
+        this.drawCamPoint(0);
+
         //Draw point for each horse current pos
         this.horsesList.getAll().forEach(h => {
             if (h.position != null) this.drawCamPoint(h.position);
         });
 
+        // Draw camera cross
         this.drawCamCross();
 
     }
@@ -111,9 +123,29 @@ class Camera {
         this.graphics.fillCircle(x, y, radius);
     }
 
+    private drawCamImg(pointPos: number, imgKey: string, scale = 0.5, offsetY = 0, offsetX = 0): void {
+        const cam = this.scene.cameras.main;
+        const worldX0 = cam.worldView.x + cam.width * this.origin.x;
+        const worldY0 = cam.worldView.y + cam.height * this.origin.y;
+
+        const deltaX = (pointPos - this.pos) * this.posToPx;
+        const x = worldX0 + deltaX + offsetX;
+        const y = worldY0 + offsetY;
+
+        // Create or move the image
+        if (!this.finalPostImg) {
+            this.finalPostImg = this.scene.add.image(x, y, imgKey)
+                .setScale(scale)
+                .setDepth(1000);
+        } else {
+            this.finalPostImg.setPosition(x, y);
+        }
+    }
+
     /** tear down subscription and graphics */
     destroy(): void {
         this.sub.unsubscribe();
         this.graphics.destroy();
+        this.finalPostImg?.destroy();
     }
 }
