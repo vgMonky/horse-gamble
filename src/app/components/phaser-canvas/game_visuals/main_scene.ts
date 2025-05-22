@@ -5,6 +5,7 @@ import { SkyBackground } from './sky_background';
 import { FilterScreen } from './filter_screen';
 import { TextLayer } from './text_layer';
 import { RaceLineLayer } from './race_line';
+import { SoundLayer } from './sounds';
 import type { OngoingRaceService } from '@app/game/ongoing-race.service';
 
 export class MainScene extends Phaser.Scene {
@@ -12,6 +13,7 @@ export class MainScene extends Phaser.Scene {
     private bg!: ParallaxBackground;
     private filterScreen!: FilterScreen;
     private raceLine!: RaceLineLayer;
+    private soundLayer!: SoundLayer;
 
     constructor(
         private ongoingRaceService: OngoingRaceService,
@@ -27,6 +29,9 @@ export class MainScene extends Phaser.Scene {
 
         this.raceLine = new RaceLineLayer(this, this.ongoingRaceService, this.markerOpacityGetter);
         this.raceLine.preload();
+
+        this.soundLayer = new SoundLayer(this, this.ongoingRaceService);
+        this.soundLayer.preload();
     }
 
     create(): void {
@@ -47,6 +52,8 @@ export class MainScene extends Phaser.Scene {
         // countdown text
         const textLayer = new TextLayer(this, this.ongoingRaceService, 0.7);
         textLayer.create();
+
+        this.soundLayer.create();
     }
 
     override update(time: number, delta: number): void {
