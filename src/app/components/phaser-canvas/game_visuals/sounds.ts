@@ -22,6 +22,7 @@ export class SoundLayer {
     private stateSub?:        Subscription;
     private countdownSub?:    Subscription;
     private horseSounds:      Phaser.Sound.BaseSound[] = [];
+    private currentState:     OngoingRaceState        = 'pre';
 
     constructor(
         private scene:   Phaser.Scene,
@@ -50,16 +51,19 @@ export class SoundLayer {
         });
 
         // create 4 looping gallop sounds with phased rates and staggered volumes
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < 4; i++) {
             const hs = this.scene.sound.add('horseGallop', {
-                volume: DEFAULT_VOLUMES.horseGallop - 0.1 * (i*3),
+                volume: DEFAULT_VOLUMES.horseGallop - 0.1 * i,
                 loop:   true
             });
             hs.setRate(BASE_GALLOP_RATE + i * RATE_OFFSET);
             this.horseSounds.push(hs);
         }
 
+        // keep track of the current race state
         this.stateSub = this.raceSvc.raceState$.subscribe((state: OngoingRaceState) => {
+            this.currentState = state;
+
             if (state === 'in') {
                 shot.play();
                 this.startHorseLoops();
@@ -73,8 +77,9 @@ export class SoundLayer {
             }
         });
 
+        // only play tick during the PRE‐race countdown
         this.countdownSub = this.raceSvc.countdown$.subscribe(timeLeft => {
-            if (timeLeft > 0 && timeLeft <= 5) {
+            if (this.currentState === 'pre' && timeLeft > 0 && timeLeft <= 5) {
                 tickSound.play();
             }
         });
@@ -89,7 +94,7 @@ export class SoundLayer {
         });
     }
 
-    /** call this to stop all 4 gallop loops */
+    /** call this to stop all gallop loops */
     public stopHorseLoops(): void {
         this.horseSounds.forEach(hs => {
             if (hs.isPlaying) {
