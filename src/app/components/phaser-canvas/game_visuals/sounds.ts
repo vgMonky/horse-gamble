@@ -9,14 +9,14 @@ import type {
 // default volumes (0.0–1.0)
 const DEFAULT_VOLUMES = {
     shot:          0.6,
-    horseGallop:   0.7,
+    horseGallop:   0.6,
     countdownTick: 0.09,
     trumpet:       1.0
 };
 
 // for phasing the 4 gallop loops
 const BASE_GALLOP_RATE = 1.0;
-const RATE_OFFSET     = 0.1;
+const RATE_OFFSET     = 0.14;
 
 export class SoundLayer {
     private stateSub?:        Subscription;
@@ -53,7 +53,7 @@ export class SoundLayer {
         // create 4 looping gallop sounds with phased rates and staggered volumes
         for (let i = 0; i < 4; i++) {
             const hs = this.scene.sound.add('horseGallop', {
-                volume: DEFAULT_VOLUMES.horseGallop - 0.1 * i,
+                volume: DEFAULT_VOLUMES.horseGallop - 0.2 * i,
                 loop:   true
             });
             hs.setRate(BASE_GALLOP_RATE + i * RATE_OFFSET);
