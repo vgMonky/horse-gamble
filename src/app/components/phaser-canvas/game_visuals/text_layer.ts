@@ -32,7 +32,7 @@ export class TextLayer {
             .setDepth(100);
 
         // 2) countdown text
-        this.countdownText = this.scene.add.text(width / 2, height / 2, '', {
+        this.countdownText = this.scene.add.text(width / 2, height / 2 + -10, '', {
             fontFamily: 'Courier, monospace',
             fontSize: '48px',
             color: '#ffffff',
@@ -43,7 +43,7 @@ export class TextLayer {
             .setDepth(101);
 
         // 3) message text (instruction or podium)
-        this.messageText = this.scene.add.text(width / 2, height / 2 + 60, '', {
+        this.messageText = this.scene.add.text(width / 2, height / 2 + 40, '', {
             fontFamily: 'Courier, monospace',
             fontSize: '18px',
             color: '#ffffff',
