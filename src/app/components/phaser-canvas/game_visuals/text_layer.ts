@@ -43,7 +43,7 @@ export class TextLayer {
             .setDepth(101);
 
         // 3) message text (instruction or podium)
-        this.messageText = this.scene.add.text(width / 2, height / 2 + 40, '', {
+        this.messageText = this.scene.add.text(width / 2, height / 2 + 55, '', {
             fontFamily: 'Courier, monospace',
             fontSize: '18px',
             color: '#ffffff',
