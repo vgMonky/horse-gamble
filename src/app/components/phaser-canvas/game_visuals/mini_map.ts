@@ -14,7 +14,7 @@ export class MiniMapLayer {
 
     private readonly baseWidth    = 100;
     private readonly baseHeight   = 200;
-    private readonly trackSpacing = 4;
+    private readonly trackSpacing = 1;
     private readonly startOffset  = 0;  // adjust if you want a different 0-pos
 
     constructor(
