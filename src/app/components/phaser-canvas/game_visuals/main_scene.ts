@@ -6,6 +6,7 @@ import { FilterScreen } from './filter_screen';
 import { TextLayer } from './text_layer';
 import { RaceLineLayer } from './race_line';
 import { SoundLayer } from './sounds';
+import { MiniMapLayer } from './mini_map';
 import type { OngoingRaceService } from '@app/game/ongoing-race.service';
 
 export class MainScene extends Phaser.Scene {
@@ -13,6 +14,7 @@ export class MainScene extends Phaser.Scene {
     private bg!: ParallaxBackground;
     private filterScreen!: FilterScreen;
     private raceLine!: RaceLineLayer;
+    private miniMap!: MiniMapLayer;
     private soundLayer!: SoundLayer;
 
     constructor(
@@ -46,6 +48,14 @@ export class MainScene extends Phaser.Scene {
         this.filterScreen = new FilterScreen(this, this.filterLightnessGetter);
         this.filterScreen.create();
 
+        // top-right minimap of the circuit
+        this.miniMap = new MiniMapLayer(
+            this,
+            this.ongoingRaceService,
+            this.markerOpacityGetter
+        );
+        this.miniMap.create();
+
         // race line (gates, finish post, camera setup, horses, etc.)
         this.raceLine.create();
 
@@ -59,6 +69,7 @@ export class MainScene extends Phaser.Scene {
     override update(time: number, delta: number): void {
         this.bg.update(time, delta);
         this.filterScreen.update(time, delta);
+        this.miniMap.update();
         this.raceLine.update(time, delta);
     }
 }
