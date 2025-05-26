@@ -6,8 +6,8 @@ import { ALL_HORSES, Horse } from './horses-database';
 export const SLOT_COLOR_MAP: Record<number, string> = {
     0: 'hsl(0,70%,30%)', // RED
     1: 'hsl(90,70%,30%)', // GREEN
-    2: 'hsl(180,70%,30%)', // CYAN
-    3: 'hsl(300,70%,30%)' // MAGENTA
+    2: 'hsl(300,70%,30%)', // MAGENTA
+    3: 'hsl(180,70%,30%)' // CYAN
 };
 
 export type OngoingRaceState = 'pre' | 'in' | 'post';

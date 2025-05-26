@@ -78,13 +78,20 @@ export class MiniMapLayer {
         const dist = this.raceSvc.winningDistance;
         this.horsesList.getAll().forEach(h => {
             const idx = h.slot;
+            const totalTracks = 4;  // you’ve hard-coded 4 rings
             // t ∈ [0,1]
             const t = Phaser.Math.Clamp(h.position! / dist, 0, 1);
-            // get the new x,y on the stadium
-            const { x, y } = this.shape.pointOnTrack(idx, t);
+
+            // invert so slot 0 → ring 3 (innermost), slot 3 → ring 0 (outermost)
+            const ringIndex = (totalTracks - 1) - idx;
+
+            // now sample that ring
+            const { x, y } = this.shape.pointOnTrack(ringIndex, t);
+
+            // use the exact HSL—no extra lightness adjust
             const color = this.hslStringToPhaserColor(
                 SLOT_COLOR_MAP[idx],
-                4
+                0
             );
 
             let dot = this.dots.get(idx);
