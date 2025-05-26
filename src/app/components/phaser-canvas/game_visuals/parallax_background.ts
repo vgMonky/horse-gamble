@@ -111,12 +111,30 @@ export class ParallaxBackground {
 
         this.sub = this.raceSvc.horsesList$.subscribe((list: OngoingHorsesList) => {
             const leader = list.getByPlacement()[0];
-            const done = leader.position! >= this.raceSvc.winningDistance;
-            const shouldFreeze = (this.raceState === 'pre') || done;
+            const pos    = leader.position!;
+            const dist   = this.raceSvc.winningDistance;
+
+            // 1) Freeze in pre or when fully done
+            const done         = pos >= dist;
+            const shouldFreeze = this.raceState === 'pre' || done;
+
+            // 2) Compute normalized progress [0,1]
+            const progress = Phaser.Math.Clamp(pos / dist, 0, 1);
+            // 3) Figure out which quarter we're in (0–1 → 0–4)
+            const q = progress * 4;
+            const inSecond = q >= 1 && q < 2;
+            const inFourth = q >= 3 && q <= 4;
+            const invertForest = inSecond || inFourth;
 
             this.layers.forEach(l => {
                 if (['forest', 'trees3', 'trees2', 'trees1', 'fence'].includes(l.key)) {
-                    l.speed = shouldFreeze ? 0 : l.original;
+                    if (shouldFreeze) {
+                        l.speed = 0;
+                    } else if ((l.key === 'forest' || l.key === `trees3`) && invertForest) {
+                        l.speed = -l.original;
+                    } else {
+                        l.speed = l.original;
+                    }
                 }
             });
         });
