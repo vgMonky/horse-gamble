@@ -151,7 +151,7 @@ class Camera {
         const worldY = cam.worldView.y + cam.height * this.origin.y;
         const size = 6;
 
-        this.graphics.lineStyle(2, 0xffffff, 1);
+        this.graphics.lineStyle(2, 0xffffff, this.getMarkerOpacity());
         this.graphics.beginPath();
         this.graphics.moveTo(worldX - size, worldY);
         this.graphics.lineTo(worldX + size, worldY);
