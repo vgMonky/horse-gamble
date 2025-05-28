@@ -67,7 +67,7 @@ class Camera {
         origin?: { x: number; y: number }
     ) {
         this.raceSvc = raceSvc;
-        this.origin = origin ?? { x: 0.5, y: 0.5 };
+        this.origin = origin ?? { x: 0.63, y: 0.5 };
         this.graphics = this.scene.add.graphics();
 
         // add both subscriptions to the composite
