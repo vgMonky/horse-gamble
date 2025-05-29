@@ -67,7 +67,7 @@ class Camera {
         origin?: { x: number; y: number }
     ) {
         this.raceSvc = raceSvc;
-        this.origin = origin ?? { x: 0.63, y: 0.5 };
+        this.origin = origin ?? { x: 0.5, y: 0.5 };
         this.graphics = this.scene.add.graphics();
 
         // add both subscriptions to the composite
@@ -91,6 +91,12 @@ class Camera {
                 this.pos = first;
             }else {this.pos = this.raceSvc.winningDistance}
         }
+
+        // interpolate origin.x between start(0.5) and finalOrigin
+        const finalOriginX = 0.63;
+        const progress    = Phaser.Math.Clamp(this.pos / this.raceSvc.winningDistance, 0, 1);
+        this.origin.x     = Phaser.Math.Interpolation.Linear([0.5, finalOriginX], progress);
+
 
         // Calculate and draw cam point of view
         this.graphics.setDepth(100); // apply depth to current graphics(Cross and Points)
