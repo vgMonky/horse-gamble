@@ -28,8 +28,9 @@ export class PhaserCanvasComponent implements OnInit, OnDestroy {
     containerRef!: ElementRef;
 
     isMobileView$: Observable<boolean>;
-    markerOpacity = 1;      // default full opacity
-    lightnessValue = 0.1;   // default starting value
+    markerOpacity = 1;
+    lightnessValue = 0.1;
+    isMuted = false;
 
     private game?: Phaser.Game;
     private gameSubs: Subscription[] = [];
@@ -57,9 +58,9 @@ export class PhaserCanvasComponent implements OnInit, OnDestroy {
         const scene = new MainScene(
             this.ongoingRaceService,
             () => this.markerOpacity,
-            () => this.lightnessValue
+            () => this.lightnessValue,
+            () => this.isMuted
         );
-
         // boot Phaser
         this.game = new Phaser.Game({
             type: Phaser.AUTO,
