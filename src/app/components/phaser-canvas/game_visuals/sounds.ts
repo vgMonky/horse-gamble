@@ -8,7 +8,8 @@ import type {
 
 // default volumes (0.0–1.0)
 const DEFAULT_VOLUMES = {
-    shot:          0.6,
+    shot:          0.3,
+    ring:          0.4,
     horseGallop:   0.6,
     countdownTick: 0.09,
     trumpet:       1.0
@@ -33,15 +34,18 @@ export class SoundLayer {
 
     preload(): void {
         this.scene.load.audio('shot',          'assets/game-img/sound/shot.mp3');
+        this.scene.load.audio('ring',          'assets/game-img/sound/ring.mp3');
         this.scene.load.audio('horseGallop',   'assets/game-img/sound/horse-gallop.mp3');
         this.scene.load.audio('countdownTick', 'assets/game-img/sound/beep.mp3');
         this.scene.load.audio('trumpet',       'assets/game-img/sound/trumpet.mp3');
     }
 
     create(): void {
-        // single-shot sounds
         const shot      = this.scene.sound.add('shot', {
             volume: DEFAULT_VOLUMES.shot
+        });
+        const ring      = this.scene.sound.add('ring', {
+            volume: DEFAULT_VOLUMES.ring
         });
         const tickSound = this.scene.sound.add('countdownTick', {
             volume: DEFAULT_VOLUMES.countdownTick
@@ -66,10 +70,11 @@ export class SoundLayer {
 
             if (state === 'in') {
                 shot.play();
+                ring.play();
                 this.startHorseLoops();
                 // you decide when to start all horses
             } else if (state === 'post') {
-                shot.play();
+                ring.play();
                 this.stopHorseLoops();
             } else {
                 // pre
