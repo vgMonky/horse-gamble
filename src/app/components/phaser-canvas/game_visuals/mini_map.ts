@@ -15,7 +15,7 @@ export class MiniMapLayer {
     private readonly baseWidth    = 100;
     private readonly baseHeight   = 200;
     private readonly trackSpacing = 1;
-    private readonly startOffset  = 0;  // adjust if you want a different 0-pos
+    private readonly startOffset = 2/12;  // adjust if you want a different 0-pos
 
     constructor(
         private scene: Phaser.Scene,
@@ -132,7 +132,7 @@ class StadiumShape {
         private baseWidth: number,
         private baseHeight: number,
         private trackSpacing: number,
-        private startOffset = 0  // fraction of perimeter to shift t=0
+        private startOffset = 2/12  // fraction of perimeter to shift t=0
     ) {}
 
     /** Draw one track’s outline into `graphics` */
