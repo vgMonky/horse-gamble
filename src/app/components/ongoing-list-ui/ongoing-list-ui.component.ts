@@ -55,7 +55,7 @@ export class OngoingListUiComponent implements AfterViewInit, OnDestroy {
                 if (listInstance !== this.lastListInstance) {
                     this.lastListInstance = listInstance;
                 }
-                this.runFLIP(listInstance.getByPlacement());
+                setTimeout(() => this.runFLIP(listInstance.getByPlacement()), 0);
             });
     }
 

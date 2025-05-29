@@ -55,8 +55,10 @@ export class OngoingComponent implements AfterViewInit, OnDestroy {
 
     private reloadCanvas(): void {
         // turn off → turn on to force Angular to destroy & re-create the PhaserCanvasComponent
-        this.showCanvas = false;
-        setTimeout(() => this.showCanvas = true, 0);
+        setTimeout(() => {
+            this.showCanvas = false;
+            setTimeout(() => this.showCanvas = true, 0);
+        }, 0);
     }
 
     ngOnDestroy(): void {
