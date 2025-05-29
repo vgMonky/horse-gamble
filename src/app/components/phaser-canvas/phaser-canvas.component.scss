@@ -46,4 +46,8 @@
             width: 60px;
         }
     }
+
+    input[type="checkbox"] {
+        @include input-checkbox;
+    }
 }
