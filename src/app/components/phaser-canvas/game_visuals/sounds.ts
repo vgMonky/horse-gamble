@@ -20,16 +20,26 @@ const BASE_GALLOP_RATE = 1.0;
 const RATE_OFFSET     = 0.14;
 
 export class SoundLayer {
-    private stateSub?:        Subscription;
-    private countdownSub?:    Subscription;
-    private horseSounds:      Phaser.Sound.BaseSound[] = [];
-    private currentState:     OngoingRaceState        = 'pre';
+    private stateSub?:     Subscription;
+    private countdownSub?: Subscription;
+
+    // keep references so we can destroy them
+    private shot?    : Phaser.Sound.BaseSound;
+    private ring?    : Phaser.Sound.BaseSound;
+    private trumpet? : Phaser.Sound.BaseSound;
+    private tickSound?: Phaser.Sound.BaseSound;
+    private horseSounds: Phaser.Sound.BaseSound[] = [];
+
+    private currentState: OngoingRaceState = 'pre';
 
     constructor(
         private scene:   Phaser.Scene,
         private raceSvc: OngoingRaceService
     ) {
+        // when the scene shuts down, fully clean up
         this.scene.events.once('shutdown', () => this.destroy());
+        // also guard against the very last destroy event
+        this.scene.events.once('destroy',  () => this.destroy());
     }
 
     preload(): void {
@@ -41,20 +51,13 @@ export class SoundLayer {
     }
 
     create(): void {
-        const shot      = this.scene.sound.add('shot', {
-            volume: DEFAULT_VOLUMES.shot
-        });
-        const ring      = this.scene.sound.add('ring', {
-            volume: DEFAULT_VOLUMES.ring
-        });
-        const tickSound = this.scene.sound.add('countdownTick', {
-            volume: DEFAULT_VOLUMES.countdownTick
-        });
-        const trumpet   = this.scene.sound.add('trumpet', {
-            volume: DEFAULT_VOLUMES.trumpet
-        });
+        // create and stash each sound
+        this.shot      = this.scene.sound.add('shot',          { volume: DEFAULT_VOLUMES.shot });
+        this.ring      = this.scene.sound.add('ring',          { volume: DEFAULT_VOLUMES.ring });
+        this.trumpet   = this.scene.sound.add('trumpet',       { volume: DEFAULT_VOLUMES.trumpet });
+        this.tickSound = this.scene.sound.add('countdownTick', { volume: DEFAULT_VOLUMES.countdownTick });
 
-        // create 4 looping gallop sounds with phased rates and staggered volumes
+        // phased gallops
         for (let i = 0; i < 4; i++) {
             const hs = this.scene.sound.add('horseGallop', {
                 volume: DEFAULT_VOLUMES.horseGallop - 0.2 * i,
@@ -64,52 +67,73 @@ export class SoundLayer {
             this.horseSounds.push(hs);
         }
 
-        // keep track of the current race state
-        this.stateSub = this.raceSvc.raceState$.subscribe((state: OngoingRaceState) => {
+        // watch for race-state changes
+        this.stateSub = this.raceSvc.raceState$.subscribe(state => {
             this.currentState = state;
 
             if (state === 'in') {
-                shot.play();
-                ring.play();
+                this.safePlay(this.shot);
+                this.safePlay(this.ring);
                 this.startHorseLoops();
-                // you decide when to start all horses
-            } else if (state === 'post') {
-                ring.play();
+            }
+            else if (state === 'post') {
+                this.safePlay(this.ring);
                 this.stopHorseLoops();
-            } else {
-                // pre
-                trumpet.play();
+            }
+            else {
+                this.safePlay(this.trumpet);
             }
         });
 
-        // only play tick during the PRE‐race countdown
+        // watch for the countdown ticks
         this.countdownSub = this.raceSvc.countdown$.subscribe(timeLeft => {
             if (this.currentState === 'pre' && timeLeft > 0 && timeLeft <= 5) {
-                tickSound.play();
+                this.safePlay(this.tickSound);
             }
         });
     }
 
-    /** call this to start all gallop loops */
+    /** starts all gallop loops if not already playing */
     public startHorseLoops(): void {
-        this.horseSounds.forEach(hs => {
+        for (const hs of this.horseSounds) {
             if (!hs.isPlaying) {
-                hs.play();
+                this.safePlay(hs);
             }
-        });
+        }
     }
 
-    /** call this to stop all gallop loops */
+    /** stops all gallop loops if playing */
     public stopHorseLoops(): void {
-        this.horseSounds.forEach(hs => {
+        for (const hs of this.horseSounds) {
             if (hs.isPlaying) {
                 hs.stop();
             }
-        });
+        }
     }
 
+    /** make sure we never call play() on a destroyed sound */
+    private safePlay(sound?: Phaser.Sound.BaseSound) {
+        try {
+            sound?.play();
+        } catch {
+            // already destroyed or invalid — ignore
+        }
+    }
+
+    /** fully clean up subscriptions and sounds */
     destroy(): void {
         this.stateSub?.unsubscribe();
         this.countdownSub?.unsubscribe();
+
+        // stop & destroy every sound instance
+        [ this.shot, this.ring, this.trumpet, this.tickSound, ...this.horseSounds ]
+            .forEach(s => {
+                if (!s) return;
+                if (s.isPlaying) s.stop();
+                s.destroy();
+            });
+
+        // clear the array so we don't hold onto any stale references
+        this.horseSounds = [];
     }
 }
