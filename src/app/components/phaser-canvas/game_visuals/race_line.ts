@@ -218,7 +218,7 @@ class Camera {
         frameRate = 19,
         idle = false
     ): void {
-        const finalSlideSpeed = 22; // pixels per second after cam stops
+        const finalSlideSpeed = 25; // pixels per second after cam stops
         const cam = this.scene.cameras.main;
         const worldX0 = cam.worldView.x + cam.width * this.origin.x;
         const worldY0 = cam.worldView.y + cam.height * this.origin.y;
