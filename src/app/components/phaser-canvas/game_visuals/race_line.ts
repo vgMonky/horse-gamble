@@ -218,15 +218,19 @@ class Camera {
         frameRate = 19,
         idle = false
     ): void {
+        const finalSlideSpeed = 22; // pixels per second after cam stops
         const cam = this.scene.cameras.main;
         const worldX0 = cam.worldView.x + cam.width * this.origin.x;
         const worldY0 = cam.worldView.y + cam.height * this.origin.y;
+
         const deltaX = (pointPos - this.pos) * this.posToPx;
-        const targetX = worldX0 + deltaX + offsetX;
+        const initialTargetX = worldX0 + deltaX + offsetX;
         const y = worldY0 + offsetY;
         const key = `sprite:${instanceId}`;
         let sprite = this.sprites.get(key);
         const animKey = `run:${spriteSheetKey}`;
+        const dt = this.scene.game.loop.delta / 1000; // seconds
+
         if (!this.scene.anims.exists(animKey)) {
             this.scene.anims.create({
                 key: animKey,
@@ -235,28 +239,33 @@ class Camera {
                 repeat: -1
             });
         }
+
         if (!sprite) {
-            sprite = this.scene.add.sprite(targetX, y, spriteSheetKey)
+            sprite = this.scene.add.sprite(initialTargetX, y, spriteSheetKey)
                 .setScale(scale)
                 .setDepth(depth);
             this.sprites.set(key, sprite);
-            if (!idle) {
-                sprite.play(animKey);
-            }
+            if (!idle) sprite.play(animKey);
         } else {
-            const currentX = sprite.x;
-            const dx = targetX - currentX;
-            if (Math.abs(dx) > 1) {
-                sprite.x += dx * 0.04;
+            if (this.pos >= this.raceSvc.winningDistance) {
+                // Camera locked: keep moving sprite forward at fixed speed
+                sprite.x += finalSlideSpeed;
             } else {
-                sprite.x = targetX;
+                // Camera still tracking: follow pointPos smoothly
+                const dx = initialTargetX - sprite.x;
+                if (Math.abs(dx) > 1) {
+                    sprite.x += dx * 0.04;
+                } else {
+                    sprite.x = initialTargetX;
+                }
             }
+
             sprite.setY(y).setDepth(depth);
-            // Handle idle/animation switching
+
             if (idle) {
-                if (sprite.anims.isPlaying) {sprite.anims.stop()}
+                if (sprite.anims.isPlaying) sprite.anims.stop();
                 sprite.setFrame(3);
-            } else if (!idle && !sprite.anims.isPlaying) {
+            } else if (!sprite.anims.isPlaying) {
                 sprite.play(animKey);
             }
         }
