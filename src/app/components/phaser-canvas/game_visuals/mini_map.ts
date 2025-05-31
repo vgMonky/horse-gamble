@@ -98,12 +98,12 @@ export class MiniMapLayer {
             if (!dot) {
                 dot = this.scene.add
                     .arc(x, y, 4, 0, 360, true)
-                    .setFillStyle(color, this.getMarkerOpacity())
+                    .setFillStyle(color)
                     .setDepth(80);
                 this.dots.set(idx, dot);
             } else {
                 dot.setPosition(x, y)
-                    .setFillStyle(color, this.getMarkerOpacity());
+                    .setFillStyle(color);
             }
         });
     }
