@@ -59,6 +59,7 @@ class Camera {
     private sub = new Subscription();
     private images: Map<string, Phaser.GameObjects.Image> = new Map();
     private sprites: Map<string, Phaser.GameObjects.Sprite> = new Map();
+    private shadows: Map<string, Phaser.GameObjects.Ellipse> = new Map();
 
     constructor(
         private scene: Phaser.Scene,
@@ -89,14 +90,15 @@ class Camera {
             const first = this.horsesList.getByPlacement()[0].position;
             if (first < this.raceSvc.winningDistance) {
                 this.pos = first;
-            }else {this.pos = this.raceSvc.winningDistance}
+            } else {
+                this.pos = this.raceSvc.winningDistance;
+            }
         }
 
         // interpolate origin.x between start(0.5) and finalOrigin
         const finalOriginX = 0.63;
         const progress    = Phaser.Math.Clamp(this.pos / this.raceSvc.winningDistance, 0, 1);
         this.origin.x     = Phaser.Math.Interpolation.Linear([0.5, finalOriginX], progress);
-
 
         // Calculate and draw cam point of view
         this.graphics.setDepth(100); // apply depth to current graphics(Cross and Points)
@@ -111,29 +113,27 @@ class Camera {
 
         // Draw race end
         this.drawCamImg(this.raceSvc.winningDistance, 'img_final_post', 'p0', 0.14, -18, 0, 0);
-        // this.drawCamPoint(this.raceSvc.winningDistance);
 
         // Draw race start
         this.drawCamImg(0, 'img_start_gate', 'g0', 0.20, 0, -110, 1);
         this.drawCamImg(0, 'img_start_gate', 'g1', 0.20, 12, -110, 3);
         this.drawCamImg(0, 'img_start_gate', 'g2', 0.20, 24, -110, 5);
         this.drawCamImg(0, 'img_start_gate', 'g3', 0.20, 36, -110, 10);
-        // this.drawCamPoint(0);
 
         // Draw race horses
         this.horsesList.getAll().forEach((h, index) => {
             if (h.position != null) {
-                const hsl = SLOT_COLOR_MAP[h.slot];
+                const hsl   = SLOT_COLOR_MAP[h.slot];
                 const color = this.hslStringToPhaserColor(hsl, 25);
                 this.drawCamPoint(h.position, color);
 
                 const spriteSheetKey = `horseSpriteSheet${index}`;
-                const instanceId = `horse${index}`;
-                const offsetY = 18 + index * 10;
-                const offsetX = -90;
-                const depth = index * 2;
-                const frameRate = 18 + index;
-                const idle    = this.raceState === 'pre';
+                const instanceId     = `horse${index}`;
+                const offsetY        = 18 + index * 10;
+                const offsetX        = -90;
+                const depth          = index * 2;
+                const frameRate      = 18 + index;
+                const idle           = this.raceState === 'pre';
 
                 this.drawCamHorse(
                     h.position,
@@ -152,10 +152,10 @@ class Camera {
 
     // FUNCS TO DRAW RACE OBJECTS
     private drawCamCross(): void {
-        const cam = this.scene.cameras.main;
+        const cam    = this.scene.cameras.main;
         const worldX = cam.worldView.x + cam.width * this.origin.x;
         const worldY = cam.worldView.y + cam.height * this.origin.y;
-        const size = 6;
+        const size   = 6;
 
         this.graphics.lineStyle(2, 0xffffff, this.getMarkerOpacity());
         this.graphics.beginPath();
@@ -166,19 +166,18 @@ class Camera {
         this.graphics.strokePath();
     }
 
-    private drawCamPoint(pointPos: number,color: number = 0x00ff00): void {
-        const cam = this.scene.cameras.main;
+    private drawCamPoint(pointPos: number, color: number = 0x00ff00): void {
+        const cam     = this.scene.cameras.main;
         const worldX0 = cam.worldView.x + cam.width * this.origin.x;
         const worldY0 = cam.worldView.y + cam.height * this.origin.y;
 
         const deltaX = (pointPos - this.pos) * this.posToPx;
-        const x = worldX0 + deltaX;
-        const y = worldY0 + 118;
+        const x      = worldX0 + deltaX;
+        const y      = worldY0 + 118;
 
         this.graphics.fillStyle(color, this.getMarkerOpacity());
-        this.graphics.fillRect(x, y, 2, 8)
+        this.graphics.fillRect(x, y, 2, 8);
     }
-
 
     private drawCamImg(
         pointPos: number,
@@ -189,14 +188,15 @@ class Camera {
         offsetX = 0,
         depth = 1,
     ): void {
-        const cam = this.scene.cameras.main;
+        const cam     = this.scene.cameras.main;
         const worldX0 = cam.worldView.x + cam.width * this.origin.x;
         const worldY0 = cam.worldView.y + cam.height * this.origin.y;
-        const deltaX = (pointPos - this.pos) * this.posToPx;
-        const x = worldX0 + deltaX + offsetX;
-        const y = worldY0 + offsetY;
-        const key = `img:${instanceId}`;
-        let img = this.images.get(key);
+        const deltaX  = (pointPos - this.pos) * this.posToPx;
+        const x       = worldX0 + deltaX + offsetX;
+        const y       = worldY0 + offsetY;
+        const key     = `img:${instanceId}`;
+        let img       = this.images.get(key);
+
         if (!img) {
             img = this.scene.add.image(x, y, imgKey)
                 .setScale(scale)
@@ -216,20 +216,21 @@ class Camera {
         offsetX = 0,
         depth = 1,
         frameRate = 19,
-        idle = false
+        idle = false,
+        shadowOffsetX = -15,
+        shadowOffsetY = 70
     ): void {
         const finalSlideSpeed = 25; // pixels per second after cam stops
-        const cam = this.scene.cameras.main;
-        const worldX0 = cam.worldView.x + cam.width * this.origin.x;
-        const worldY0 = cam.worldView.y + cam.height * this.origin.y;
+        const cam             = this.scene.cameras.main;
+        const worldX0         = cam.worldView.x + cam.width * this.origin.x;
+        const worldY0         = cam.worldView.y + cam.height * this.origin.y;
 
-        const deltaX = (pointPos - this.pos) * this.posToPx;
+        const deltaX         = (pointPos - this.pos) * this.posToPx;
         const initialTargetX = worldX0 + deltaX + offsetX;
-        const y = worldY0 + offsetY;
-        const key = `sprite:${instanceId}`;
-        let sprite = this.sprites.get(key);
-        const animKey = `run:${spriteSheetKey}`;
-        const dt = this.scene.game.loop.delta / 1000; // seconds
+        const y              = worldY0 + offsetY;
+        const key            = `sprite:${instanceId}`;
+        let sprite           = this.sprites.get(key);
+        const animKey        = `run:${spriteSheetKey}`;
 
         if (!this.scene.anims.exists(animKey)) {
             this.scene.anims.create({
@@ -241,29 +242,52 @@ class Camera {
         }
 
         if (!sprite) {
+            // create sprite
             sprite = this.scene.add.sprite(initialTargetX, y, spriteSheetKey)
                 .setScale(scale)
                 .setDepth(depth);
             this.sprites.set(key, sprite);
-            if (!idle) sprite.play(animKey);
+
+            // create shadow ellipse with offsets
+            const shadow = this.scene.add.ellipse(
+                initialTargetX + shadowOffsetX,
+                y + shadowOffsetY,
+                sprite.displayWidth - 30,
+                12,
+                0x000000,
+                0.4
+            )
+            .setScale(1, 0.5)
+            .setDepth(depth - 0.5);
+            this.shadows.set(key, shadow);
+
+            if (!idle) {
+                sprite.play(animKey);
+            }
         } else {
+            // update x position
             if (this.pos >= this.raceSvc.winningDistance) {
-                // Camera locked: keep moving sprite forward at fixed speed
                 sprite.x += finalSlideSpeed;
             } else {
-                // Camera still tracking: follow pointPos smoothly
                 const dx = initialTargetX - sprite.x;
-                if (Math.abs(dx) > 1) {
-                    sprite.x += dx * 0.04;
-                } else {
+                sprite.x += Math.abs(dx) > 1 ? dx * 0.04 : 0;
+                if (Math.abs(dx) <= 1) {
                     sprite.x = initialTargetX;
                 }
             }
 
             sprite.setY(y).setDepth(depth);
 
+            // update shadow with offsets
+            const shadow = this.shadows.get(key)!;
+            shadow.x = sprite.x + shadowOffsetX;
+            shadow.y = y + shadowOffsetY;
+            shadow.setDepth(depth - 0.5);
+
             if (idle) {
-                if (sprite.anims.isPlaying) sprite.anims.stop();
+                if (sprite.anims.isPlaying) {
+                    sprite.anims.stop();
+                }
                 sprite.setFrame(3);
             } else if (!sprite.anims.isPlaying) {
                 sprite.play(animKey);
@@ -292,5 +316,7 @@ class Camera {
         this.images.clear();
         this.sprites.forEach(sprite => sprite.destroy());
         this.sprites.clear();
+        this.shadows.forEach(shadow => shadow.destroy());
+        this.shadows.clear();
     }
 }
