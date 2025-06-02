@@ -33,7 +33,7 @@ export class OngoingListUiComponent implements AfterViewInit, OnDestroy {
 
     private lastListInstance?: OngoingHorsesList;
     private destroy$ = new Subject<void>();
-    private prevPos = new Map<number, { x: number; y: number }>();
+    private prevY = new Map<number, number>();
 
     @ViewChildren('horseTrack', { read: ElementRef })
     horseElems!: QueryList<ElementRef>;
@@ -69,54 +69,55 @@ export class OngoingListUiComponent implements AfterViewInit, OnDestroy {
     }
 
     private recordPositions(): void {
-        this.prevPos.clear();
+        this.prevY.clear();
         this.horseElems.forEach(el => {
             const idx = +el.nativeElement.dataset.index;
-            const { left: x, top: y } = el.nativeElement.getBoundingClientRect();
-            this.prevPos.set(idx, { x, y });
+            const { top: y } = el.nativeElement.getBoundingClientRect();
+            this.prevY.set(idx, y);
         });
     }
 
     private runFLIP(newList: OngoingHorse[]): void {
-        const oldPos = new Map(this.prevPos);
+        const oldYMap = new Map(this.prevY);
         this.horsesList = newList;
 
         this.ngZone.runOutsideAngular(() => {
             requestAnimationFrame(() => {
-                const newPos = new Map<number, { x: number; y: number }>();
+                const newYMap = new Map<number, number>();
                 this.horseElems.forEach(el => {
                     const idx = +el.nativeElement.dataset.index;
-                    const { left: x, top: y } = el.nativeElement.getBoundingClientRect();
-                    newPos.set(idx, { x, y });
+                    const { top: y } = el.nativeElement.getBoundingClientRect();
+                    newYMap.set(idx, y);
                 });
 
                 this.horseElems.forEach(el => {
                     const idx = +el.nativeElement.dataset.index;
-                    const old = oldPos.get(idx);
-                    const now = newPos.get(idx);
-                    if (!old || !now) return;
+                    const oldY = oldYMap.get(idx);
+                    const newY = newYMap.get(idx);
+                    if (oldY == null || newY == null) return;
 
-                    const delta = this.isMobileView
-                        ? (old.y - now.y)
-                        : (old.y - now.y);
-
-                    if (delta) {
+                    const deltaY = oldY - newY;
+                    if (deltaY) {
                         this.renderer.setStyle(el.nativeElement, 'transition', 'none');
-                        const transform = this.isMobileView
-                            ? `translateY(${delta}px)`
-                            : `translateY(${delta}px)`;
-                        this.renderer.setStyle(el.nativeElement, 'transform', transform);
+                        this.renderer.setStyle(el.nativeElement, 'transform', `translateY(${deltaY}px)`);
                     }
                 });
 
+                // Force reflow
                 this.horseElems.first?.nativeElement.getBoundingClientRect();
 
                 requestAnimationFrame(() => {
                     this.horseElems.forEach(el => {
-                        this.renderer.setStyle(el.nativeElement, 'transition', 'transform 300ms ease');
-                        this.renderer.setStyle(el.nativeElement, 'transform', 'translate(0, 0)');
+                        const idx = +el.nativeElement.dataset.index;
+                        const oldY = oldYMap.get(idx);
+                        const newY = newYMap.get(idx);
+                        // Only animate if there was an actual vertical shift
+                        if (oldY != null && newY != null && oldY !== newY) {
+                            this.renderer.setStyle(el.nativeElement, 'transition', 'transform 200ms linear');
+                            this.renderer.setStyle(el.nativeElement, 'transform', 'translateY(0)');
+                        }
                     });
-                    setTimeout(() => this.recordPositions(), 50);
+                    setTimeout(() => this.recordPositions(), 1);
                 });
             });
         });
