@@ -11,7 +11,6 @@
                 [(ngModel)]="markerOpacity"
             />
         </div>
-
         <div class="c-phaser-canvas__slider" >
             <label for="lightnessSlider">Filter Lightness: {{ lightnessValue }}</label>
             <input
@@ -22,6 +21,10 @@
                 step="0.05"
                 [(ngModel)]="lightnessValue"
             />
+        </div>
+        <div class="c-phaser-canvas__slider">
+            <label>Mute Sounds</label>
+            <input type="checkbox" [(ngModel)]="isMuted"/>
         </div>
     </div>
 

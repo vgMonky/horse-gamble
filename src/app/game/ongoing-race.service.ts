@@ -6,8 +6,8 @@ import { ALL_HORSES, Horse } from './horses-database';
 export const SLOT_COLOR_MAP: Record<number, string> = {
     0: 'hsl(0,70%,30%)', // RED
     1: 'hsl(90,70%,30%)', // GREEN
-    2: 'hsl(180,70%,30%)', // CYAN
-    3: 'hsl(300,70%,30%)' // MAGENTA
+    2: 'hsl(300,70%,30%)', // MAGENTA
+    3: 'hsl(180,70%,30%)' // CYAN
 };
 
 export type OngoingRaceState = 'pre' | 'in' | 'post';
@@ -15,7 +15,7 @@ export type OngoingRaceState = 'pre' | 'in' | 'post';
 export interface OngoingHorse {
     slot:        number;
     horse:       Horse;
-    position:    number | null;
+    position:    number;
     finalPlace:  number | null;
 }
 
@@ -113,10 +113,10 @@ export class OngoingHorsesList {
 
 @Injectable({ providedIn: 'root' })
 export class OngoingRaceService implements OnDestroy {
-    public readonly winningDistance       = 500; // dm
+    public readonly winningDistance       = 2000; // dm
     private readonly tickSpeed             = 100; // ms
-    private readonly preCountdownDuration  = 10;
-    private readonly postCountdownDuration = 3;
+    private readonly preCountdownDuration  = 20;
+    private readonly postCountdownDuration = 10;
 
     private raceInterval$!: Subscription;
     private preTimer   = new CountdownTimer();
@@ -158,12 +158,16 @@ export class OngoingRaceService implements OnDestroy {
             this._horsesList.next(list);
             list.consoleLog();
 
-            if (finished === list.getAll().length) {
+            if (finished === list.getAll().length
+            && this._raceState.getValue() === 'in'
+            ) {
                 this._raceState.next('post');
-                this.stopRaceInterval();
                 this.postTimer.start(
                     this.postCountdownDuration,
-                    () => this.startOngoingRace(),
+                    () => {
+                        this.stopRaceInterval();
+                        this.startOngoingRace();
+                    },
                     this._countdown
                 );
             }
@@ -187,7 +191,7 @@ export class OngoingRaceService implements OnDestroy {
 
 class Seed {
     private seedValue: number;
-    private readonly allowedDigits = [3, 4, 5, 6];
+    private readonly allowedDigits = [6, 7, 8, 9];
 
     constructor(length: number) {
         this.seedValue = this.genNumber(length);
