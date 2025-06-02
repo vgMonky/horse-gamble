@@ -118,19 +118,23 @@ export class ParallaxBackground {
             const done         = pos >= dist;
             const shouldFreeze = this.raceState === 'pre' || done;
 
-            // 2) Compute normalized progress [0,1]
-            const progress = Phaser.Math.Clamp(pos / dist, 0, 1);
-            // 3) Figure out which quarter we're in (0–1 → 0–4)
-            const q = progress * 4;
-            const inSecond = q >= 1 && q < 2;
-            const inFourth = q >= 3 && q <= 4;
+            // 2) Compute normalized, shifted progress [0,1]
+            const mapStartOffset   = 2/12;
+            const rawProgress      = Phaser.Math.Clamp(pos / dist, 0, 1);
+            const shiftedProgress  = Phaser.Math.Wrap(rawProgress + mapStartOffset, 0, 1);
+
+            // 3) Figure out which quarter we’re in
+            const q         = shiftedProgress * 4;
+            const inSecond  = q >= 1   && q <  2;
+            const inFourth  = q >= 3   && q <= 4;
             const invertForest = inSecond || inFourth;
 
+            // 4) Apply to your layers
             this.layers.forEach(l => {
-                if (['forest', 'trees3', 'trees2', 'trees1', 'fence'].includes(l.key)) {
+                if (['forest','trees3','trees2','trees1','fence'].includes(l.key)) {
                     if (shouldFreeze) {
                         l.speed = 0;
-                    } else if ((l.key === 'forest' || l.key === `trees3`) && invertForest) {
+                    } else if ((l.key==='forest'||l.key==='trees3') && invertForest) {
                         l.speed = -l.original;
                     } else {
                         l.speed = l.original;

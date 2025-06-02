@@ -20,7 +20,8 @@ export class MainScene extends Phaser.Scene {
     constructor(
         private ongoingRaceService: OngoingRaceService,
         private markerOpacityGetter: () => number,
-        private filterLightnessGetter: () => number
+        private filterLightnessGetter: () => number,
+        private muteGetter: () => boolean
     ) {
         super('MainScene');
     }
@@ -67,6 +68,7 @@ export class MainScene extends Phaser.Scene {
     }
 
     override update(time: number, delta: number): void {
+        this.sound.mute = this.muteGetter();
         this.bg.update(time, delta);
         this.filterScreen.update(time, delta);
         this.miniMap.update();

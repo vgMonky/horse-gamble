@@ -15,7 +15,7 @@ export class MiniMapLayer {
     private readonly baseWidth    = 100;
     private readonly baseHeight   = 200;
     private readonly trackSpacing = 1;
-    private readonly startOffset  = 0;  // adjust if you want a different 0-pos
+    private readonly startOffset = 2/12;  // adjust if you want a different 0-pos
 
     constructor(
         private scene: Phaser.Scene,
@@ -98,12 +98,12 @@ export class MiniMapLayer {
             if (!dot) {
                 dot = this.scene.add
                     .arc(x, y, 4, 0, 360, true)
-                    .setFillStyle(color, this.getMarkerOpacity())
+                    .setFillStyle(color)
                     .setDepth(80);
                 this.dots.set(idx, dot);
             } else {
                 dot.setPosition(x, y)
-                    .setFillStyle(color, this.getMarkerOpacity());
+                    .setFillStyle(color);
             }
         });
     }
@@ -132,7 +132,7 @@ class StadiumShape {
         private baseWidth: number,
         private baseHeight: number,
         private trackSpacing: number,
-        private startOffset = 0  // fraction of perimeter to shift t=0
+        private startOffset = 2/12  // fraction of perimeter to shift t=0
     ) {}
 
     /** Draw one track’s outline into `graphics` */

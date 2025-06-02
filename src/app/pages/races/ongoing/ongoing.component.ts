@@ -11,6 +11,8 @@ import { PhaserCanvasComponent } from '@app/components/phaser-canvas/phaser-canv
 import { OngoingListUiComponent } from '@app/components/ongoing-list-ui/ongoing-list-ui.component';
 import { OngoingRaceService } from '@app/game/ongoing-race.service';
 import { Observable, Subscription } from 'rxjs';
+import { skip, filter } from 'rxjs/operators';
+
 
 @Component({
     standalone: true,
@@ -46,17 +48,18 @@ export class OngoingComponent implements AfterViewInit, OnDestroy {
         this.ongoingRaceService.startOngoingRace();
 
         // whenever we re-enter 'pre', reload the canvas
-        this.stateSub = this.raceState$.subscribe(state => {
-            if (state === 'pre') {
-                this.reloadCanvas();
-            }
-        });
+        this.stateSub = this.raceState$.pipe(
+            skip(1),
+            filter(state => state === 'pre')
+        ).subscribe(() => this.reloadCanvas());
     }
 
     private reloadCanvas(): void {
         // turn off → turn on to force Angular to destroy & re-create the PhaserCanvasComponent
-        this.showCanvas = false;
-        setTimeout(() => this.showCanvas = true, 0);
+        setTimeout(() => {
+            this.showCanvas = false;
+            setTimeout(() => this.showCanvas = true, 0);
+        }, 0);
     }
 
     ngOnDestroy(): void {

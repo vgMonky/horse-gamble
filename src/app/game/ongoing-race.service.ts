@@ -191,7 +191,7 @@ export class OngoingRaceService implements OnDestroy {
 
 class Seed {
     private seedValue: number;
-    private readonly allowedDigits = [3, 4, 5, 6];
+    private readonly allowedDigits = [6, 7, 8, 9];
 
     constructor(length: number) {
         this.seedValue = this.genNumber(length);
