@@ -15,13 +15,18 @@ import { map } from 'rxjs/operators';
 import { OngoingRaceService } from '@app/game/ongoing-race.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ExpandableComponent } from '../base-components/expandable/expandable.component';
 
 @Component({
     selector: 'app-phaser-canvas',
     templateUrl: './phaser-canvas.component.html',
     styleUrls: ['./phaser-canvas.component.scss'],
     standalone: true,
-    imports: [ CommonModule, FormsModule ]
+    imports: [
+        CommonModule,
+        FormsModule,
+        ExpandableComponent
+    ]
 })
 export class PhaserCanvasComponent implements OnInit, OnDestroy {
     @ViewChild('phaserContainer', { static: true })
