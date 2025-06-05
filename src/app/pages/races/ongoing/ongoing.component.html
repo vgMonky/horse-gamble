@@ -1,8 +1,30 @@
 <div class="p-ongoing">
-    <app-phaser-canvas [useHorse1]="useHorse1" />
-    <label for="useHorse1">Use Horse 1</label>
-    <input id="useHorse1" type="checkbox" [(ngModel)]="useHorse1" />
+    <div class="p-ongoing__title">
+        Race ID:
+    </div>
+    <div class="p-ongoing__subtitle">
+        Race Distance: {{ winPos / 10 }}m
+    </div>
+    <br>
 
-    <br><br>
-    <app-horse-race-ui />
+    <div class="p-ongoing__top">
+        <!-- always show the canvas -->
+        <ng-container *ngIf="showCanvas">
+            <app-phaser-canvas></app-phaser-canvas>
+        </ng-container>
+    </div>
+
+    <div class="p-ongoing__bottom">
+        <app-ongoing-list-ui></app-ongoing-list-ui>
+    </div>
+
+    <div class="p-ongoing__subtitle">
+        <button class="p-ongoing__button" (click)="isModalOpen = true">Bet Now</button>
+    </div>
+    <app-window-container
+    *ngIf="isModalOpen"
+    (close)="isModalOpen = false"
+    >
+        <p class="p-ongoing__subtitle">bet-ticket-ui</p>
+    </app-window-container>
 </div>

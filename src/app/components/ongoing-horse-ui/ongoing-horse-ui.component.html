@@ -1,0 +1,26 @@
+<!-- src/app/components/ongoing-horse-ui/ongoing-horse-ui.component.html -->
+<div class="c-ongoing-horse-ui">
+    <div class="c-ongoing-horse-ui__info">
+        <div
+            class="c-ongoing-horse-ui__index"
+            [style.background]="color"
+        >
+            {{ ongoingHorse.horse.index }}
+        </div>
+        <div class="c-ongoing-horse-ui__name">
+            {{ ongoingHorse.horse.name }}
+        </div>
+    </div>
+
+    <ng-container *ngIf="ongoingHorse.finalPlace == null; else finishedTpl">
+        <div class="c-ongoing-horse-ui__position">
+            {{ (ongoingHorse.position! / 10) | number:'3.1-1' }}m
+        </div>
+    </ng-container>
+
+    <ng-template #finishedTpl>
+        <div class="c-ongoing-horse-ui__placement">
+            {{ getOrdinal(ongoingHorse.finalPlace!) }}
+        </div>
+    </ng-template>
+</div>
