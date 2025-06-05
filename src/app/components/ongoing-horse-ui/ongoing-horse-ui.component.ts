@@ -1,5 +1,7 @@
-import { CommonModule } from '@angular/common';
+// src/app/components/ongoing-horse-ui/ongoing-horse-ui.component.ts
 import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { OngoingHorse } from '@app/game/ongoing-race.service';
 
 @Component({
     standalone: true,
@@ -9,18 +11,12 @@ import { Component, Input } from '@angular/core';
     styleUrls: ['./ongoing-horse-ui.component.scss']
 })
 export class OngoingHorseUiComponent {
-    @Input() horse!: {
-        index: number;
-        name: string;
-        position: number | null;
-        placement?: number;
-    };
-    @Input() finalPosition = 1000;
+    @Input() ongoingHorse!: OngoingHorse;
+    @Input() color!: string;
 
-    // helper to get ordinal suffix
     getOrdinal(n: number) {
         const s = ['th','st','nd','rd'];
         const v = n % 100;
-        return n + (s[(v-20)%10]||s[v]||s[0]);
+        return n + (s[(v-20)%10] || s[v] || s[0]);
     }
 }

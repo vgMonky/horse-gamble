@@ -1,7 +1,6 @@
-// src/app/components/ongoing-list-ui/ongoing-list-ui.component.ts
 import {
     Component,
-    OnInit,
+    AfterViewInit,
     OnDestroy,
     ViewChildren,
     QueryList,
@@ -11,8 +10,13 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { combineLatest, Subscription } from 'rxjs';
-import { OngoingRaceService } from '@app/services/game/ongoing-race.service';
+import { Subject, takeUntil } from 'rxjs';
+import {
+    OngoingRaceService,
+    OngoingHorse,
+    OngoingHorsesList,
+    SLOT_COLOR_MAP
+} from '@app/game/ongoing-race.service';
 import { OngoingHorseUiComponent } from '@app/components/ongoing-horse-ui/ongoing-horse-ui.component';
 import { BREAKPOINT } from 'src/types';
 
@@ -23,13 +27,13 @@ import { BREAKPOINT } from 'src/types';
     templateUrl: './ongoing-list-ui.component.html',
     styleUrls: ['./ongoing-list-ui.component.scss']
 })
-export class OngoingListUiComponent implements OnInit, OnDestroy {
-    horses: any[] = [];
-    finalPosition = 0;
+export class OngoingListUiComponent implements AfterViewInit, OnDestroy {
+    horsesList: OngoingHorse[] = [];
     isMobileView = false;
 
-    private sub = new Subscription();
-    private prevPos = new Map<number, { x: number; y: number }>();
+    private lastListInstance?: OngoingHorsesList;
+    private destroy$ = new Subject<void>();
+    private prevY = new Map<number, number>();
 
     @ViewChildren('horseTrack', { read: ElementRef })
     horseElems!: QueryList<ElementRef>;
@@ -39,95 +43,87 @@ export class OngoingListUiComponent implements OnInit, OnDestroy {
         private breakpointObserver: BreakpointObserver,
         private renderer: Renderer2,
         private ngZone: NgZone
-    ) {}
+    ) {
+        this.breakpointObserver
+            .observe(BREAKPOINT)
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(r => this.isMobileView = r.matches);
 
-    ngOnInit(): void {
-        // 1) watch viewport
-        this.sub.add(
-            this.breakpointObserver
-                .observe(BREAKPOINT)
-                .subscribe(r => this.isMobileView = r.matches)
-        );
+        this.ongoingRaceService.horsesList$
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(listInstance => {
+                if (listInstance !== this.lastListInstance) {
+                    this.lastListInstance = listInstance;
+                }
+                setTimeout(() => this.runFLIP(listInstance.getByPlacement()), 0);
+            });
+    }
 
-        // 2) capture initial positions for FLIP
-        setTimeout(() => this.recordPositions(), 0);
-
-        // 3) race + podium combined → reorder via FLIP
-        this.sub.add(
-            combineLatest([
-                this.ongoingRaceService.horses$,
-                this.ongoingRaceService.podium$
-            ]).subscribe(([all, podium]) => {
-                const finished = podium.map(h => ({ ...h, position: null }));
-                const inRace = all
-                    .filter(h => h.position !== null && !podium.includes(h))
-                    .sort((a, b) => b.position! - a.position!);
-                this.runFLIP([...finished, ...inRace]);
-            })
-        );
+    ngAfterViewInit(): void {
+        this.recordPositions();
     }
 
     ngOnDestroy(): void {
-        this.sub.unsubscribe();
-    }
-
-    trackByHorse(_i: number, h: any) {
-        return h.index;
+        this.destroy$.next();
+        this.destroy$.complete();
     }
 
     private recordPositions(): void {
-        this.prevPos.clear();
+        this.prevY.clear();
         this.horseElems.forEach(el => {
             const idx = +el.nativeElement.dataset.index;
-            const rect = el.nativeElement.getBoundingClientRect();
-            this.prevPos.set(idx, { x: rect.left, y: rect.top });
+            const { top: y } = el.nativeElement.getBoundingClientRect();
+            this.prevY.set(idx, y);
         });
     }
 
-    private runFLIP(newHorses: any[]): void {
-        const oldPos = this.prevPos;
-        this.horses = newHorses;
+    private runFLIP(newList: OngoingHorse[]): void {
+        const oldYMap = new Map(this.prevY);
+        this.horsesList = newList;
 
         this.ngZone.runOutsideAngular(() => {
             requestAnimationFrame(() => {
-                // read new positions
-                const newPos = new Map<number, { x: number; y: number }>();
+                const newYMap = new Map<number, number>();
                 this.horseElems.forEach(el => {
                     const idx = +el.nativeElement.dataset.index;
-                    const rect = el.nativeElement.getBoundingClientRect();
-                    newPos.set(idx, { x: rect.left, y: rect.top });
+                    const { top: y } = el.nativeElement.getBoundingClientRect();
+                    newYMap.set(idx, y);
                 });
 
-                // invert on the correct axis
                 this.horseElems.forEach(el => {
                     const idx = +el.nativeElement.dataset.index;
-                    const old = oldPos.get(idx)!;
-                    const now = newPos.get(idx)!;
-                    const delta = this.isMobileView
-                        ? (old.y - now.y)
-                        : (old.x - now.x);
-                    if (delta) {
+                    const oldY = oldYMap.get(idx);
+                    const newY = newYMap.get(idx);
+                    if (oldY == null || newY == null) return;
+
+                    const deltaY = oldY - newY;
+                    if (deltaY) {
                         this.renderer.setStyle(el.nativeElement, 'transition', 'none');
-                        const transform = this.isMobileView
-                            ? `translateY(${delta}px)`
-                            : `translateX(${delta}px)`;
-                        this.renderer.setStyle(el.nativeElement, 'transform', transform);
+                        this.renderer.setStyle(el.nativeElement, 'transform', `translateY(${deltaY}px)`);
                     }
                 });
 
-                // force reflow
-                this.horseElems.first.nativeElement.getBoundingClientRect();
+                // Force reflow
+                this.horseElems.first?.nativeElement.getBoundingClientRect();
 
-                // animate back to zero
                 requestAnimationFrame(() => {
                     this.horseElems.forEach(el => {
-                        this.renderer.setStyle(el.nativeElement, 'transition', 'transform 300ms ease');
-                        this.renderer.setStyle(el.nativeElement, 'transform', 'translate(0, 0)');
+                        const idx = +el.nativeElement.dataset.index;
+                        const oldY = oldYMap.get(idx);
+                        const newY = newYMap.get(idx);
+                        // Only animate if there was an actual vertical shift
+                        if (oldY != null && newY != null && oldY !== newY) {
+                            this.renderer.setStyle(el.nativeElement, 'transition', 'transform 200ms linear');
+                            this.renderer.setStyle(el.nativeElement, 'transform', 'translateY(0)');
+                        }
                     });
-                    // update for next tick
-                    setTimeout(() => this.recordPositions(), 300);
+                    setTimeout(() => this.recordPositions(), 1);
                 });
             });
         });
+    }
+
+    getColor(slot: number): string {
+        return SLOT_COLOR_MAP[slot] ?? 'black';
     }
 }

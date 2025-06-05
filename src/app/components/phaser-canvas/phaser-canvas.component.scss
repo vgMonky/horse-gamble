@@ -1,7 +1,53 @@
-.phaser-container {
-    margin-top: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 1px solid var(--c-background-4);
+/* src/app/components/phaser-canvas/phaser-canvas.component.scss */
+@use 'mixin' as *;
+
+
+.c-phaser-canvas{
+
+    &__phaser-container {
+        @include border;
+        margin-top: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: 1px solid var(--c-background-4);
+        overflow: hidden;
+
+        &.mobile {
+            width: 330px;
+        }
+    }
+
+    &__sliders-container{
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+
+        &.mobile {
+            flex-direction: column;
+        }
+    }
+
+    &__slider{
+        display: flex;
+        justify-content: center;
+        align-items: center
+    }
+
+    label{
+        @include text-smaller;
+    }
+
+    input[type="range"] {
+        @include input-range;
+
+        & {
+            margin: 10px;
+            width: 60px;
+        }
+    }
+
+    input[type="checkbox"] {
+        @include input-checkbox;
+    }
 }

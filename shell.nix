@@ -14,6 +14,9 @@ pkgs.mkShell {
     echo "Installed packages:"
     # Dynamically printing the list of installed packages
     ${pkgs.coreutils}/bin/echo "${builtins.concatStringsSep "\n" (map (p: "- ${p.name}") packages)}"
+
+    echo 'Running "npm start"...'
+    exec npm start
   '';
 }
 

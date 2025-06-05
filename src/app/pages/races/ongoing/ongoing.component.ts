@@ -1,11 +1,18 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+    Component,
+    AfterViewInit,
+    OnDestroy,
+    ViewChild
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SharedModule } from '@app/shared/shared.module';
 import { PhaserCanvasComponent } from '@app/components/phaser-canvas/phaser-canvas.component';
 import { OngoingListUiComponent } from '@app/components/ongoing-list-ui/ongoing-list-ui.component';
-import { OngoingRaceService } from '@app/services/game/ongoing-race.service';
-import { Subscription } from 'rxjs';
+import { OngoingRaceService } from '@app/game/ongoing-race.service';
+import { Observable, Subscription } from 'rxjs';
+import { skip, filter } from 'rxjs/operators';
+
 
 @Component({
     standalone: true,
@@ -20,30 +27,43 @@ import { Subscription } from 'rxjs';
     templateUrl: './ongoing.component.html',
     styleUrls: ['./ongoing.component.scss']
 })
-export class OngoingComponent implements OnInit, OnDestroy {
-    useHorse1 = true;
-    raceState: 'pre' | 'in' | 'post' = 'pre';
-    countdown = 0;
-    podium: any[] = [];
-    finalPosition = 0;
+export class OngoingComponent implements AfterViewInit, OnDestroy {
+    @ViewChild(PhaserCanvasComponent) private canvasCmp!: PhaserCanvasComponent;
 
-    private sub = new Subscription();
+    readonly raceState$: Observable<'pre' | 'in' | 'post'>;
+    readonly countdown$:  Observable<number>;
+    readonly winPos: number;
 
-    constructor(private ongoingRaceService: OngoingRaceService) {}
+    private stateSub!: Subscription;
+    showCanvas = true;
 
-    ngOnInit(): void {
+    constructor(private ongoingRaceService: OngoingRaceService) {
+        this.raceState$ = this.ongoingRaceService.raceState$;
+        this.countdown$ = this.ongoingRaceService.countdown$;
+        this.winPos     = this.ongoingRaceService.winningDistance;
+    }
+
+    ngAfterViewInit(): void {
+        // kick off the first race
         this.ongoingRaceService.startOngoingRace();
-        this.sub.add(this.ongoingRaceService.raceState$.subscribe(state => this.raceState = state));
-        this.sub.add(this.ongoingRaceService.countdown$.subscribe(c => this.countdown = c));
-        this.sub.add(this.ongoingRaceService.podium$.subscribe(p => this.podium = p));
-        this.sub.add(
-            this.ongoingRaceService.finalPosition$
-                .subscribe(fp => this.finalPosition = fp)
-        );
+
+        // whenever we re-enter 'pre', reload the canvas
+        this.stateSub = this.raceState$.pipe(
+            skip(1),
+            filter(state => state === 'pre')
+        ).subscribe(() => this.reloadCanvas());
+    }
+
+    private reloadCanvas(): void {
+        // turn off → turn on to force Angular to destroy & re-create the PhaserCanvasComponent
+        setTimeout(() => {
+            this.showCanvas = false;
+            setTimeout(() => this.showCanvas = true, 0);
+        }, 0);
     }
 
     ngOnDestroy(): void {
-        this.sub.unsubscribe();
+        this.stateSub.unsubscribe();
         this.ongoingRaceService.stopOngoingRace();
     }
 }

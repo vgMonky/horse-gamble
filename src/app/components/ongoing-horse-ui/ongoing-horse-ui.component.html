@@ -1,30 +1,26 @@
+<!-- src/app/components/ongoing-horse-ui/ongoing-horse-ui.component.html -->
 <div class="c-ongoing-horse-ui">
     <div class="c-ongoing-horse-ui__info">
         <div
             class="c-ongoing-horse-ui__index"
-            [style.background]="
-            'hsl(' + (horse.index * 40 % 360) + ', 70%, 35%)'
-            ">
-            {{ horse.index }}
+            [style.background]="color"
+        >
+            {{ ongoingHorse.horse.index }}
         </div>
         <div class="c-ongoing-horse-ui__name">
-            {{ horse.name }}
+            {{ ongoingHorse.horse.name }}
         </div>
     </div>
-    <!-- if still racing, show position -->
-    <ng-container *ngIf="horse.position !== null; else finishedTpl">
+
+    <ng-container *ngIf="ongoingHorse.finalPlace == null; else finishedTpl">
         <div class="c-ongoing-horse-ui__position">
-        {{ horse.position }}m
+            {{ (ongoingHorse.position! / 10) | number:'3.1-1' }}m
         </div>
     </ng-container>
 
-    <!-- once position===null, show placement (or “—” if you haven’t set it yet) -->
     <ng-template #finishedTpl>
         <div class="c-ongoing-horse-ui__placement">
-        {{ horse.placement
-            ? getOrdinal(horse.placement)
-            : '—'
-        }}
+            {{ getOrdinal(ongoingHorse.finalPlace!) }}
         </div>
     </ng-template>
 </div>
