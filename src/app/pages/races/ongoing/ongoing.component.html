@@ -19,6 +19,12 @@
     </div>
 
     <div class="p-ongoing__subtitle">
-        <button class="p-ongoing__button">Bet Now</button>
+        <button class="p-ongoing__button" (click)="isModalOpen = true">Bet Now</button>
     </div>
+    <app-window-container
+    *ngIf="isModalOpen"
+    (close)="isModalOpen = false"
+    >
+        <p class="p-ongoing__subtitle">bet-ticket-ui</p>
+    </app-window-container>
 </div>
