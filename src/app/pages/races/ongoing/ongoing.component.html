@@ -1,4 +1,12 @@
 <div class="p-ongoing">
+    <div class="p-ongoing__title">
+        Race ID:
+    </div>
+    <div class="p-ongoing__subtitle">
+        Race Distance: {{ winPos / 10 }}m
+    </div>
+    <br>
+
     <div class="p-ongoing__top">
         <!-- always show the canvas -->
         <ng-container *ngIf="showCanvas">
@@ -11,6 +19,12 @@
     </div>
 
     <div class="p-ongoing__subtitle">
-        Race Distance: {{ winPos / 10 }}m
+        <button class="p-ongoing__button" (click)="isModalOpen = true">Bet Now</button>
     </div>
+    <app-window-container
+    *ngIf="isModalOpen"
+    (close)="isModalOpen = false"
+    >
+        <p class="p-ongoing__subtitle">bet-ticket-ui</p>
+    </app-window-container>
 </div>

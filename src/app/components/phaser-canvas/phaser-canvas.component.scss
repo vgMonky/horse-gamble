@@ -6,7 +6,8 @@
 
     &__phaser-container {
         @include border;
-        margin-top: 10px;
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -30,7 +31,7 @@
 
     &__slider{
         display: flex;
-        justify-content: center;
+        justify-content: left;
         align-items: center
     }
 

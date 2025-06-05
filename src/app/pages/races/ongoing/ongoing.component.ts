@@ -12,6 +12,7 @@ import { OngoingListUiComponent } from '@app/components/ongoing-list-ui/ongoing-
 import { OngoingRaceService } from '@app/game/ongoing-race.service';
 import { Observable, Subscription } from 'rxjs';
 import { skip, filter } from 'rxjs/operators';
+import { WindowContainerComponent } from '@app/components/base-components/window-container/window-container.component';
 
 
 @Component({
@@ -22,7 +23,8 @@ import { skip, filter } from 'rxjs/operators';
         CommonModule,
         FormsModule,
         PhaserCanvasComponent,
-        OngoingListUiComponent
+        OngoingListUiComponent,
+        WindowContainerComponent
     ],
     templateUrl: './ongoing.component.html',
     styleUrls: ['./ongoing.component.scss']
@@ -36,6 +38,7 @@ export class OngoingComponent implements AfterViewInit, OnDestroy {
 
     private stateSub!: Subscription;
     showCanvas = true;
+    isModalOpen = false;
 
     constructor(private ongoingRaceService: OngoingRaceService) {
         this.raceState$ = this.ongoingRaceService.raceState$;
