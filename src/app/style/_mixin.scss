@@ -108,7 +108,7 @@
 @mixin button-1 {
     @include button-base-0;
     color: var(--c-accent-0);
-    background-color: var(--c-background-0);
+    background-color: var(--c-background-1);
     border: 1px solid var(--c-accent-0);
     border-color: var(--c-accent-0) var(--c-accent-0) var(--c-accent-1) var(--c-accent-1);
     &:hover {
