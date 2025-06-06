@@ -2,7 +2,7 @@
 import Phaser from 'phaser';
 import type { Subscription } from 'rxjs';
 import type {
-    OngoingRaceService,
+    HorseRaceService,
     RaceHorsesList,
     RaceHorse
 } from '@app/game/horse-race.service';
@@ -35,7 +35,7 @@ export class ParallaxBackground {
 
     constructor(
         private scene: Phaser.Scene,
-        private raceSvc: OngoingRaceService
+        private raceSvc: HorseRaceService
     ) {
         this.scene.events.once('shutdown', () => this.destroy());
     }

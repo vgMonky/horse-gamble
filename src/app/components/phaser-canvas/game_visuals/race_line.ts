@@ -1,7 +1,7 @@
 // src/app/components/phaser-canvas/game_visuals/race_line.ts
 import Phaser from 'phaser';
 import type {
-    OngoingRaceService,
+    HorseRaceService,
     RaceHorsesList,
     HorseRaceState
 } from '@app/game/horse-race.service';
@@ -13,10 +13,10 @@ export class RaceLineLayer {
 
     constructor(
         private scene: Phaser.Scene,
-        private ongoingRaceService: OngoingRaceService,
+        private horseRaceService: HorseRaceService,
         private getMarkerOpacity: () => number
     ) {
-        this.cam = new Camera(this.scene, this.ongoingRaceService, this.getMarkerOpacity);
+        this.cam = new Camera(this.scene, this.horseRaceService, this.getMarkerOpacity);
         // ensure we clean up when the scene shuts down
         this.scene.events.once('shutdown', () => this.destroy());
     }
@@ -53,7 +53,7 @@ class Camera {
     public origin: { x: number; y: number };
     private graphics: Phaser.GameObjects.Graphics;
     private posToPx = 20;
-    private raceSvc: OngoingRaceService;
+    private raceSvc: HorseRaceService;
     private horsesList!: RaceHorsesList;
     private raceState: HorseRaceState = 'pre';
     private sub = new Subscription();
@@ -63,7 +63,7 @@ class Camera {
 
     constructor(
         private scene: Phaser.Scene,
-        raceSvc: OngoingRaceService,
+        raceSvc: HorseRaceService,
         private getMarkerOpacity: () => number,
         origin?: { x: number; y: number }
     ) {

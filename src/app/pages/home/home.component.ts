@@ -1,7 +1,7 @@
 // src/app/pages/home/home.component.ts
 import { Component } from '@angular/core';
 import { SharedModule } from '@app/shared/shared.module';
-import { OngoingRaceService } from '@app/game/horse-race.service';
+import { HorseRaceService } from '@app/game/horse-race.service';
 
 
 @Component({
@@ -18,9 +18,9 @@ import { OngoingRaceService } from '@app/game/horse-race.service';
 })
 export class HomeComponent {
 
-    constructor(private ongoingRaceService: OngoingRaceService) {}
+    constructor(private horseRaceService: HorseRaceService) {}
 
     ngOnDestroy(): void {
-        this.ongoingRaceService.stopOngoingRace();
+        this.horseRaceService.stopOngoingRace();
     }
 }

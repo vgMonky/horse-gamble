@@ -1,6 +1,6 @@
 // src/app/components/phaser-canvas/game_visuals/mini_map.ts
 import Phaser from 'phaser';
-import type { OngoingRaceService, RaceHorsesList } from '@app/game/horse-race.service';
+import type { HorseRaceService, RaceHorsesList } from '@app/game/horse-race.service';
 import { SLOT_COLOR_MAP } from '@app/game/horse-race.service';
 import { Subscription } from 'rxjs';
 
@@ -19,7 +19,7 @@ export class MiniMapLayer {
 
     constructor(
         private scene: Phaser.Scene,
-        private raceSvc: OngoingRaceService,
+        private raceSvc: HorseRaceService,
         private getMarkerOpacity: () => number
     ) {
         this.graphics = this.scene.add.graphics().setDepth(80);

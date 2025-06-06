@@ -12,7 +12,7 @@ import { CommonModule } from '@angular/common';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { Subject, takeUntil } from 'rxjs';
 import {
-    OngoingRaceService,
+    HorseRaceService,
     RaceHorse,
     RaceHorsesList,
     SLOT_COLOR_MAP
@@ -39,7 +39,7 @@ export class OngoingListUiComponent implements AfterViewInit, OnDestroy {
     horseElems!: QueryList<ElementRef>;
 
     constructor(
-        private ongoingRaceService: OngoingRaceService,
+        private horseRaceService: HorseRaceService,
         private breakpointObserver: BreakpointObserver,
         private renderer: Renderer2,
         private ngZone: NgZone
@@ -49,7 +49,7 @@ export class OngoingListUiComponent implements AfterViewInit, OnDestroy {
             .pipe(takeUntil(this.destroy$))
             .subscribe(r => this.isMobileView = r.matches);
 
-        this.ongoingRaceService.horsesList$
+        this.horseRaceService.horsesList$
             .pipe(takeUntil(this.destroy$))
             .subscribe(listInstance => {
                 if (listInstance !== this.lastListInstance) {

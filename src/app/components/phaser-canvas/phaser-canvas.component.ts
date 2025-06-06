@@ -12,7 +12,7 @@ import { BreakpointObserver } from '@angular/cdk/layout';
 import { BREAKPOINT } from 'src/types';
 import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { OngoingRaceService } from '@app/game/horse-race.service';
+import { HorseRaceService } from '@app/game/horse-race.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ExpandableComponent } from '../base-components/expandable/expandable.component';
@@ -42,7 +42,7 @@ export class PhaserCanvasComponent implements OnInit, OnDestroy {
 
     constructor(
         private breakpointObserver: BreakpointObserver,
-        private ongoingRaceService: OngoingRaceService
+        private horseRaceService: HorseRaceService
     ) {
         this.isMobileView$ = this.breakpointObserver
             .observe(BREAKPOINT)
@@ -61,7 +61,7 @@ export class PhaserCanvasComponent implements OnInit, OnDestroy {
     private startGame(): void {
         // instantiate the scene
         const scene = new MainScene(
-            this.ongoingRaceService,
+            this.horseRaceService,
             () => this.markerOpacity,
             () => this.lightnessValue,
             () => this.isMuted

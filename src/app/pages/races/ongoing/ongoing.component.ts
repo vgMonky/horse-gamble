@@ -9,7 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { SharedModule } from '@app/shared/shared.module';
 import { PhaserCanvasComponent } from '@app/components/phaser-canvas/phaser-canvas.component';
 import { OngoingListUiComponent } from '@app/components/ongoing-list-ui/ongoing-list-ui.component';
-import { OngoingRaceService } from '@app/game/horse-race.service';
+import { HorseRaceService } from '@app/game/horse-race.service';
 import { Observable, Subscription } from 'rxjs';
 import { skip, filter } from 'rxjs/operators';
 import { WindowContainerComponent } from '@app/components/base-components/window-container/window-container.component';
@@ -40,15 +40,15 @@ export class OngoingComponent implements AfterViewInit, OnDestroy {
     showCanvas = true;
     isModalOpen = false;
 
-    constructor(private ongoingRaceService: OngoingRaceService) {
-        this.raceState$ = this.ongoingRaceService.raceState$;
-        this.countdown$ = this.ongoingRaceService.countdown$;
-        this.winPos     = this.ongoingRaceService.winningDistance;
+    constructor(private horseRaceService: HorseRaceService) {
+        this.raceState$ = this.horseRaceService.raceState$;
+        this.countdown$ = this.horseRaceService.countdown$;
+        this.winPos     = this.horseRaceService.winningDistance;
     }
 
     ngAfterViewInit(): void {
         // kick off the first race
-        this.ongoingRaceService.startOngoingRace();
+        this.horseRaceService.startOngoingRace();
 
         // whenever we re-enter 'pre', reload the canvas
         this.stateSub = this.raceState$.pipe(
@@ -67,6 +67,6 @@ export class OngoingComponent implements AfterViewInit, OnDestroy {
 
     ngOnDestroy(): void {
         this.stateSub.unsubscribe();
-        this.ongoingRaceService.stopOngoingRace();
+        this.horseRaceService.stopOngoingRace();
     }
 }

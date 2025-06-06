@@ -2,7 +2,7 @@
 import Phaser from 'phaser';
 import type { Subscription } from 'rxjs';
 import type {
-    OngoingRaceService,
+    HorseRaceService,
     HorseRaceState
 } from '@app/game/horse-race.service';
 
@@ -34,7 +34,7 @@ export class SoundLayer {
 
     constructor(
         private scene:   Phaser.Scene,
-        private raceSvc: OngoingRaceService
+        private raceSvc: HorseRaceService
     ) {
         // when the scene shuts down, fully clean up
         this.scene.events.once('shutdown', () => this.destroy());

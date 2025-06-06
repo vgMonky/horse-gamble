@@ -7,7 +7,7 @@ import { TextLayer } from './text_layer';
 import { RaceLineLayer } from './race_line';
 import { SoundLayer } from './sounds';
 import { MiniMapLayer } from './mini_map';
-import type { OngoingRaceService } from '@app/game/horse-race.service';
+import type { HorseRaceService } from '@app/game/horse-race.service';
 
 export class MainScene extends Phaser.Scene {
     private sky!: SkyBackground;
@@ -18,7 +18,7 @@ export class MainScene extends Phaser.Scene {
     private soundLayer!: SoundLayer;
 
     constructor(
-        private ongoingRaceService: OngoingRaceService,
+        private horseRaceService: HorseRaceService,
         private markerOpacityGetter: () => number,
         private filterLightnessGetter: () => number,
         private muteGetter: () => boolean
@@ -27,13 +27,13 @@ export class MainScene extends Phaser.Scene {
     }
 
     preload(): void {
-        this.bg = new ParallaxBackground(this, this.ongoingRaceService);
+        this.bg = new ParallaxBackground(this, this.horseRaceService);
         this.bg.preload();
 
-        this.raceLine = new RaceLineLayer(this, this.ongoingRaceService, this.markerOpacityGetter);
+        this.raceLine = new RaceLineLayer(this, this.horseRaceService, this.markerOpacityGetter);
         this.raceLine.preload();
 
-        this.soundLayer = new SoundLayer(this, this.ongoingRaceService);
+        this.soundLayer = new SoundLayer(this, this.horseRaceService);
         this.soundLayer.preload();
     }
 
@@ -52,7 +52,7 @@ export class MainScene extends Phaser.Scene {
         // top-right minimap of the circuit
         this.miniMap = new MiniMapLayer(
             this,
-            this.ongoingRaceService,
+            this.horseRaceService,
             this.markerOpacityGetter
         );
         this.miniMap.create();
@@ -61,7 +61,7 @@ export class MainScene extends Phaser.Scene {
         this.raceLine.create();
 
         // countdown text
-        const textLayer = new TextLayer(this, this.ongoingRaceService, 0.7);
+        const textLayer = new TextLayer(this, this.horseRaceService, 0.7);
         textLayer.create();
 
         this.soundLayer.create();

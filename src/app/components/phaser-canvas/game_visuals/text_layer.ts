@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { Subscription } from 'rxjs';
 import type {
-    OngoingRaceService,
+    HorseRaceService,
     HorseRaceState,
     RaceHorsesList
 } from '@app/game/horse-race.service';
@@ -17,7 +17,7 @@ export class TextLayer {
 
     constructor(
         private scene: Phaser.Scene,
-        private raceSvc: OngoingRaceService,
+        private raceSvc: HorseRaceService,
         private opacity: number = 0.5
     ) {}
 
