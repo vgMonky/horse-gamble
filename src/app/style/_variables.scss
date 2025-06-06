@@ -39,11 +39,11 @@ body.dark-theme {
 
 /* Light Theme */
 body.light-theme {
-    --c-background-0: hsl(var(--h1), 0%, 38%); // background light 0
-    --c-background-1: hsl(var(--h1), 0%, 40%); // background light 1
-    --c-background-2: hsl(var(--h1), 0%, 46%); // background light 2
-    --c-background-3: hsl(var(--h1), 0%, 48%); // background light 3
-    --c-background-4: hsl(var(--h1), 0%, 48%); // background light 4
+    --c-background-0: hsl(var(--h1), 0%, 18%); // background light 0
+    --c-background-1: hsl(var(--h1), 0%, 20%); // background light 1
+    --c-background-2: hsl(var(--h1), 0%, 26%); // background light 2
+    --c-background-3: hsl(var(--h1), 0%, 28%); // background light 3
+    --c-background-4: hsl(var(--h1), 0%, 28%); // background light 4
 
     --c-foreground-2: hsl(var(--h0), 5%, 75%); // foreground light 2
     --c-foreground-1: hsl(var(--h0), 5%, 80%); // foreground light 1
