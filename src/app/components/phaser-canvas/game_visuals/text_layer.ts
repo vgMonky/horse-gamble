@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import { Subscription } from 'rxjs';
 import type {
     OngoingRaceService,
-    OngoingRaceState,
+    HorseRaceState,
     RaceHorsesList
 } from '@app/game/horse-race.service';
 
@@ -59,7 +59,7 @@ export class TextLayer {
 
         // show/hide & content based on state
         this.stateSub = this.raceSvc.raceState$
-            .subscribe((state: OngoingRaceState) => {
+            .subscribe((state: HorseRaceState) => {
                 const visible = (state === 'pre' || state === 'post');
                 this.overlay.setVisible(visible);
                 this.countdownText.setVisible(visible);

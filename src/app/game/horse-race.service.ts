@@ -109,7 +109,7 @@ export class RaceHorsesList {
     }
 }
 
-export type OngoingRaceState = 'pre' | 'in' | 'post';
+export type HorseRaceState = 'pre' | 'in' | 'post';
 
 @Injectable({ providedIn: 'root' })
 export class OngoingRaceService implements OnDestroy {
@@ -125,7 +125,7 @@ export class OngoingRaceService implements OnDestroy {
     private _horsesList        = new BehaviorSubject<RaceHorsesList>(
         new RaceHorsesList([], 0)
     );
-    private _raceState     = new BehaviorSubject<OngoingRaceState>('pre');
+    private _raceState     = new BehaviorSubject<HorseRaceState>('pre');
     private _countdown     = new BehaviorSubject<number>(0);
 
     // Public streams
