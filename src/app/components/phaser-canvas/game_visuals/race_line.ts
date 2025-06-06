@@ -2,7 +2,7 @@
 import Phaser from 'phaser';
 import type {
     OngoingRaceService,
-    OngoingHorsesList,
+    RaceHorsesList,
     OngoingRaceState
 } from '@app/game/horse-race.service';
 import { SLOT_COLOR_MAP } from '@app/game/horse-race.service';
@@ -54,7 +54,7 @@ class Camera {
     private graphics: Phaser.GameObjects.Graphics;
     private posToPx = 20;
     private raceSvc: OngoingRaceService;
-    private horsesList!: OngoingHorsesList;
+    private horsesList!: RaceHorsesList;
     private raceState: OngoingRaceState = 'pre';
     private sub = new Subscription();
     private images: Map<string, Phaser.GameObjects.Image> = new Map();

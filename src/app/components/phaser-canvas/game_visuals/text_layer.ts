@@ -3,7 +3,7 @@ import { Subscription } from 'rxjs';
 import type {
     OngoingRaceService,
     OngoingRaceState,
-    OngoingHorsesList
+    RaceHorsesList
 } from '@app/game/horse-race.service';
 
 export class TextLayer {
@@ -13,7 +13,7 @@ export class TextLayer {
     private stateSub?: Subscription;
     private countdownSub?: Subscription;
     private horsesSub?: Subscription;
-    private latestList?: OngoingHorsesList;
+    private latestList?: RaceHorsesList;
 
     constructor(
         private scene: Phaser.Scene,

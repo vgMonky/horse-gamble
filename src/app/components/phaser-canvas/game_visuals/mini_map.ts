@@ -1,13 +1,13 @@
 // src/app/components/phaser-canvas/game_visuals/mini_map.ts
 import Phaser from 'phaser';
-import type { OngoingRaceService, OngoingHorsesList } from '@app/game/horse-race.service';
+import type { OngoingRaceService, RaceHorsesList } from '@app/game/horse-race.service';
 import { SLOT_COLOR_MAP } from '@app/game/horse-race.service';
 import { Subscription } from 'rxjs';
 
 export class MiniMapLayer {
     private graphics: Phaser.GameObjects.Graphics;
     private dots = new Map<number, Phaser.GameObjects.Arc>();
-    private horsesList!: OngoingHorsesList;
+    private horsesList!: RaceHorsesList;
     private sub = new Subscription();
     private center!: { x: number; y: number };
     private shape!: StadiumShape;

@@ -13,25 +13,25 @@ import { BreakpointObserver } from '@angular/cdk/layout';
 import { Subject, takeUntil } from 'rxjs';
 import {
     OngoingRaceService,
-    OngoingHorse,
-    OngoingHorsesList,
+    RaceHorse,
+    RaceHorsesList,
     SLOT_COLOR_MAP
 } from '@app/game/horse-race.service';
-import { OngoingHorseUiComponent } from '@app/components/ongoing-horse-ui/ongoing-horse-ui.component';
+import { RaceHorseUiComponent } from '@app/components/ongoing-horse-ui/ongoing-horse-ui.component';
 import { BREAKPOINT } from 'src/types';
 
 @Component({
     standalone: true,
     selector: 'app-ongoing-list-ui',
-    imports: [CommonModule, OngoingHorseUiComponent],
+    imports: [CommonModule, RaceHorseUiComponent],
     templateUrl: './ongoing-list-ui.component.html',
     styleUrls: ['./ongoing-list-ui.component.scss']
 })
 export class OngoingListUiComponent implements AfterViewInit, OnDestroy {
-    horsesList: OngoingHorse[] = [];
+    horsesList: RaceHorse[] = [];
     isMobileView = false;
 
-    private lastListInstance?: OngoingHorsesList;
+    private lastListInstance?: RaceHorsesList;
     private destroy$ = new Subject<void>();
     private prevY = new Map<number, number>();
 
@@ -77,7 +77,7 @@ export class OngoingListUiComponent implements AfterViewInit, OnDestroy {
         });
     }
 
-    private runFLIP(newList: OngoingHorse[]): void {
+    private runFLIP(newList: RaceHorse[]): void {
         const oldYMap = new Map(this.prevY);
         this.horsesList = newList;
 

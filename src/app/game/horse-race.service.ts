@@ -10,15 +10,15 @@ export const SLOT_COLOR_MAP: Record<number, string> = {
     3: 'hsl(180,70%,30%)' // CYAN
 };
 
-export interface OngoingHorse {
+export interface RaceHorse {
     slot:        number;
     horse:       Horse;
     position:    number;
     finalPlace:  number | null;
 }
 
-export class OngoingHorsesList {
-    private list: OngoingHorse[];
+export class RaceHorsesList {
+    private list: RaceHorse[];
 
     constructor(allHorses: Horse[], count: number) {
         const selected = this.shuffle(allHorses).slice(0, count);
@@ -39,12 +39,12 @@ export class OngoingHorsesList {
         return a;
     }
 
-    getAll(): OngoingHorse[] {
+    getAll(): RaceHorse[] {
         return [...this.list];
     }
 
     /** sorted by finish place, then by descending position */
-    getByPlacement(): OngoingHorse[] {
+    getByPlacement(): RaceHorse[] {
         return [...this.list].sort((a, b) => {
             if (a.finalPlace != null && b.finalPlace != null) {
                 return a.finalPlace - b.finalPlace;
@@ -122,8 +122,8 @@ export class OngoingRaceService implements OnDestroy {
     private preTimer   = new CountdownTimer();
     private postTimer  = new CountdownTimer();
 
-    private _horsesList        = new BehaviorSubject<OngoingHorsesList>(
-        new OngoingHorsesList([], 0)
+    private _horsesList        = new BehaviorSubject<RaceHorsesList>(
+        new RaceHorsesList([], 0)
     );
     private _raceState     = new BehaviorSubject<OngoingRaceState>('pre');
     private _countdown     = new BehaviorSubject<number>(0);
@@ -136,7 +136,7 @@ export class OngoingRaceService implements OnDestroy {
     startOngoingRace(): void {
         this.stopOngoingRace();
 
-        const horsesList = new OngoingHorsesList(ALL_HORSES, 4);
+        const horsesList = new RaceHorsesList(ALL_HORSES, 4);
         this._horsesList.next(horsesList);
         this._raceState.next('pre');
 

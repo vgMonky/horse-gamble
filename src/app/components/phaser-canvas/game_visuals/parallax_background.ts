@@ -3,8 +3,8 @@ import Phaser from 'phaser';
 import type { Subscription } from 'rxjs';
 import type {
     OngoingRaceService,
-    OngoingHorsesList,
-    OngoingHorse
+    RaceHorsesList,
+    RaceHorse
 } from '@app/game/horse-race.service';
 
 interface Layer {
@@ -109,7 +109,7 @@ export class ParallaxBackground {
             });
         });
 
-        this.sub = this.raceSvc.horsesList$.subscribe((list: OngoingHorsesList) => {
+        this.sub = this.raceSvc.horsesList$.subscribe((list: RaceHorsesList) => {
             const leader = list.getByPlacement()[0];
             const pos    = leader.position!;
             const dist   = this.raceSvc.winningDistance;
