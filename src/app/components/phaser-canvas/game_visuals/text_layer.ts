@@ -4,7 +4,7 @@ import type {
     OngoingRaceService,
     OngoingRaceState,
     OngoingHorsesList
-} from '@app/game/ongoing-race.service';
+} from '@app/game/horse-race.service';
 
 export class TextLayer {
     private overlay!: Phaser.GameObjects.Graphics;

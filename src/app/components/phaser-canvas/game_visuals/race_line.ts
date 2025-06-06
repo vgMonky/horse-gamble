@@ -4,8 +4,8 @@ import type {
     OngoingRaceService,
     OngoingHorsesList,
     OngoingRaceState
-} from '@app/game/ongoing-race.service';
-import { SLOT_COLOR_MAP } from '@app/game/ongoing-race.service';
+} from '@app/game/horse-race.service';
+import { SLOT_COLOR_MAP } from '@app/game/horse-race.service';
 import { Subscription } from 'rxjs';
 
 export class RaceLineLayer {

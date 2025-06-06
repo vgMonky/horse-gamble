@@ -1,4 +1,4 @@
-// src/app/game/ongoing-race.service.ts
+// src/app/game/horse-race.service.ts
 import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject, interval, Subscription } from 'rxjs';
 import { ALL_HORSES, Horse } from './horses-database';
@@ -9,8 +9,6 @@ export const SLOT_COLOR_MAP: Record<number, string> = {
     2: 'hsl(300,70%,30%)', // MAGENTA
     3: 'hsl(180,70%,30%)' // CYAN
 };
-
-export type OngoingRaceState = 'pre' | 'in' | 'post';
 
 export interface OngoingHorse {
     slot:        number;
@@ -110,6 +108,8 @@ export class OngoingHorsesList {
         });
     }
 }
+
+export type OngoingRaceState = 'pre' | 'in' | 'post';
 
 @Injectable({ providedIn: 'root' })
 export class OngoingRaceService implements OnDestroy {

@@ -16,7 +16,7 @@ import {
     OngoingHorse,
     OngoingHorsesList,
     SLOT_COLOR_MAP
-} from '@app/game/ongoing-race.service';
+} from '@app/game/horse-race.service';
 import { OngoingHorseUiComponent } from '@app/components/ongoing-horse-ui/ongoing-horse-ui.component';
 import { BREAKPOINT } from 'src/types';
 

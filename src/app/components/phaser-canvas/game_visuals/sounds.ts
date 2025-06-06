@@ -4,7 +4,7 @@ import type { Subscription } from 'rxjs';
 import type {
     OngoingRaceService,
     OngoingRaceState
-} from '@app/game/ongoing-race.service';
+} from '@app/game/horse-race.service';
 
 // default volumes (0.0–1.0)
 const DEFAULT_VOLUMES = {

@@ -1,7 +1,7 @@
 // src/app/components/ongoing-horse-ui/ongoing-horse-ui.component.ts
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { OngoingHorse } from '@app/game/ongoing-race.service';
+import { OngoingHorse } from '@app/game/horse-race.service';
 
 @Component({
     standalone: true,

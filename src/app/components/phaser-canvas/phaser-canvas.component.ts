@@ -12,7 +12,7 @@ import { BreakpointObserver } from '@angular/cdk/layout';
 import { BREAKPOINT } from 'src/types';
 import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { OngoingRaceService } from '@app/game/ongoing-race.service';
+import { OngoingRaceService } from '@app/game/horse-race.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ExpandableComponent } from '../base-components/expandable/expandable.component';

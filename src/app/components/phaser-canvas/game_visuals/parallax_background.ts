@@ -5,7 +5,7 @@ import type {
     OngoingRaceService,
     OngoingHorsesList,
     OngoingHorse
-} from '@app/game/ongoing-race.service';
+} from '@app/game/horse-race.service';
 
 interface Layer {
     sprite:   Phaser.GameObjects.TileSprite;

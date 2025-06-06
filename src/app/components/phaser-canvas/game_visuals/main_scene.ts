@@ -7,7 +7,7 @@ import { TextLayer } from './text_layer';
 import { RaceLineLayer } from './race_line';
 import { SoundLayer } from './sounds';
 import { MiniMapLayer } from './mini_map';
-import type { OngoingRaceService } from '@app/game/ongoing-race.service';
+import type { OngoingRaceService } from '@app/game/horse-race.service';
 
 export class MainScene extends Phaser.Scene {
     private sky!: SkyBackground;

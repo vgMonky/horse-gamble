@@ -1,7 +1,7 @@
 // src/app/pages/home/home.component.ts
 import { Component } from '@angular/core';
 import { SharedModule } from '@app/shared/shared.module';
-import { OngoingRaceService } from '@app/game/ongoing-race.service';
+import { OngoingRaceService } from '@app/game/horse-race.service';
 
 
 @Component({
