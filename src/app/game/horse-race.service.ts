@@ -133,7 +133,7 @@ export class HorseRaceService implements OnDestroy {
     raceState$ = this._raceState.asObservable();
     countdown$ = this._countdown.asObservable();
 
-    startOngoingRace(): void {
+    startHorseRace(): void {
         this.stopOngoingRace();
 
         const horsesList = new RaceHorsesList(ALL_HORSES, 4);
@@ -166,7 +166,7 @@ export class HorseRaceService implements OnDestroy {
                     this.postCountdownDuration,
                     () => {
                         this.stopRaceInterval();
-                        this.startOngoingRace();
+                        this.startHorseRace();
                     },
                     this._countdown
                 );
