@@ -6,7 +6,14 @@ import {
     RaceHorsesList,
     HorseRaceState
 } from './horse-race.abstract';
-import { Observable } from 'rxjs';
+import {
+    BehaviorSubject,
+    Observable,
+    switchMap,
+    filter,
+    takeUntil,
+    Subject
+} from 'rxjs';
 
 /**
  * Manages any number of HorseRace instances in a simple array.
@@ -79,40 +86,81 @@ class RaceManager {
 @Injectable({ providedIn: 'root' })
 export class HorseRaceService implements OnDestroy {
     private manager: RaceManager;
-    private static readonly OngoingRaceID  = 1;
+
+    // the IDs, in the order you want them displayed
+    private readonly raceIds = [1, 2, 3];
+
+    // which index in raceIds is currently active
+    private currentIdx = 0;
+
+    // a subject holding the "current" raceId
+    private currentId$ = new BehaviorSubject<number>(this.raceIds[this.currentIdx]);
+
+    // for tearing down our completed‐watch subscription
+    private destroy$ = new Subject<void>();
+
+    // expose the stream of “which race is current”
+    public readonly id$: Observable<number> = this.currentId$.asObservable();
 
     constructor() {
-        // 1) instantiate the manager
         this.manager = new RaceManager(
             ALL_HORSES,
-            4,     // number of runners
+            4,     // runners
             100,   // tick interval (ms)
-            10,    // post-race countdown (s)
+            10,    // post countdown (s)
             2000   // winning distance (dm)
         );
-        this.manager.createRace(1, 20)
+
+        // pre-create your races with different pre-countdowns:
+        this.manager.createRace(1, 20);
         this.manager.createRace(2, 120);
         this.manager.createRace(3, 220);
+
+        // watch for 'completed' on whichever race is current,
+        // then advance to the next race in raceIds
+        this.raceState$
+            .pipe(
+                filter(state => state === 'completed'),
+                takeUntil(this.destroy$)
+            )
+            .subscribe(() => this.advanceToNextRace());
     }
 
-    // Interface for UI updates based on OngoingRaceID
-    get raceState$(): Observable<HorseRaceState> {
-        return this.manager.getRaceState$(HorseRaceService.OngoingRaceID);
+    /** switch to the next ID, if any remain */
+    private advanceToNextRace(): void {
+        if (this.currentIdx + 1 < this.raceIds.length) {
+            this.currentIdx++;
+            const nextId = this.raceIds[this.currentIdx];
+            this.currentId$.next(nextId);
+        }
+        // else: no more races, you can optionally complete destroy$ here
     }
-    get countdown$(): Observable<number> {
-        return this.manager.getCountdown$(HorseRaceService.OngoingRaceID);
-    }
-    get horsesList$(): Observable<RaceHorsesList> {
-        return this.manager.getHorsesList$(HorseRaceService.OngoingRaceID);
-    }
+
+    // === Exposed streams always follow the current race ID ===
+
+    readonly raceState$: Observable<HorseRaceState> = this.currentId$.pipe(
+        switchMap(id => this.manager.getRaceState$(id))
+    );
+
+    readonly countdown$: Observable<number> = this.currentId$.pipe(
+        switchMap(id => this.manager.getCountdown$(id))
+    );
+
+    readonly horsesList$: Observable<RaceHorsesList> = this.currentId$.pipe(
+        switchMap(id => this.manager.getHorsesList$(id))
+    );
+
+    /** synchronous getters still read the current ID under the hood */
     get winningDistance(): number {
-        return this.manager.getWinningDistance(HorseRaceService.OngoingRaceID);
+        return this.manager.getWinningDistance(this.currentId$.getValue());
     }
     get id(): number {
-        return this.manager.getID(HorseRaceService.OngoingRaceID);
+        return this.currentId$.getValue();
     }
 
+    /** stop everything on destroy */
     ngOnDestroy(): void {
+        this.destroy$.next();
         this.manager.stopAll();
     }
 }

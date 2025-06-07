@@ -16,6 +16,7 @@ import { HorseRaceService } from '@app/game/horse-race.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ExpandableComponent } from '../base-components/expandable/expandable.component';
+import { skip } from 'rxjs/operators';
 
 @Component({
     selector: 'app-phaser-canvas',
@@ -50,11 +51,22 @@ export class PhaserCanvasComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
+        // 1) start the first game
         this.startGame();
+
+        // 2) whenever the service’s id$ changes (i.e. new race),
+        //    destroy & re-create the game
+        this.gameSubs.push(
+            this.horseRaceService.id$
+                .pipe(skip(1))
+                .subscribe(() => this.resetGame())
+        );
     }
 
     ngOnDestroy(): void {
-        // destroy Phaser instance
+        // tear down subscriptions
+        this.gameSubs.forEach(s => s.unsubscribe());
+        // destroy Phaser
         this.game?.destroy(true);
     }
 
@@ -74,5 +86,10 @@ export class PhaserCanvasComponent implements OnInit, OnDestroy {
             parent: this.containerRef.nativeElement,
             scene
         });
+    }
+
+    private resetGame(): void {
+        this.game?.destroy(true);
+        this.startGame();
     }
 }

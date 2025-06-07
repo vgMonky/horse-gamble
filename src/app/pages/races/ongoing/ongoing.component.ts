@@ -11,7 +11,6 @@ import { PhaserCanvasComponent } from '@app/components/phaser-canvas/phaser-canv
 import { OngoingListUiComponent } from '@app/components/ongoing-list-ui/ongoing-list-ui.component';
 import { HorseRaceService } from '@app/game/horse-race.service';
 import { Observable, Subscription } from 'rxjs';
-import { skip, filter } from 'rxjs/operators';
 import { WindowContainerComponent } from '@app/components/base-components/window-container/window-container.component';
 
 
@@ -29,29 +28,17 @@ import { WindowContainerComponent } from '@app/components/base-components/window
     templateUrl: './ongoing.component.html',
     styleUrls: ['./ongoing.component.scss']
 })
-export class OngoingComponent implements OnDestroy {
+export class OngoingComponent {
     @ViewChild(PhaserCanvasComponent) private canvasCmp!: PhaserCanvasComponent;
 
     readonly winPos: number;
-    readonly ongoingID: number;
+    readonly ongoingID$: Observable<number>;
 
     showCanvas = true;
     isModalOpen = false;
 
     constructor(private horseRaceService: HorseRaceService) {
         this.winPos     = this.horseRaceService.winningDistance;
-        this.ongoingID     = this.horseRaceService.id;
-    }
-
-    private reloadCanvas(): void {
-        // turn off → turn on to force Angular to destroy & re-create the PhaserCanvasComponent
-        setTimeout(() => {
-            this.showCanvas = false;
-            setTimeout(() => this.showCanvas = true, 0);
-        }, 0);
-    }
-
-    ngOnDestroy(): void {
-        this.reloadCanvas
+        this.ongoingID$ = this.horseRaceService.id$;
     }
 }
