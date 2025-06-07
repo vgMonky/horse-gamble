@@ -2,10 +2,10 @@
 import Phaser from 'phaser';
 import type { Subscription } from 'rxjs';
 import type {
-    HorseRaceService,
     RaceHorsesList,
     RaceHorse
-} from '@app/game/horse-race.service';
+} from '@app/game/horse-race.abstract';
+import { HorseRaceService } from '@app/game/horse-race.service'
 
 interface Layer {
     sprite:   Phaser.GameObjects.TileSprite;

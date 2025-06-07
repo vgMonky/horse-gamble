@@ -1,7 +1,7 @@
 // src/app/components/phaser-canvas/game_visuals/mini_map.ts
 import Phaser from 'phaser';
-import type { HorseRaceService, RaceHorsesList } from '@app/game/horse-race.service';
-import { SLOT_COLOR_MAP } from '@app/game/horse-race.service';
+import type { HorseRaceService } from '@app/game/horse-race.service';
+import { SLOT_COLOR_MAP, RaceHorsesList } from '@app/game/horse-race.abstract';
 import { Subscription } from 'rxjs';
 
 export class MiniMapLayer {

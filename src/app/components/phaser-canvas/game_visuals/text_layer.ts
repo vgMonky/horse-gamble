@@ -1,10 +1,10 @@
 import Phaser from 'phaser';
 import { Subscription } from 'rxjs';
 import type {
-    HorseRaceService,
     HorseRaceState,
     RaceHorsesList
-} from '@app/game/horse-race.service';
+} from '@app/game/horse-race.abstract';
+import type { HorseRaceService } from '@app/game/horse-race.service';
 
 export class TextLayer {
     private overlay!: Phaser.GameObjects.Graphics;

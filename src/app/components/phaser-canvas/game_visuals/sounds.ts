@@ -1,10 +1,8 @@
 // src/app/components/phaser-canvas/game_visuals/sounds.ts
 import Phaser from 'phaser';
 import type { Subscription } from 'rxjs';
-import type {
-    HorseRaceService,
-    HorseRaceState
-} from '@app/game/horse-race.service';
+import type { HorseRaceService } from '@app/game/horse-race.service';
+import type { HorseRaceState } from '@app/game/horse-race.abstract';
 
 // default volumes (0.0–1.0)
 const DEFAULT_VOLUMES = {

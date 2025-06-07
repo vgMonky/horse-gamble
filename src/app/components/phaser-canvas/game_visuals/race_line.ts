@@ -1,11 +1,11 @@
 // src/app/components/phaser-canvas/game_visuals/race_line.ts
 import Phaser from 'phaser';
-import type {
-    HorseRaceService,
+import {
     RaceHorsesList,
-    HorseRaceState
-} from '@app/game/horse-race.service';
-import { SLOT_COLOR_MAP } from '@app/game/horse-race.service';
+    HorseRaceState,
+    SLOT_COLOR_MAP,
+} from '@app/game/horse-race.abstract';
+import { HorseRaceService } from '@app/game/horse-race.service';
 import { Subscription } from 'rxjs';
 
 export class RaceLineLayer {

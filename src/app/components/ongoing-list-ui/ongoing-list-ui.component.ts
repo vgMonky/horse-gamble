@@ -11,12 +11,12 @@ import {
 import { CommonModule } from '@angular/common';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { Subject, takeUntil } from 'rxjs';
+import { HorseRaceService } from '@app/game/horse-race.service';
 import {
-    HorseRaceService,
     RaceHorse,
     RaceHorsesList,
     SLOT_COLOR_MAP
-} from '@app/game/horse-race.service';
+} from '@app/game/horse-race.abstract';
 import { RaceHorseUiComponent } from '@app/components/ongoing-horse-ui/ongoing-horse-ui.component';
 import { BREAKPOINT } from 'src/types';
 

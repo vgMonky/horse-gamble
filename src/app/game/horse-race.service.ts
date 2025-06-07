@@ -1,255 +1,139 @@
 // src/app/game/horse-race.service.ts
 import { Injectable, OnDestroy } from '@angular/core';
-import { BehaviorSubject, interval, Subscription } from 'rxjs';
 import { ALL_HORSES, Horse } from './horses-database';
+import {
+    HorseRace,
+    RaceHorsesList,
+    HorseRaceState
+} from './horse-race.abstract';
+import { Observable } from 'rxjs';
 
-export const SLOT_COLOR_MAP: Record<number, string> = {
-    0: 'hsl(0,70%,30%)', // RED
-    1: 'hsl(90,70%,30%)', // GREEN
-    2: 'hsl(300,70%,30%)', // MAGENTA
-    3: 'hsl(180,70%,30%)' // CYAN
-};
+/**
+ * Manages any number of HorseRace instances in a simple array.
+ */
+class RaceManager {
+    private races: HorseRace[] = [];
 
-export interface RaceHorse {
-    slot:        number;
-    horse:       Horse;
-    position:    number;
-    finalPlace:  number | null;
-}
+    constructor(
+        private allHorses: Horse[],
+        private runnerCount: number,
+        private tickMs: number,
+        private postSec: number,
+        private winningDistanceDm: number
+    ) {}
 
-export class RaceHorsesList {
-    private list: RaceHorse[];
-
-    constructor(allHorses: Horse[], count: number) {
-        const selected = this.shuffle(allHorses).slice(0, count);
-        this.list = selected.map((h, i) => ({
-            slot:        i,
-            horse:       h,
-            position:    0,
-            finalPlace:  null
-        }));
-    }
-
-    private shuffle(arr: Horse[]): Horse[] {
-        const a = [...arr];
-        for (let i = a.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [a[i], a[j]] = [a[j], a[i]];
+    /**
+     * Create & register a new HorseRace with its own `id`.
+     */
+    createRace(id: number, preSec: number): HorseRace {
+        if (this.races.find(r => r.id === id)) {
+            throw new Error(`Race ${id} already exists`);
         }
-        return a;
+        const race = new HorseRace(
+            id,
+            this.allHorses,
+            this.runnerCount,
+            this.tickMs,
+            preSec,
+            this.postSec,
+            this.winningDistanceDm
+        );
+        this.races.push(race);
+        return race;
     }
 
-    getAll(): RaceHorse[] {
-        return [...this.list];
+    // Control race by id
+    startRace(id: number): void {
+        this.getHorseRaceById(id).startRace();
     }
 
-    /** sorted by finish place, then by descending position */
-    getByPlacement(): RaceHorse[] {
-        return [...this.list].sort((a, b) => {
-            if (a.finalPlace != null && b.finalPlace != null) {
-                return a.finalPlace - b.finalPlace;
-            } else if (a.finalPlace != null) {
-                return -1;
-            } else if (b.finalPlace != null) {
-                return 1;
-            } else {
-                return (b.position! - a.position!);
-            }
-        });
+    stopRace(id: number): void {
+        this.getHorseRaceById(id).stopRace();
     }
 
-    /** apply the advances and mark any new finishers */
-    applyAdvances(advances: number[], winningDistance: number): number {
-        let finishCount = this.list.filter(h => h.finalPlace! > 0).length;
-
-        // capture pre-tick positions for tie-breaking
-        const prePositions = this.list.map(h => h.position!);
-
-        this.list.forEach((h, i) => {
-            h.position! += advances[i] || 0;
-        });
-
-        // compute final placement
-            // primary sort: bigger overshoot wins
-            // secondary sort: who was farther along before this tick
-            // third sort: _list array order
-        const newFinishers = this.list
-            .filter(h => h.finalPlace == null && h.position! >= winningDistance)
-            .sort((horseA, horseB) => {
-                const overshootA = horseA.position! - winningDistance;
-                const overshootB = horseB.position! - winningDistance;
-                if (overshootB !== overshootA) {
-                    return overshootB - overshootA;
-                }
-
-                const idxA = this.list.indexOf(horseA);
-                const idxB = this.list.indexOf(horseB);
-                const preA = prePositions[idxA];
-                const preB = prePositions[idxB];
-                return preB - preA;
-            });
-
-        // assign places in that order
-        newFinishers.forEach(h => {
-            h.finalPlace = ++finishCount;
-        });
-
-        return finishCount;
+    getRaceState$(id: number): Observable<HorseRaceState> {
+        return this.getHorseRaceById(id).raceState$;
     }
 
-    consoleLog(): void {
-        console.log("")
-        this.list.forEach(h => {
-            console.log(
-                `Horse ${h.horse.index} — ` +
-                `pos: ${h.position ?? 'null'} — ` +
-                `Place: ${h.finalPlace ?? 'null'}`
-            );
-        });
+    getCountdown$(id: number): Observable<number> {
+        return this.getHorseRaceById(id).countdown$;
+    }
+
+    getHorsesList$(id: number): Observable<RaceHorsesList> {
+        return this.getHorseRaceById(id).horsesList$;
+    }
+
+    getWinningDistance(id: number): number {
+        return this.getHorseRaceById(id).winningDistance;
+    }
+
+    getHorseRaceById(id: number): HorseRace {
+        const found = this.races.find(r => r.id === id);
+        if (!found) {
+            throw new Error(`Race ${id} not found`);
+        }
+        return found;
+    }
+
+    stopAll(): void {
+        this.races.forEach(r => r.stopRace());
     }
 }
-
-export type HorseRaceState = 'pre' | 'in' | 'post';
 
 @Injectable({ providedIn: 'root' })
 export class HorseRaceService implements OnDestroy {
-    public readonly winningDistance       = 2000; // dm
-    private readonly tickSpeed             = 100; // ms
-    private readonly preCountdownDuration  = 20;
-    private readonly postCountdownDuration = 10;
+    private manager: RaceManager;
+    private static readonly DEFAULT_ID  = 1;
+    private static readonly DEFAULT_PRE = 20;  // seconds
 
-    private raceInterval$!: Subscription;
-    private preTimer   = new CountdownTimer();
-    private postTimer  = new CountdownTimer();
-
-    private _horsesList        = new BehaviorSubject<RaceHorsesList>(
-        new RaceHorsesList([], 0)
-    );
-    private _raceState     = new BehaviorSubject<HorseRaceState>('pre');
-    private _countdown     = new BehaviorSubject<number>(0);
-
-    // Public streams
-    horsesList$    = this._horsesList.asObservable();
-    raceState$ = this._raceState.asObservable();
-    countdown$ = this._countdown.asObservable();
-
-    startHorseRace(): void {
-        this.stopOngoingRace();
-
-        const horsesList = new RaceHorsesList(ALL_HORSES, 4);
-        this._horsesList.next(horsesList);
-        this._raceState.next('pre');
-
-        this.preTimer.start(
-            this.preCountdownDuration,
-            () => this.beginInRace(),
-            this._countdown
+    constructor() {
+        // 1) instantiate the manager
+        this.manager = new RaceManager(
+            ALL_HORSES,
+            4,     // number of runners
+            100,   // tick interval (ms)
+            10,    // post-race countdown (s)
+            2000   // winning distance (dm)
+        );
+        // 2) pre-create the “default” race (#1)
+        this.manager.createRace(
+            HorseRaceService.DEFAULT_ID,
+            HorseRaceService.DEFAULT_PRE
         );
     }
 
-    private beginInRace(): void {
-        this._raceState.next('in');
-        this.raceInterval$ = interval(this.tickSpeed).subscribe(() => {
-            const list    = this._horsesList.getValue();
-            const seed    = new Seed(4);
-            const adv     = seed.splitNumber(list.getAll().length);
-            const finished = list.applyAdvances(adv, this.winningDistance);
+    // --- Default-race API (ID = 1) --- //
 
-            this._horsesList.next(list);
-            list.consoleLog();
-
-            if (finished === list.getAll().length
-            && this._raceState.getValue() === 'in'
-            ) {
-                this._raceState.next('post');
-                this.postTimer.start(
-                    this.postCountdownDuration,
-                    () => {
-                        this.stopRaceInterval();
-                        this.startHorseRace();
-                    },
-                    this._countdown
-                );
-            }
-        });
-    }
-
-    private stopRaceInterval(): void {
-        this.raceInterval$?.unsubscribe();
+    startOngoingRace(): void {
+        this.manager.startRace(HorseRaceService.DEFAULT_ID);
     }
 
     stopOngoingRace(): void {
-        this.stopRaceInterval();
-        this.preTimer.stop();
-        this.postTimer.stop();
+        this.manager.stopRace(HorseRaceService.DEFAULT_ID);
+    }
+
+    get raceState$(): Observable<HorseRaceState> {
+        return this.manager.getRaceState$(HorseRaceService.DEFAULT_ID);
+    }
+
+    get countdown$(): Observable<number> {
+        return this.manager.getCountdown$(HorseRaceService.DEFAULT_ID);
+    }
+
+    get horsesList$(): Observable<RaceHorsesList> {
+        return this.manager.getHorsesList$(HorseRaceService.DEFAULT_ID);
+    }
+
+    get winningDistance(): number {
+        return this.manager.getWinningDistance(HorseRaceService.DEFAULT_ID);
+    }
+
+    /** Expose the raw HorseRace instance if you need it directly */
+    getHorseRaceById(id: number): HorseRace {
+        return this.manager.getHorseRaceById(id);
     }
 
     ngOnDestroy(): void {
-        this.stopOngoingRace();
-    }
-}
-
-class Seed {
-    private seedValue: number;
-    private readonly allowedDigits = [6, 7, 8, 9];
-
-    constructor(length: number) {
-        this.seedValue = this.genNumber(length);
-    }
-
-    private genNumber(length: number): number {
-        let s = '';
-        for (let i = 0; i < length; i++) {
-            // pick a random index into allowedDigits
-            const idx = Math.floor(Math.random() * this.allowedDigits.length);
-            s += this.allowedDigits[idx];
-        }
-        return parseInt(s, 10);
-    }
-
-    splitNumber(parts: number): number[] {
-        const digits    = this.seedValue.toString().split('');
-        const chunkSize = Math.floor(digits.length / parts);
-        if (!chunkSize) return [];
-        const result: number[] = [];
-        for (let i = 0; i < parts; i++) {
-            const chunk = digits.slice(i * chunkSize, (i + 1) * chunkSize);
-            if (chunk.length === chunkSize) {
-                result.push(+chunk.join(''));
-            }
-        }
-        return result;
-    }
-}
-
-
-class CountdownTimer {
-    private interval$!: Subscription;
-    private _countdown = new BehaviorSubject<number>(0);
-
-    get countdown$() {
-        return this._countdown.asObservable();
-    }
-
-    start(
-        seconds: number,
-        onComplete: () => void,
-        external?: BehaviorSubject<number>
-    ): void {
-        this._countdown.next(seconds);
-        external?.next(seconds);
-        this.interval$ = interval(1000).subscribe(() => {
-            const next = this._countdown.getValue() - 1;
-            this._countdown.next(next);
-            external?.next(next);
-            if (next <= 0) {
-                this.interval$.unsubscribe();
-                onComplete();
-            }
-        });
-    }
-
-    stop(): void {
-        this.interval$?.unsubscribe();
+        this.manager.stopAll();
     }
 }

@@ -1,1 +1,0 @@
-// Clases in horse-race.service should all be here, including horseRace type with a new id field, and horseRace class definition and methods. The horse-race.service will only do createHorseRace(id:1) and startHorseRace(id:1).
