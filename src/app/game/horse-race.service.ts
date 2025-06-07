@@ -62,9 +62,6 @@ class RaceManager {
     getID(id: number): number {
         return this.getHorseRaceById(id).id;
     }
-    getCompleted(id: number): boolean {
-        return this.getHorseRaceById(id).completed;
-    }
 
     getHorseRaceById(id: number): HorseRace {
         const found = this.races.find(r => r.id === id);

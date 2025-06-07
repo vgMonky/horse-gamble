@@ -149,7 +149,7 @@ class CountdownTimer {
     }
 }
 
-export type HorseRaceState = 'pre' | 'in' | 'post';
+export type HorseRaceState = 'pre' | 'in' | 'post' | 'completed';
 
 export class HorseRace {
     readonly id: number;
@@ -225,7 +225,7 @@ export class HorseRace {
                 // 3) start the post-race countdown just once
                 this.postTimer.start(
                     this.postDuration,
-                    () => this.emitSignalCompleted(),
+                    () => this.raceCompleted(),
                     this._cnt$
                 );
             }
@@ -233,10 +233,10 @@ export class HorseRace {
     }
 
     /** Called when post‐timer reaches zero */
-    emitSignalCompleted(): void {
+    raceCompleted(): void {
         // stop any leftover timers (though raceSub is already gone)
         this.stopRace();
-        this.completed = true;
+        this._state$.next('completed');
         console.log(`race ${this.id} finished`);
     }
 

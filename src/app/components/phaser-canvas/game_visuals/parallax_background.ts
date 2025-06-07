@@ -31,7 +31,7 @@ export class ParallaxBackground {
     private layers: Layer[] = [];
     private sub?: Subscription;
     private raceStateSub?: Subscription;
-    private raceState: 'pre' | 'in' | 'post' = 'pre';
+    private raceState: 'pre' | 'in' | 'post' | 'completed' = 'pre';
 
     constructor(
         private scene: Phaser.Scene,

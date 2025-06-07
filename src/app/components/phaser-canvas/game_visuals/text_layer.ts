@@ -60,7 +60,7 @@ export class TextLayer {
         // show/hide & content based on state
         this.stateSub = this.raceSvc.raceState$
             .subscribe((state: HorseRaceState) => {
-                const visible = (state === 'pre' || state === 'post');
+                const visible = (state === 'pre' || state === 'post' || state === 'completed');
                 this.overlay.setVisible(visible);
                 this.countdownText.setVisible(visible);
                 this.messageText.setVisible(visible);
