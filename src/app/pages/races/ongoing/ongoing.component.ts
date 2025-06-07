@@ -47,9 +47,6 @@ export class OngoingComponent implements AfterViewInit, OnDestroy {
     }
 
     ngAfterViewInit(): void {
-        // kick off the first race
-        this.horseRaceService.startOngoingRace();
-
         // whenever we re-enter 'pre', reload the canvas
         this.stateSub = this.raceState$.pipe(
             skip(1),

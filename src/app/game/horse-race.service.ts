@@ -23,7 +23,7 @@ class RaceManager {
     ) {}
 
     /**
-     * Create & register a new HorseRace with its own `id`.
+     * Create & register a new HorseRace with its own `id`, and start it automatically.
      */
     createRace(id: number, preSec: number): HorseRace {
         if (this.races.find(r => r.id === id)) {
@@ -39,12 +39,8 @@ class RaceManager {
             this.winningDistanceDm
         );
         this.races.push(race);
+        race.startRace()
         return race;
-    }
-
-    // Control race by id
-    startRace(id: number): void {
-        this.getHorseRaceById(id).startRace();
     }
 
     stopRace(id: number): void {
@@ -83,8 +79,7 @@ class RaceManager {
 @Injectable({ providedIn: 'root' })
 export class HorseRaceService implements OnDestroy {
     private manager: RaceManager;
-    private static readonly DEFAULT_ID  = 1;
-    private static readonly DEFAULT_PRE = 20;  // seconds
+    private static readonly OngoingRaceID  = 1;
 
     constructor() {
         // 1) instantiate the manager
@@ -95,42 +90,27 @@ export class HorseRaceService implements OnDestroy {
             10,    // post-race countdown (s)
             2000   // winning distance (dm)
         );
-        // 2) pre-create the “default” race (#1)
-        this.manager.createRace(
-            HorseRaceService.DEFAULT_ID,
-            HorseRaceService.DEFAULT_PRE
-        );
-    }
-
-    // --- Default-race API (ID = 1) --- //
-
-    startOngoingRace(): void {
-        this.manager.startRace(HorseRaceService.DEFAULT_ID);
+        this.manager.createRace(HorseRaceService.OngoingRaceID, 20);
     }
 
     stopOngoingRace(): void {
-        this.manager.stopRace(HorseRaceService.DEFAULT_ID);
+        this.manager.stopRace(HorseRaceService.OngoingRaceID);
     }
 
     get raceState$(): Observable<HorseRaceState> {
-        return this.manager.getRaceState$(HorseRaceService.DEFAULT_ID);
+        return this.manager.getRaceState$(HorseRaceService.OngoingRaceID);
     }
 
     get countdown$(): Observable<number> {
-        return this.manager.getCountdown$(HorseRaceService.DEFAULT_ID);
+        return this.manager.getCountdown$(HorseRaceService.OngoingRaceID);
     }
 
     get horsesList$(): Observable<RaceHorsesList> {
-        return this.manager.getHorsesList$(HorseRaceService.DEFAULT_ID);
+        return this.manager.getHorsesList$(HorseRaceService.OngoingRaceID);
     }
 
     get winningDistance(): number {
-        return this.manager.getWinningDistance(HorseRaceService.DEFAULT_ID);
-    }
-
-    /** Expose the raw HorseRace instance if you need it directly */
-    getHorseRaceById(id: number): HorseRace {
-        return this.manager.getHorseRaceById(id);
+        return this.manager.getWinningDistance(HorseRaceService.OngoingRaceID);
     }
 
     ngOnDestroy(): void {
