@@ -59,6 +59,12 @@ class RaceManager {
     getWinningDistance(id: number): number {
         return this.getHorseRaceById(id).winningDistance;
     }
+    getID(id: number): number {
+        return this.getHorseRaceById(id).id;
+    }
+    getCompleted(id: number): boolean {
+        return this.getHorseRaceById(id).completed;
+    }
 
     getHorseRaceById(id: number): HorseRace {
         const found = this.races.find(r => r.id === id);
@@ -87,13 +93,12 @@ export class HorseRaceService implements OnDestroy {
             10,    // post-race countdown (s)
             2000   // winning distance (dm)
         );
-        this.manager.createRace(HorseRaceService.OngoingRaceID, 20);
+        this.manager.createRace(1, 20)
+        this.manager.createRace(2, 120);
+        this.manager.createRace(3, 220);
     }
 
-    stopOngoingRace(): void {
-        this.manager.stopRace(HorseRaceService.OngoingRaceID);
-    }
-
+    // Interface for UI updates based on OngoingRaceID
     get raceState$(): Observable<HorseRaceState> {
         return this.manager.getRaceState$(HorseRaceService.OngoingRaceID);
     }
@@ -105,6 +110,9 @@ export class HorseRaceService implements OnDestroy {
     }
     get winningDistance(): number {
         return this.manager.getWinningDistance(HorseRaceService.OngoingRaceID);
+    }
+    get id(): number {
+        return this.manager.getID(HorseRaceService.OngoingRaceID);
     }
 
     ngOnDestroy(): void {

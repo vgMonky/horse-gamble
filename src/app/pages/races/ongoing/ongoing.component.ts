@@ -29,29 +29,18 @@ import { WindowContainerComponent } from '@app/components/base-components/window
     templateUrl: './ongoing.component.html',
     styleUrls: ['./ongoing.component.scss']
 })
-export class OngoingComponent implements AfterViewInit, OnDestroy {
+export class OngoingComponent implements OnDestroy {
     @ViewChild(PhaserCanvasComponent) private canvasCmp!: PhaserCanvasComponent;
 
-    readonly raceState$: Observable<'pre' | 'in' | 'post'>;
-    readonly countdown$:  Observable<number>;
     readonly winPos: number;
+    readonly ongoingID: number;
 
-    private stateSub!: Subscription;
     showCanvas = true;
     isModalOpen = false;
 
     constructor(private horseRaceService: HorseRaceService) {
-        this.raceState$ = this.horseRaceService.raceState$;
-        this.countdown$ = this.horseRaceService.countdown$;
         this.winPos     = this.horseRaceService.winningDistance;
-    }
-
-    ngAfterViewInit(): void {
-        // whenever we re-enter 'pre', reload the canvas
-        this.stateSub = this.raceState$.pipe(
-            skip(1),
-            filter(state => state === 'pre')
-        ).subscribe(() => this.reloadCanvas());
+        this.ongoingID     = this.horseRaceService.id;
     }
 
     private reloadCanvas(): void {
@@ -63,7 +52,6 @@ export class OngoingComponent implements AfterViewInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
-        this.stateSub.unsubscribe();
-        this.horseRaceService.stopOngoingRace();
+        this.reloadCanvas
     }
 }

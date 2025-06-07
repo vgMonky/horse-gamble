@@ -18,9 +18,6 @@ import { HorseRaceService } from '@app/game/horse-race.service';
 })
 export class HomeComponent {
 
-    constructor(private horseRaceService: HorseRaceService) {}
-
     ngOnDestroy(): void {
-        this.horseRaceService.stopOngoingRace();
     }
 }
