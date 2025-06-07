@@ -50,15 +50,12 @@ class RaceManager {
     getRaceState$(id: number): Observable<HorseRaceState> {
         return this.getHorseRaceById(id).raceState$;
     }
-
     getCountdown$(id: number): Observable<number> {
         return this.getHorseRaceById(id).countdown$;
     }
-
     getHorsesList$(id: number): Observable<RaceHorsesList> {
         return this.getHorseRaceById(id).horsesList$;
     }
-
     getWinningDistance(id: number): number {
         return this.getHorseRaceById(id).winningDistance;
     }
@@ -100,15 +97,12 @@ export class HorseRaceService implements OnDestroy {
     get raceState$(): Observable<HorseRaceState> {
         return this.manager.getRaceState$(HorseRaceService.OngoingRaceID);
     }
-
     get countdown$(): Observable<number> {
         return this.manager.getCountdown$(HorseRaceService.OngoingRaceID);
     }
-
     get horsesList$(): Observable<RaceHorsesList> {
         return this.manager.getHorsesList$(HorseRaceService.OngoingRaceID);
     }
-
     get winningDistance(): number {
         return this.manager.getWinningDistance(HorseRaceService.OngoingRaceID);
     }

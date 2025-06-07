@@ -112,30 +112,40 @@ class Seed {
 }
 
 class CountdownTimer {
-    private sub!: Subscription;
-    private _cnt = new BehaviorSubject<number>(0);
-    get countdown$() { return this._cnt.asObservable(); }
+    private interval$?: Subscription;
+    private _countdown = new BehaviorSubject<number>(0);
+
+    get countdown$() {
+        return this._countdown.asObservable();
+    }
 
     start(
         seconds: number,
         onComplete: () => void,
         external?: BehaviorSubject<number>
     ): void {
-        this._cnt.next(seconds);
+        // if there’s already a timer, stop it first
+        this.interval$?.unsubscribe();
+
+        // initialize
+        this._countdown.next(seconds);
         external?.next(seconds);
-        this.sub = interval(1000).subscribe(() => {
-            const next = this._cnt.getValue() - 1;
-            this._cnt.next(next);
+
+        this.interval$ = interval(1000).subscribe(() => {
+            const curr = this._countdown.getValue();
+            const next = Math.max(0, curr - 1);      // clamp at 0
+            this._countdown.next(next);
             external?.next(next);
-            if (next <= 0) {
-                this.sub.unsubscribe();
+
+            if (next === 0) {
+                this.interval$?.unsubscribe();       // tear down timer
                 onComplete();
             }
         });
     }
 
     stop(): void {
-        this.sub?.unsubscribe();
+        this.interval$?.unsubscribe();
     }
 }
 
@@ -144,20 +154,21 @@ export type HorseRaceState = 'pre' | 'in' | 'post';
 export class HorseRace {
     readonly id: number;
     readonly winningDistance: number;
+    completed = false;
 
-    private readonly tickSpeed:     number;
-    private readonly preDuration:   number;
-    private readonly postDuration:  number;
-    private readonly allHorses:     Horse[];
-    private readonly count:         number;
+    private readonly tickSpeed:    number;
+    private readonly preDuration:  number;
+    private readonly postDuration: number;
+    private readonly allHorses:    Horse[];
+    private readonly count:        number;
 
-    private raceSub?: Subscription;
-    private preTimer  = new CountdownTimer();
-    private postTimer = new CountdownTimer();
+    private raceSub?:   Subscription;
+    private preTimer    = new CountdownTimer();
+    private postTimer   = new CountdownTimer();
 
-    private _list$  = new BehaviorSubject<RaceHorsesList>(new RaceHorsesList([], 0));
-    private _state$ = new BehaviorSubject<HorseRaceState>('pre');
-    private _cnt$   = new BehaviorSubject<number>(0);
+    private _list$      = new BehaviorSubject<RaceHorsesList>(new RaceHorsesList([], 0));
+    private _state$     = new BehaviorSubject<HorseRaceState>('pre');
+    private _cnt$       = new BehaviorSubject<number>(0);
 
     readonly horsesList$ = this._list$.asObservable();
     readonly raceState$  = this._state$.asObservable();
@@ -172,16 +183,18 @@ export class HorseRace {
         postSec     = 10,
         distanceDm  = 2000
     ) {
-        this.id              = id;
-        this.allHorses       = allHorses;
-        this.count           = count;
-        this.tickSpeed       = tickSpeed;
-        this.preDuration     = preSec;
-        this.postDuration    = postSec;
-        this.winningDistance = distanceDm;
+        this.id               = id;
+        this.allHorses        = allHorses;
+        this.count            = count;
+        this.tickSpeed        = tickSpeed;
+        this.preDuration      = preSec;
+        this.postDuration     = postSec;
+        this.winningDistance  = distanceDm;
     }
 
     startRace(): void {
+        // reset completed flag each time we start
+        this.completed = false;
         this.stopRace();
         this._list$.next(new RaceHorsesList(this.allHorses, this.count));
         this._state$.next('pre');
@@ -204,14 +217,26 @@ export class HorseRace {
             list.consoleLog();
 
             if (finished === list.getAll().length) {
-            this._state$.next('post');
-            this.postTimer.start(
-                this.postDuration,
-                () => this.startRace(),
-                this._cnt$
-            );
+                // 1) stop the racing ticks right away
+                this.raceSub?.unsubscribe();
+                // 2) switch UI into 'post'
+                this._state$.next('post');
+                // 3) start the post-race countdown just once
+                this.postTimer.start(
+                    this.postDuration,
+                    () => this.emitSignalCompleted(),
+                    this._cnt$
+                );
             }
         });
+    }
+
+    /** Called when post‐timer reaches zero */
+    emitSignalCompleted(): void {
+        // stop any leftover timers (though raceSub is already gone)
+        this.stopRace();
+        this.completed = true;
+        console.log(`race ${this.id} finished`);
     }
 
     stopRace(): void {
