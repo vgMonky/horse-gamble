@@ -3,7 +3,7 @@
         Race ID: {{ ongoingID$ | async }}
     </div>
     <div class="p-ongoing__subtitle">
-        Race Distance: {{ winPos / 10 }}m
+        Race Distance: {{ ((winPos$ | async) ?? 0) / 10 }}m
     </div>
     <br>
 
