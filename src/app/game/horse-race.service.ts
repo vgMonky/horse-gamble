@@ -29,12 +29,13 @@ class RaceManager {
         private postSec: number,
     ) {}
 
-    createRace(id: number, winDist: number, preSec: number): HorseRace {
-        if (this.races.find(r => r.id === id)) {
-            throw new Error(`Race ${id} already exists`);
-        }
+    createRace(winDist: number, preSec: number): HorseRace {
+        const nextId = this.races.length > 0
+            ? this.races[this.races.length - 1].id + 1
+            : 1;
+
         const race = new HorseRace(
-            id,
+            nextId,
             this.allHorses,
             this.runnerCount,
             this.tickMs,
@@ -105,11 +106,12 @@ export class HorseRaceService implements OnDestroy {
         );
 
         // create N async races scheduled at a countdown:
-        this.manager.createRace(1, 2000, 20);
-        this.manager.createRace(2, 4000, 100);
-        this.manager.createRace(3, 2000, 180);
-        this.manager.createRace(4, 4000, 260);
-        this.manager.createRace(5, 4000, 340);
+        this.manager.createRace(2000, 20);
+        this.manager.createRace(2000, 100);
+        this.manager.createRace(2000, 180);
+        this.manager.createRace(4000, 260);
+        this.manager.createRace(4000, 340);
+        this.manager.createRace(6000, 420);
         // This could be races generated for the day: "createRaceday()"
 
         // seed currentId$ with the first ID that actually exists:
