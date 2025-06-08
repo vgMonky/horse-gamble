@@ -105,16 +105,9 @@ export class HorseRaceService implements OnDestroy {
             10,    // post-race countdown (s)
         );
 
-        // create N async races scheduled at a countdown:
-        this.manager.createRace(2000, 20);
-        this.manager.createRace(2000, 100);
-        this.manager.createRace(2000, 180);
-        this.manager.createRace(4000, 260);
-        this.manager.createRace(4000, 340);
-        this.manager.createRace(6000, 420);
-        // This could be races generated for the day: "createRaceday()"
+        this.createRaceday()
 
-        // seed currentId$ with the first ID that actually exists:
+        // seed ongoingId$ with the first ID that actually exists:
         const ids = this.manager.getAllRaceIds();
         if (ids.length === 0) {
             throw new Error('No races defined');
@@ -122,7 +115,7 @@ export class HorseRaceService implements OnDestroy {
         this.ongoingId$ = new BehaviorSubject<number>(ids[0]);
         this.id$         = this.ongoingId$.asObservable();
 
-        // each public stream follows whatever the current ID is:
+        // each public stream follows whatever the current ongoingID is:
         this.raceState$  = this.ongoingId$.pipe(switchMap(id => this.manager.getRaceState$(id)));
         this.countdown$  = this.ongoingId$.pipe(switchMap(id => this.manager.getCountdown$(id)));
         this.horsesList$ = this.ongoingId$.pipe(switchMap(id => this.manager.getHorsesList$(id)));
@@ -130,13 +123,30 @@ export class HorseRaceService implements OnDestroy {
             map(id => this.manager.getWinningDistance(id))
         );
 
-        // whenever the *current* race completes, advance to the next:
+        // whenever the *ongoing* race completes, advance to the next:
         this.raceState$
             .pipe(
                 filter(state => state === 'completed'),
                 takeUntil(this.destroy$)
             )
-            .subscribe(() => this.advanceToNextRace());
+            .subscribe(() => {
+                const ids = this.manager.getAllRaceIds();
+                const curr = this.ongoingId$.getValue();
+                const idx  = ids.indexOf(curr);
+                // If we're on the last race, create more
+                if (idx >= ids.length - 1) {
+                    this.createRaceday();
+                }
+                this.advanceToNextRace();
+            });
+    }
+
+    private createRaceday(): void{
+        // create N async races with length and scheduled at a countdown:
+        this.manager.createRace(2000, 20);
+        this.manager.createRace(4000, 100);
+        this.manager.createRace(6000, 200);
+        //this could be all races for a day, or just a block of races "createRaceBlock()"
     }
 
     private advanceToNextRace(): void {
@@ -146,7 +156,6 @@ export class HorseRaceService implements OnDestroy {
         if (idx >= 0 && idx < ids.length - 1) {
             this.ongoingId$.next(ids[idx + 1]);
         }
-        // else: we’re done with all races
     }
 
     /** convenience getters for sync reads */
