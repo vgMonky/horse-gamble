@@ -85,6 +85,8 @@ class RaceManager {
 export class HorseRaceService implements OnDestroy {
     public manager: RaceManager;
     private destroy$ = new Subject<void>();
+    private lastRaceId! : number
+
 
     constructor() {
         this.manager = new RaceManager(
@@ -103,12 +105,21 @@ export class HorseRaceService implements OnDestroy {
         }
     }
 
-    private createRaceday(): void{
-        // create N async races with length and scheduled at a countdown:
-        this.manager.createRace(2000, 20);
-        this.manager.createRace(4000, 100);
-        this.manager.createRace(6000, 200);
-        //this could be all races for a day, or just a block of races "createRaceBlock()"
+    private createRaceday(): void {
+        // create N async races with length and scheduled at a countdown
+        // this could be all races for a day, or just a block of races "createRaceBlock()"
+
+        const r1 = this.manager.createRace(2000, 20);
+        const r2 = this.manager.createRace(4000, 100);
+        const r3 = this.manager.createRace(6000, 200);
+
+        // create more races when the last one start running (in state)
+        this.lastRaceId = r3.id;
+        this.manager.getRaceState$(this.lastRaceId).subscribe(state => {
+            if (state === 'in') {
+                this.createRaceday();
+            }
+        });
     }
 
     ngOnDestroy(): void {
