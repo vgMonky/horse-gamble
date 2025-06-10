@@ -1,0 +1,30 @@
+<div class="c-ongoing-race">
+    <div class="c-ongoing-race__title">
+        Race ID: {{ ID }}
+    </div>
+    <div class="c-ongoing-race__subtitle">
+        Race Distance: {{ winPos / 10 }}m
+    </div>
+    <br>
+
+    <div class="c-ongoing-race__top">
+        <!-- always show the canvas -->
+        <ng-container *ngIf="showCanvas">
+            <app-phaser-canvas></app-phaser-canvas>
+        </ng-container>
+    </div>
+
+    <div class="c-ongoing-race-expandable__bottom">
+        <app-ongoing-list-ui></app-ongoing-list-ui>
+    </div>
+
+    <div class="c-ongoing-race__subtitle">
+        <button class="c-ongoing-race__button" (click)="isModalOpen = true">Bet Now</button>
+    </div>
+    <app-window-container
+    *ngIf="isModalOpen"
+    (close)="isModalOpen = false"
+    >
+        <p class="c-ongoing-race__subtitle">bet-ticket-ui</p>
+    </app-window-container>
+</div>
