@@ -1,7 +1,5 @@
 import {
     Component,
-    AfterViewInit,
-    OnDestroy,
     ViewChild
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -16,7 +14,7 @@ import { WindowContainerComponent } from '@app/components/base-components/window
 
 @Component({
     standalone: true,
-    selector: 'app-ongoing',
+    selector: 'app-races',
     imports: [
         SharedModule,
         CommonModule,
@@ -25,10 +23,10 @@ import { WindowContainerComponent } from '@app/components/base-components/window
         OngoingListUiComponent,
         WindowContainerComponent
     ],
-    templateUrl: './ongoing.component.html',
-    styleUrls: ['./ongoing.component.scss']
+    templateUrl: './races.component.html',
+    styleUrls: ['./races.component.scss']
 })
-export class OngoingComponent {
+export class RacesComponent {
     @ViewChild(PhaserCanvasComponent) private canvasCmp!: PhaserCanvasComponent;
 
     readonly winPos$: Observable<number>;

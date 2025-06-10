@@ -5,17 +5,17 @@
             "TITLE": "Landing Inicial",
             "DESCRIPTION": "Un juego de apuestas de carrera de caballos basado en Telos EVM."
         },
-        "UPCOMING": {
-            "NAME": "Abiertas",
-            "TITLE": "Upcoming Races"
-        },
-        "ONGOING": {
-            "NAME": "Corriendo",
-            "TITLE": "Carrera en Vivo"
+        "RACES": {
+            "NAME": "Carreras",
+            "TITLE": "Lista de carreras en Vivo"
         },
         "COMPLETED": {
             "NAME": "Completadas",
-            "TITLE": "Carreras Completadas"
+            "TITLE": "Historial de carreras completadas"
+        },
+        "BETS": {
+            "NAME": "Apuestas",
+            "TITLE": "Lista de mis apuestas"
         },
         "WALLET": {
             "NAME": "Billetera",

@@ -4,13 +4,13 @@ import { SharedModule } from '@app/shared/shared.module';
 
 @Component({
     standalone: true,
-    selector: 'app-upcoming',
+    selector: 'app-bets',
     imports: [SharedModule],
     template: `
-        <div class="p-upcoming">
-            <div class="p-upcoming__title">{{ 'PAGES.UPCOMING.TITLE' | translate }}</div>
+        <div class="p-bets">
+            <div class="p-bets__title">{{ 'PAGES.BETS.TITLE' | translate }}</div>
         </div>
     `,
-    styleUrls: ['./upcoming.component.scss']
+    styleUrls: ['./bets.component.scss']
 })
-export class UpcomingComponent {}
+export class BetsComponent {}
