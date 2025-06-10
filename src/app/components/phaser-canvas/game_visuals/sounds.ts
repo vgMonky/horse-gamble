@@ -66,7 +66,7 @@ export class SoundLayer {
         }
 
         // watch for race-state changes
-        this.stateSub = this.raceSvc.raceState$.subscribe(state => {
+        this.stateSub = this.raceSvc.manager.getRaceState$(1).subscribe(state => {
             this.currentState = state;
 
             if (state === 'in') {
@@ -84,7 +84,7 @@ export class SoundLayer {
         });
 
         // watch for the countdown ticks
-        this.countdownSub = this.raceSvc.countdown$.subscribe(timeLeft => {
+        this.countdownSub = this.raceSvc.manager.getCountdown$(1).subscribe(timeLeft => {
             if (this.currentState === 'pre' && timeLeft > 0 && timeLeft <= 5) {
                 this.safePlay(this.tickSound);
             }

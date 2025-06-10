@@ -7,14 +7,9 @@ import {
     HorseRaceState
 } from './horse-race.abstract';
 import {
-    BehaviorSubject,
     Subject,
-    Observable,
-    switchMap,
-    filter,
-    takeUntil
+    Observable
 } from 'rxjs';
-import { map } from 'rxjs/operators';
 
 /**
  * Manages any number of HorseRace instances in a simple array.
@@ -64,6 +59,9 @@ class RaceManager {
     getWinningDistance(id: number): number {
         return this.getHorseRaceById(id).winningDistance;
     }
+    getRaceId(id: number): number {
+        return this.getHorseRaceById(id).id;
+    }
 
     /** Return all IDs in creation order */
     getAllRaceIds(): number[] {
@@ -83,19 +81,10 @@ class RaceManager {
     }
 }
 
-
 @Injectable({ providedIn: 'root' })
 export class HorseRaceService implements OnDestroy {
-    private manager: RaceManager;
-    private ongoingId$: BehaviorSubject<number>;
+    public manager: RaceManager;
     private destroy$ = new Subject<void>();
-
-    // Exposed observables:
-    public readonly id$: Observable<number>;
-    public readonly raceState$: Observable<HorseRaceState>;
-    public readonly countdown$: Observable<number>;
-    public readonly horsesList$: Observable<RaceHorsesList>;
-    public readonly winningDistance$: Observable<number>;
 
     constructor() {
         this.manager = new RaceManager(
@@ -112,33 +101,6 @@ export class HorseRaceService implements OnDestroy {
         if (ids.length === 0) {
             throw new Error('No races defined');
         }
-        this.ongoingId$ = new BehaviorSubject<number>(ids[0]);
-        this.id$         = this.ongoingId$.asObservable();
-
-        // each public stream follows whatever the current ongoingID is:
-        this.raceState$  = this.ongoingId$.pipe(switchMap(id => this.manager.getRaceState$(id)));
-        this.countdown$  = this.ongoingId$.pipe(switchMap(id => this.manager.getCountdown$(id)));
-        this.horsesList$ = this.ongoingId$.pipe(switchMap(id => this.manager.getHorsesList$(id)));
-        this.winningDistance$ = this.id$.pipe(
-            map(id => this.manager.getWinningDistance(id))
-        );
-
-        // whenever the *ongoing* race completes, advance to the next:
-        this.raceState$
-            .pipe(
-                filter(state => state === 'completed'),
-                takeUntil(this.destroy$)
-            )
-            .subscribe(() => {
-                const ids = this.manager.getAllRaceIds();
-                const curr = this.ongoingId$.getValue();
-                const idx  = ids.indexOf(curr);
-                // If we're on the last race, create more
-                if (idx >= ids.length - 1) {
-                    this.createRaceday();
-                }
-                this.advanceToNextRace();
-            });
     }
 
     private createRaceday(): void{
@@ -147,23 +109,6 @@ export class HorseRaceService implements OnDestroy {
         this.manager.createRace(4000, 100);
         this.manager.createRace(6000, 200);
         //this could be all races for a day, or just a block of races "createRaceBlock()"
-    }
-
-    private advanceToNextRace(): void {
-        const ids = this.manager.getAllRaceIds();
-        const curr = this.ongoingId$.getValue();
-        const idx  = ids.indexOf(curr);
-        if (idx >= 0 && idx < ids.length - 1) {
-            this.ongoingId$.next(ids[idx + 1]);
-        }
-    }
-
-    /** convenience getters for sync reads */
-    get id(): number {
-        return this.ongoingId$.getValue();
-    }
-    get winningDistance(): number {
-        return this.manager.getWinningDistance(this.id);
     }
 
     ngOnDestroy(): void {

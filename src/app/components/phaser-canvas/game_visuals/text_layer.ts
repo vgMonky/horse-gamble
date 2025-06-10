@@ -54,11 +54,11 @@ export class TextLayer {
             .setDepth(101);
 
         // keep latest horses list for podium
-        this.horsesSub = this.raceSvc.horsesList$
+        this.horsesSub = this.raceSvc.manager.getHorsesList$(1)
             .subscribe(list => this.latestList = list);
 
         // show/hide & content based on state
-        this.stateSub = this.raceSvc.raceState$
+        this.stateSub = this.raceSvc.manager.getRaceState$(1)
             .subscribe((state: HorseRaceState) => {
                 const visible = (state === 'pre' || state === 'post' || state === 'completed');
                 this.overlay.setVisible(visible);
@@ -80,7 +80,7 @@ export class TextLayer {
             });
 
         // update countdown digits
-        this.countdownSub = this.raceSvc.countdown$
+        this.countdownSub = this.raceSvc.manager.getCountdown$(1)
             .subscribe(count => {
                 this.countdownText.setText(count.toString());
             });

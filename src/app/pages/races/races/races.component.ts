@@ -29,14 +29,14 @@ import { WindowContainerComponent } from '@app/components/base-components/window
 export class RacesComponent {
     @ViewChild(PhaserCanvasComponent) private canvasCmp!: PhaserCanvasComponent;
 
-    readonly winPos$: Observable<number>;
-    readonly ongoingID$: Observable<number>;
+    readonly winPos: number;
+    readonly ID: number;
 
     showCanvas = true;
     isModalOpen = false;
 
     constructor(private horseRaceService: HorseRaceService) {
-        this.winPos$     = this.horseRaceService.winningDistance$;
-        this.ongoingID$ = this.horseRaceService.id$;
+        this.winPos     = this.horseRaceService.manager.getWinningDistance(1);
+        this.ID = this.horseRaceService.manager.getRaceId(1);
     }
 }

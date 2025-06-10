@@ -49,7 +49,7 @@ export class OngoingListUiComponent implements AfterViewInit, OnDestroy {
             .pipe(takeUntil(this.destroy$))
             .subscribe(r => this.isMobileView = r.matches);
 
-        this.horseRaceService.horsesList$
+        this.horseRaceService.manager.getHorsesList$(1)
             .pipe(takeUntil(this.destroy$))
             .subscribe(listInstance => {
                 if (listInstance !== this.lastListInstance) {

@@ -54,13 +54,13 @@ export class PhaserCanvasComponent implements OnInit, OnDestroy {
         // 1) start the first game
         this.startGame();
 
-        // 2) whenever the service’s id$ changes (i.e. new race),
-        //    destroy & re-create the game
-        this.gameSubs.push(
-            this.horseRaceService.id$
-                .pipe(skip(1))
-                .subscribe(() => this.resetGame())
-        );
+        // // 2) whenever the service’s id$ changes (i.e. new race),
+        // //    destroy & re-create the game
+        // this.gameSubs.push(
+        //     this.horseRaceService.id
+        //         .pipe(skip(1))
+        //         .subscribe(() => this.resetGame())
+        // );
     }
 
     ngOnDestroy(): void {

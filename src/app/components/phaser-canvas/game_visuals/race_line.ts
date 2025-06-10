@@ -73,12 +73,12 @@ class Camera {
 
         // add both subscriptions to the composite
         this.sub.add(
-            this.raceSvc.horsesList$.subscribe(list => {
+            this.raceSvc.manager.getHorsesList$(1).subscribe(list => {
                 this.horsesList = list;
             })
         );
         this.sub.add(
-            this.raceSvc.raceState$.subscribe(state => {
+            this.raceSvc.manager.getRaceState$(1).subscribe(state => {
                 this.raceState = state;
             })
         );
@@ -86,18 +86,18 @@ class Camera {
 
     updateCam(): void {
         // Set cam game position
-        if (this.pos < this.raceSvc.winningDistance) {
+        if (this.pos < this.raceSvc.manager.getWinningDistance(1)) {
             const first = this.horsesList.getByPlacement()[0].position;
-            if (first < this.raceSvc.winningDistance) {
+            if (first < this.raceSvc.manager.getWinningDistance(1)) {
                 this.pos = first;
             } else {
-                this.pos = this.raceSvc.winningDistance;
+                this.pos = this.raceSvc.manager.getWinningDistance(1);
             }
         }
 
         // interpolate origin.x between start(0.5) and finalOrigin
         const finalOriginX = 0.63;
-        const progress    = Phaser.Math.Clamp(this.pos / this.raceSvc.winningDistance, 0, 1);
+        const progress    = Phaser.Math.Clamp(this.pos / this.raceSvc.manager.getWinningDistance(1), 0, 1);
         this.origin.x     = Phaser.Math.Interpolation.Linear([0.5, finalOriginX], progress);
 
         // Calculate and draw cam point of view
@@ -112,7 +112,7 @@ class Camera {
         this.drawCamCross();
 
         // Draw race end
-        this.drawCamImg(this.raceSvc.winningDistance, 'img_final_post', 'p0', 0.14, -18, 0, 0);
+        this.drawCamImg(this.raceSvc.manager.getWinningDistance(1), 'img_final_post', 'p0', 0.14, -18, 0, 0);
 
         // Draw race start
         this.drawCamImg(0, 'img_start_gate', 'g0', 0.20, 0, -110, 1);
@@ -266,7 +266,7 @@ class Camera {
             }
         } else {
             // update x position
-            if (this.pos >= this.raceSvc.winningDistance) {
+            if (this.pos >= this.raceSvc.manager.getWinningDistance(1)) {
                 sprite.x += finalSlideSpeed;
             } else {
                 const dx = initialTargetX - sprite.x;

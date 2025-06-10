@@ -1,9 +1,9 @@
 <div class="p-races">
     <div class="p-races__title">
-        Race ID: {{ ongoingID$ | async }}
+        Race ID: {{ ID }}
     </div>
     <div class="p-races__subtitle">
-        Race Distance: {{ ((winPos$ | async) ?? 0) / 10 }}m
+        Race Distance: {{ winPos / 10 }}m
     </div>
     <br>
 

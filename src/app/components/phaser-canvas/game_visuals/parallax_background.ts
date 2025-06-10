@@ -109,10 +109,10 @@ export class ParallaxBackground {
             });
         });
 
-        this.sub = this.raceSvc.horsesList$.subscribe((list: RaceHorsesList) => {
+        this.sub = this.raceSvc.manager.getHorsesList$(1).subscribe((list: RaceHorsesList) => {
             const leader = list.getByPlacement()[0];
             const pos    = leader.position!;
-            const dist   = this.raceSvc.winningDistance;
+            const dist   = this.raceSvc.manager.getWinningDistance(1);
 
             // 1) Freeze in pre or when fully done
             const done         = pos >= dist;
@@ -143,7 +143,7 @@ export class ParallaxBackground {
             });
         });
 
-        this.raceStateSub = this.raceSvc.raceState$.subscribe(state => {
+        this.raceStateSub = this.raceSvc.manager.getRaceState$(1).subscribe(state => {
             this.raceState = state;
         });
     }

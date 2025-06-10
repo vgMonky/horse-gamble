@@ -25,7 +25,7 @@ export class MiniMapLayer {
         this.graphics = this.scene.add.graphics().setDepth(80);
 
         this.sub.add(
-            this.raceSvc.horsesList$.subscribe(list => {
+            this.raceSvc.manager.getHorsesList$(1).subscribe(list => {
                 this.horsesList = list;
             })
         );
@@ -75,7 +75,7 @@ export class MiniMapLayer {
     update(): void {
         if (!this.horsesList) return;
 
-        const dist = this.raceSvc.winningDistance;
+        const dist = this.raceSvc.manager.getWinningDistance(1);
         this.horsesList.getAll().forEach(h => {
             const idx = h.slot;
             const totalTracks = 4;  // you’ve hard-coded 4 rings
