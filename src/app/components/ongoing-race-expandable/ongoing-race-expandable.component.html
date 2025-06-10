@@ -1,6 +1,6 @@
 <div class="c-ongoing-race">
     <div class="c-ongoing-race__title">
-        Race ID: {{ ID }}
+        Race ID: {{ raceId }}
     </div>
     <div class="c-ongoing-race__subtitle">
         Race Distance: {{ winPos / 10 }}m
@@ -10,12 +10,12 @@
     <div class="c-ongoing-race__top">
         <!-- always show the canvas -->
         <ng-container *ngIf="showCanvas">
-            <app-phaser-canvas></app-phaser-canvas>
+            <app-phaser-canvas [raceId]="raceId"></app-phaser-canvas>
         </ng-container>
     </div>
 
     <div class="c-ongoing-race-expandable__bottom">
-        <app-ongoing-list-ui></app-ongoing-list-ui>
+        <app-ongoing-list-ui [raceId]="raceId"></app-ongoing-list-ui>
     </div>
 
     <div class="c-ongoing-race__subtitle">

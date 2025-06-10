@@ -4,7 +4,8 @@ import {
     OnInit,
     OnDestroy,
     ElementRef,
-    ViewChild
+    ViewChild,
+    Input
 } from '@angular/core';
 import Phaser from 'phaser';
 import { MainScene } from './game_visuals/main_scene';
@@ -32,6 +33,7 @@ import { skip } from 'rxjs/operators';
 export class PhaserCanvasComponent implements OnInit, OnDestroy {
     @ViewChild('phaserContainer', { static: true })
     containerRef!: ElementRef;
+    @Input() raceId!: number;
 
     isMobileView$: Observable<boolean>;
     markerOpacity = 1;
@@ -39,7 +41,6 @@ export class PhaserCanvasComponent implements OnInit, OnDestroy {
     isMuted = false;
 
     private game?: Phaser.Game;
-    private gameSubs: Subscription[] = [];
 
     constructor(
         private breakpointObserver: BreakpointObserver,
@@ -51,21 +52,10 @@ export class PhaserCanvasComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        // 1) start the first game
         this.startGame();
-
-        // // 2) whenever the service’s id$ changes (i.e. new race),
-        // //    destroy & re-create the game
-        // this.gameSubs.push(
-        //     this.horseRaceService.id
-        //         .pipe(skip(1))
-        //         .subscribe(() => this.resetGame())
-        // );
     }
 
     ngOnDestroy(): void {
-        // tear down subscriptions
-        this.gameSubs.forEach(s => s.unsubscribe());
         // destroy Phaser
         this.game?.destroy(true);
     }
@@ -73,6 +63,7 @@ export class PhaserCanvasComponent implements OnInit, OnDestroy {
     private startGame(): void {
         // instantiate the scene
         const scene = new MainScene(
+            this.raceId,
             this.horseRaceService,
             () => this.markerOpacity,
             () => this.lightnessValue,
@@ -86,10 +77,5 @@ export class PhaserCanvasComponent implements OnInit, OnDestroy {
             parent: this.containerRef.nativeElement,
             scene
         });
-    }
-
-    private resetGame(): void {
-        this.game?.destroy(true);
-        this.startGame();
     }
 }

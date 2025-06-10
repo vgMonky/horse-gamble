@@ -6,7 +6,9 @@ import {
     QueryList,
     ElementRef,
     Renderer2,
-    NgZone
+    NgZone,
+    Input,
+    SimpleChanges
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BreakpointObserver } from '@angular/cdk/layout';
@@ -28,6 +30,8 @@ import { BREAKPOINT } from 'src/types';
     styleUrls: ['./ongoing-list-ui.component.scss']
 })
 export class OngoingListUiComponent implements AfterViewInit, OnDestroy {
+    @Input() raceId!: number;
+
     horsesList: RaceHorse[] = [];
     isMobileView = false;
 
@@ -48,15 +52,24 @@ export class OngoingListUiComponent implements AfterViewInit, OnDestroy {
             .observe(BREAKPOINT)
             .pipe(takeUntil(this.destroy$))
             .subscribe(r => this.isMobileView = r.matches);
+    }
 
-        this.horseRaceService.manager.getHorsesList$(1)
-            .pipe(takeUntil(this.destroy$))
-            .subscribe(listInstance => {
-                if (listInstance !== this.lastListInstance) {
-                    this.lastListInstance = listInstance;
-                }
-                setTimeout(() => this.runFLIP(listInstance.getByPlacement()), 0);
-            });
+    ngOnChanges(changes: SimpleChanges): void {
+        if ('raceId' in changes && this.raceId != null) {
+            try {
+                this.horseRaceService
+                    .manager.getHorsesList$(this.raceId)
+                    .pipe(takeUntil(this.destroy$))
+                    .subscribe(listInstance => {
+                        if (listInstance !== this.lastListInstance) {
+                            this.lastListInstance = listInstance;
+                        }
+                        setTimeout(() => this.runFLIP(listInstance.getByPlacement()), 0);
+                    });
+            } catch (err) {
+                console.error('Invalid race ID', this.raceId, err);
+            }
+        }
     }
 
     ngAfterViewInit(): void {

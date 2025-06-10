@@ -11,6 +11,7 @@ import { RaceHorse } from '@app/game/horse-race.abstract';
     styleUrls: ['./ongoing-horse-ui.component.scss']
 })
 export class RaceHorseUiComponent {
+    @Input() raceId! : number;
     @Input() RaceHorse!: RaceHorse;
     @Input() color!: string;
 

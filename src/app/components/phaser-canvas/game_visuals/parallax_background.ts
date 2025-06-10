@@ -34,6 +34,7 @@ export class ParallaxBackground {
     private raceState: 'pre' | 'in' | 'post' | 'completed' = 'pre';
 
     constructor(
+        private raceId : number,
         private scene: Phaser.Scene,
         private raceSvc: HorseRaceService
     ) {
@@ -109,10 +110,10 @@ export class ParallaxBackground {
             });
         });
 
-        this.sub = this.raceSvc.manager.getHorsesList$(1).subscribe((list: RaceHorsesList) => {
+        this.sub = this.raceSvc.manager.getHorsesList$(this.raceId).subscribe((list: RaceHorsesList) => {
             const leader = list.getByPlacement()[0];
             const pos    = leader.position!;
-            const dist   = this.raceSvc.manager.getWinningDistance(1);
+            const dist   = this.raceSvc.manager.getWinningDistance(this.raceId);
 
             // 1) Freeze in pre or when fully done
             const done         = pos >= dist;
@@ -143,7 +144,7 @@ export class ParallaxBackground {
             });
         });
 
-        this.raceStateSub = this.raceSvc.manager.getRaceState$(1).subscribe(state => {
+        this.raceStateSub = this.raceSvc.manager.getRaceState$(this.raceId).subscribe(state => {
             this.raceState = state;
         });
     }

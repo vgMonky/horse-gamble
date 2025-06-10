@@ -1,6 +1,9 @@
 import {
     Component,
-    ViewChild
+    ViewChild,
+    Input,
+    OnChanges,
+    SimpleChanges
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from '@app/shared/shared.module';
@@ -23,17 +26,23 @@ import { WindowContainerComponent } from '@app/components/base-components/window
     templateUrl: './ongoing-race-expandable.component.html',
     styleUrls: ['./ongoing-race-expandable.component.scss']
 })
-export class OngoingRacesExpandableComponent {
+export class OngoingRacesExpandableComponent implements OnChanges {
     @ViewChild(PhaserCanvasComponent) private canvasCmp!: PhaserCanvasComponent;
+    @Input({ required: true }) raceId!: number;
 
-    readonly winPos: number;
-    readonly ID: number;
-
+    winPos: number = 0;
     showCanvas = true;
     isModalOpen = false;
 
-    constructor(private horseRaceService: HorseRaceService) {
-        this.winPos     = this.horseRaceService.manager.getWinningDistance(1);
-        this.ID = this.horseRaceService.manager.getRaceId(1);
+    constructor(private horseRaceService: HorseRaceService) {}
+
+    ngOnChanges(changes: SimpleChanges): void {
+        if ('raceId' in changes && this.raceId != null) {
+            try {
+                this.winPos = this.horseRaceService.manager.getWinningDistance(this.raceId);
+            } catch (err) {
+                console.error('Invalid race ID', this.raceId, err);
+            }
+        }
     }
 }

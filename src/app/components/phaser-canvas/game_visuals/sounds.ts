@@ -31,6 +31,7 @@ export class SoundLayer {
     private currentState: HorseRaceState = 'pre';
 
     constructor(
+        private raceId : number,
         private scene:   Phaser.Scene,
         private raceSvc: HorseRaceService
     ) {
@@ -66,7 +67,7 @@ export class SoundLayer {
         }
 
         // watch for race-state changes
-        this.stateSub = this.raceSvc.manager.getRaceState$(1).subscribe(state => {
+        this.stateSub = this.raceSvc.manager.getRaceState$(this.raceId).subscribe(state => {
             this.currentState = state;
 
             if (state === 'in') {
@@ -84,7 +85,7 @@ export class SoundLayer {
         });
 
         // watch for the countdown ticks
-        this.countdownSub = this.raceSvc.manager.getCountdown$(1).subscribe(timeLeft => {
+        this.countdownSub = this.raceSvc.manager.getCountdown$(this.raceId).subscribe(timeLeft => {
             if (this.currentState === 'pre' && timeLeft > 0 && timeLeft <= 5) {
                 this.safePlay(this.tickSound);
             }

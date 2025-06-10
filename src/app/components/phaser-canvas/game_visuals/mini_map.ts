@@ -18,6 +18,7 @@ export class MiniMapLayer {
     private readonly startOffset = 2/12;  // adjust if you want a different 0-pos
 
     constructor(
+        private raceId : number,
         private scene: Phaser.Scene,
         private raceSvc: HorseRaceService,
         private getMarkerOpacity: () => number
@@ -25,7 +26,7 @@ export class MiniMapLayer {
         this.graphics = this.scene.add.graphics().setDepth(80);
 
         this.sub.add(
-            this.raceSvc.manager.getHorsesList$(1).subscribe(list => {
+            this.raceSvc.manager.getHorsesList$(this.raceId).subscribe(list => {
                 this.horsesList = list;
             })
         );
@@ -75,7 +76,7 @@ export class MiniMapLayer {
     update(): void {
         if (!this.horsesList) return;
 
-        const dist = this.raceSvc.manager.getWinningDistance(1);
+        const dist = this.raceSvc.manager.getWinningDistance(this.raceId);
         this.horsesList.getAll().forEach(h => {
             const idx = h.slot;
             const totalTracks = 4;  // you’ve hard-coded 4 rings

@@ -16,6 +16,7 @@ export class TextLayer {
     private latestList?: RaceHorsesList;
 
     constructor(
+        private raceId : number,
         private scene: Phaser.Scene,
         private raceSvc: HorseRaceService,
         private opacity: number = 0.5
@@ -54,11 +55,11 @@ export class TextLayer {
             .setDepth(101);
 
         // keep latest horses list for podium
-        this.horsesSub = this.raceSvc.manager.getHorsesList$(1)
+        this.horsesSub = this.raceSvc.manager.getHorsesList$(this.raceId)
             .subscribe(list => this.latestList = list);
 
         // show/hide & content based on state
-        this.stateSub = this.raceSvc.manager.getRaceState$(1)
+        this.stateSub = this.raceSvc.manager.getRaceState$(this.raceId)
             .subscribe((state: HorseRaceState) => {
                 const visible = (state === 'pre' || state === 'post' || state === 'completed');
                 this.overlay.setVisible(visible);
@@ -80,7 +81,7 @@ export class TextLayer {
             });
 
         // update countdown digits
-        this.countdownSub = this.raceSvc.manager.getCountdown$(1)
+        this.countdownSub = this.raceSvc.manager.getCountdown$(this.raceId)
             .subscribe(count => {
                 this.countdownText.setText(count.toString());
             });

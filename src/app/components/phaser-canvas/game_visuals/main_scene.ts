@@ -18,6 +18,7 @@ export class MainScene extends Phaser.Scene {
     private soundLayer!: SoundLayer;
 
     constructor(
+        private raceId: number,
         private horseRaceService: HorseRaceService,
         private markerOpacityGetter: () => number,
         private filterLightnessGetter: () => number,
@@ -27,13 +28,13 @@ export class MainScene extends Phaser.Scene {
     }
 
     preload(): void {
-        this.bg = new ParallaxBackground(this, this.horseRaceService);
+        this.bg = new ParallaxBackground(this.raceId, this, this.horseRaceService);
         this.bg.preload();
 
-        this.raceLine = new RaceLineLayer(this, this.horseRaceService, this.markerOpacityGetter);
+        this.raceLine = new RaceLineLayer(this.raceId, this, this.horseRaceService, this.markerOpacityGetter);
         this.raceLine.preload();
 
-        this.soundLayer = new SoundLayer(this, this.horseRaceService);
+        this.soundLayer = new SoundLayer(this.raceId, this, this.horseRaceService);
         this.soundLayer.preload();
     }
 
@@ -51,6 +52,7 @@ export class MainScene extends Phaser.Scene {
 
         // top-right minimap of the circuit
         this.miniMap = new MiniMapLayer(
+            this.raceId,
             this,
             this.horseRaceService,
             this.markerOpacityGetter
@@ -61,7 +63,7 @@ export class MainScene extends Phaser.Scene {
         this.raceLine.create();
 
         // countdown text
-        const textLayer = new TextLayer(this, this.horseRaceService, 0.7);
+        const textLayer = new TextLayer(this.raceId, this, this.horseRaceService, 0.7);
         textLayer.create();
 
         this.soundLayer.create();
