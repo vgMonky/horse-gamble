@@ -13,4 +13,23 @@
         @include text-subtitle;
     }
 
+    &__group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        &-expandible {
+
+        }
+    }
+    &__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5rem;
+        font-size: 1rem;
+    }
+
+    &__header--open {
+        font-weight: bold;
+    }
 }

@@ -3,11 +3,33 @@
         Races
     </div>
     <div class="p-races__subtitle">
-        List of expandables with races
+        Live Races (Excludes Completed)
     </div>
 
-    <ng-container *ngFor="let raceId of visibleRaceIds">
-        <app-ongoing-race [raceId]="raceId"></app-ongoing-race>
-    </ng-container>
+    <app-expandable-group class="p-races__group">
+        <app-expandable
+            class="p-races__expandable"
+            *ngFor="let raceId of visibleRaceIds"
+            [expandableId]="'race-' + raceId"
+        >
+            <!-- Closed Header -->
+            <div closedHeader class="p-races__header">
+                <strong>Race #{{ raceId }}</strong> –
+                {{ getDistance(raceId) }}m –
+                <span *ngIf="countdowns[raceId] > 0">⏱ {{ countdowns[raceId] }}s</span>
+            </div>
 
+            <!-- Open Header -->
+            <div openHeader class="p-races__header p-races__header--open">
+                <strong>Race #{{ raceId }}</strong> –
+                {{ getDistance(raceId) }}m –
+                <span *ngIf="countdowns[raceId] > 0">⏱ {{ countdowns[raceId] }}s</span>
+            </div>
+
+            <!-- Body -->
+            <div body>
+                <app-ongoing-race [raceId]="raceId"></app-ongoing-race>
+            </div>
+        </app-expandable>
+    </app-expandable-group>
 </div>
