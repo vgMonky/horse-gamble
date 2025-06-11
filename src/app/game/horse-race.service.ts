@@ -8,7 +8,8 @@ import {
 } from './horse-race.abstract';
 import {
     Subject,
-    Observable
+    Observable,
+    take
 } from 'rxjs';
 
 /**
@@ -115,11 +116,11 @@ export class HorseRaceService implements OnDestroy {
 
         // create more races when the last one start running (in state)
         this.lastRaceId = r3.id;
-        this.manager.getRaceState$(this.lastRaceId).subscribe(state => {
-            if (state === 'in') {
-                this.createRaceday();
-            }
-        });
+        this.manager.getRaceState$(this.lastRaceId)
+            .pipe(take(1))
+            .subscribe(state => {
+                if (state === 'in') this.createRaceday();
+            });
     }
 
     ngOnDestroy(): void {
