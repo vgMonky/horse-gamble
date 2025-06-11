@@ -123,15 +123,15 @@ export class HorseRaceService implements OnDestroy {
         // create N async races with length and scheduled at a countdown
         // this could be all races for a day, or just a block of races "createRaceBlock()"
 
-        const r1 = this.manager.createRace(200, 5);
-        const r2 = this.manager.createRace(400, 20);
-        const r3 = this.manager.createRace(600, 30);
-        // const r1 = this.manager.createRace(2000, 20);
-        // const r2 = this.manager.createRace(4000, 100);
-        // const r3 = this.manager.createRace(6000, 200);
+        const r1 = this.manager.createRace(2000, 20);
+        const r2 = this.manager.createRace(4000, 100);
+        const r3 = this.manager.createRace(6000, 200);
+        const r4 = this.manager.createRace(2000, 300);
+        const r5 = this.manager.createRace(4000, 400);
+        const r6 = this.manager.createRace(6000, 500);
 
         // update compleated races ids list
-        [r1, r2, r3].forEach(race => {
+        [r1, r2, r3, r4, r5, r6].forEach(race => {
             this.manager.getRaceState$(race.id).pipe(
                 filter(state => state === 'completed'),
                 take(1)
@@ -144,7 +144,7 @@ export class HorseRaceService implements OnDestroy {
         this.raceIds$.next(this.manager.getAllRaceIds());
 
         // create more races when the last one start running (in state)
-        this.lastRaceId = r3.id;
+        this.lastRaceId = r6.id;
         this.manager.getRaceState$(this.lastRaceId).pipe(
             filter(state => state === 'in'),
             take(1)

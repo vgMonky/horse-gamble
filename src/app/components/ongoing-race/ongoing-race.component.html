@@ -1,4 +1,4 @@
-<div class="c-ongoing-race">
+<div class="c-ongoing-race" [class.mobile]="(isMobileView$ | async)">
     <div class="c-ongoing-race__top">
         <!-- always show the canvas -->
         <ng-container *ngIf="showCanvas">

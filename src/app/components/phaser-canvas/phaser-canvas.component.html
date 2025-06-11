@@ -1,5 +1,5 @@
-<div class="c-phaser-canvas">
-    <app-expandable expandableId="sliders-expandable">
+<div class="c-phaser-canvas" [class.mobile]="(isMobileView$ | async)">
+    <app-expandable expandableId="sliders-expandable" [variant]="2">
         <div closedHeader>
             <p>Canvas Settings</p>
         </div>

@@ -1,7 +1,7 @@
 @use 'mixin' as *;
 
 .c-ongoing-horse-ui {
-    @include container-border;
+    @include border;
     display: flex;
     align-items: center;
     justify-content: space-between;

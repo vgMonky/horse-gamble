@@ -31,6 +31,7 @@ export class RacesComponent implements OnDestroy {
     countdowns: Record<number, number> = {};
     private destroy$ = new Subject<void>();
     private countdownSubs = new Map<number, Subscription>();
+    raceStates: Record<number, string> = {};
 
     constructor(
         private horseRaceService: HorseRaceService,
@@ -71,16 +72,21 @@ export class RacesComponent implements OnDestroy {
                     });
                 this.countdownSubs.set(id, sub);
             }
+
+            // race state sub
+            this.horseRaceService.manager.getRaceState$(id)
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(state => {
+                this.raceStates[id] = state;
+            });
         });
 
         this.visibleRaceIds = newIds;
 
-        // Open first expandable if none are open
-        setTimeout(() => {
-            if (newIds.length > 0) {
-                this.expandableManager.open('race-' + newIds[0]);
-            }
-        });
+        // Open first expandable only if none are open
+        if (!this.expandableManager.isAnyOpen(newIds.map(id => 'race-' + id))) {
+            this.expandableManager.open('race-' + newIds[0]);
+        }
     }
 
     ngOnDestroy(): void {

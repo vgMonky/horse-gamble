@@ -16,11 +16,28 @@
     &__group {
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        gap: 6px;
+    }
+
+    &__header {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 6px;
+        min-height: 50px;
+
+        &--open{
+
+        }
+    }
+
+    &__pre-label {
+        color: var(--c-success-0);
     }
 
     &__live-label {
-        color: red;
+        color: var(--c-alert-0);
         animation: blink 1s step-start 0s infinite;
     }
 
