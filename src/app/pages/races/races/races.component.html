@@ -16,14 +16,24 @@
             <div closedHeader class="p-races__header">
                 <strong>Race #{{ raceId }}</strong> –
                 {{ getDistance(raceId) }}m –
-                <span *ngIf="countdowns[raceId] > 0">⏱ {{ countdowns[raceId] }}s</span>
+                <ng-container *ngIf="countdowns[raceId] > 0; else liveLabel">
+                    ⏱ {{ countdowns[raceId] }}s
+                </ng-container>
+                <ng-template #liveLabel>
+                    <span class="p-races__live-label">LIVE</span>
+                </ng-template>
             </div>
 
             <!-- Open Header -->
             <div openHeader class="p-races__header p-races__header--open">
                 <strong>Race #{{ raceId }}</strong> –
                 {{ getDistance(raceId) }}m –
-                <span *ngIf="countdowns[raceId] > 0">⏱ {{ countdowns[raceId] }}s</span>
+                <ng-container *ngIf="countdowns[raceId] > 0; else liveLabel">
+                    ⏱ {{ countdowns[raceId] }}s
+                </ng-container>
+                <ng-template #liveLabel>
+                    <span class="p-races__live-label">LIVE</span>
+                </ng-template>
             </div>
 
             <!-- Body -->

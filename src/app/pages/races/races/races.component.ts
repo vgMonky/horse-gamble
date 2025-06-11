@@ -1,16 +1,17 @@
-import { Component, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from '@app/shared/shared.module';
 import { OngoingRacesComponent } from '@app/components/ongoing-race/ongoing-race.component';
 import { HorseRaceService } from '@app/game/horse-race.service';
-import { 
+import {
     combineLatest,
     Subject,
-    takeUntil
+    takeUntil,
+    Subscription
 } from 'rxjs';
 import { ExpandableComponent } from '@app/components/base-components/expandable/expandable.component';
 import { ExpandableGroupComponent } from '@app/components/base-components/expandable/expandable-group.component';
-
+import { ExpandableManagerService } from '@app/components/base-components/expandable/expandable-manager.service';
 
 @Component({
     standalone: true,
@@ -25,21 +26,25 @@ import { ExpandableGroupComponent } from '@app/components/base-components/expand
     templateUrl: './races.component.html',
     styleUrls: ['./races.component.scss']
 })
-export class RacesComponent {
+export class RacesComponent implements OnDestroy {
     visibleRaceIds: number[] = [];
     countdowns: Record<number, number> = {};
-
     private destroy$ = new Subject<void>();
+    private countdownSubs = new Map<number, Subscription>();
 
-    constructor(private horseRaceService: HorseRaceService) {
+    constructor(
+        private horseRaceService: HorseRaceService,
+        private expandableManager: ExpandableManagerService
+
+    ) {
         combineLatest([
             this.horseRaceService.getAllRaceIds$(),
             this.horseRaceService.getCompletedRaceIds$()
         ])
             .pipe(takeUntil(this.destroy$))
             .subscribe(([allIds, completed]) => {
-                this.visibleRaceIds = allIds.filter(id => !completed.includes(id));
-                this.trackCountdowns(this.visibleRaceIds);
+                const filtered = allIds.filter(id => !completed.includes(id));
+                this.updateVisibleRaces(filtered);
             });
     }
 
@@ -47,19 +52,41 @@ export class RacesComponent {
         return this.horseRaceService.manager.getWinningDistance(raceId) / 10;
     }
 
-    private trackCountdowns(ids: number[]): void {
-        ids.forEach(id => {
-            this.horseRaceService.manager
-                .getCountdown$(id)
-                .pipe(takeUntil(this.destroy$))
-                .subscribe(cnt => {
-                    this.countdowns[id] = cnt;
-                });
+    private updateVisibleRaces(newIds: number[]): void {
+        // Unsubscribe from removed races
+        const removed = this.visibleRaceIds.filter(id => !newIds.includes(id));
+        removed.forEach(id => {
+            this.countdownSubs.get(id)?.unsubscribe();
+            this.countdownSubs.delete(id);
+            delete this.countdowns[id];
+        });
+
+        // Subscribe to new races
+        newIds.forEach(id => {
+            if (!this.countdownSubs.has(id)) {
+                const sub = this.horseRaceService.manager
+                    .getCountdown$(id)
+                    .subscribe(cnt => {
+                        this.countdowns[id] = cnt;
+                    });
+                this.countdownSubs.set(id, sub);
+            }
+        });
+
+        this.visibleRaceIds = newIds;
+
+        // Open first expandable if none are open
+        setTimeout(() => {
+            if (newIds.length > 0) {
+                this.expandableManager.open('race-' + newIds[0]);
+            }
         });
     }
 
     ngOnDestroy(): void {
         this.destroy$.next();
         this.destroy$.complete();
+        this.countdownSubs.forEach(sub => sub.unsubscribe());
+        this.countdownSubs.clear();
     }
 }

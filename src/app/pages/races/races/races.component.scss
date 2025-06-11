@@ -23,13 +23,17 @@
     }
     &__header {
         display: flex;
-        justify-content: space-between;
+        justify-content: center;
         align-items: center;
-        padding: 0.5rem;
+        padding: 10px 4px;
         font-size: 1rem;
     }
 
     &__header--open {
         font-weight: bold;
+    }
+
+    &__live-label {
+        color: var(--c-alert-0);
     }
 }
