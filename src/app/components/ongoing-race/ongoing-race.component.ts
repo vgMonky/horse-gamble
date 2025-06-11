@@ -15,7 +15,7 @@ import { WindowContainerComponent } from '@app/components/base-components/window
 
 @Component({
     standalone: true,
-    selector: 'app-ongoing-race-expandable',
+    selector: 'app-ongoing-race',
     imports: [
         SharedModule,
         CommonModule,
@@ -23,10 +23,10 @@ import { WindowContainerComponent } from '@app/components/base-components/window
         OngoingListUiComponent,
         WindowContainerComponent
     ],
-    templateUrl: './ongoing-race-expandable.component.html',
-    styleUrls: ['./ongoing-race-expandable.component.scss']
+    templateUrl: './ongoing-race.component.html',
+    styleUrls: ['./ongoing-race.component.scss']
 })
-export class OngoingRacesExpandableComponent implements OnChanges {
+export class OngoingRacesComponent implements OnChanges {
     @ViewChild(PhaserCanvasComponent) private canvasCmp!: PhaserCanvasComponent;
     @Input({ required: true }) raceId!: number;
 

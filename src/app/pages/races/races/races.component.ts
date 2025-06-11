@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from '@app/shared/shared.module';
-import { OngoingRacesExpandableComponent } from '@app/components/ongoing-race-expandable/ongoing-race-expandable.component';
+import { OngoingRacesComponent } from '@app/components/ongoing-race/ongoing-race.component';
 
 @Component({
     standalone: true,
@@ -9,7 +9,7 @@ import { OngoingRacesExpandableComponent } from '@app/components/ongoing-race-ex
     imports: [
         SharedModule,
         CommonModule,
-        OngoingRacesExpandableComponent
+        OngoingRacesComponent
     ],
     templateUrl: './races.component.html',
     styleUrls: ['./races.component.scss']
