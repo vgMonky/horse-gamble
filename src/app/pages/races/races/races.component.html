@@ -6,7 +6,8 @@
         List of expandables with races
     </div>
 
-    <app-ongoing-race [raceId]="1"></app-ongoing-race>
-    <app-ongoing-race [raceId]="2"></app-ongoing-race>
+    <ng-container *ngFor="let raceId of visibleRaceIds">
+        <app-ongoing-race [raceId]="raceId"></app-ongoing-race>
+    </ng-container>
 
 </div>

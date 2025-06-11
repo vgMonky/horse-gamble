@@ -9,7 +9,9 @@ import {
 import {
     Subject,
     Observable,
-    take
+    take,
+    BehaviorSubject,
+    filter
 } from 'rxjs';
 
 /**
@@ -88,6 +90,8 @@ export class HorseRaceService implements OnDestroy {
     private destroy$ = new Subject<void>();
     private lastRaceId! : number
 
+    private raceIds$ = new BehaviorSubject<number[]>([]);
+    private completedRaceIds = new BehaviorSubject<number[]>([]);
 
     constructor() {
         this.manager = new RaceManager(
@@ -104,20 +108,44 @@ export class HorseRaceService implements OnDestroy {
         if (ids.length === 0) {
             throw new Error('No races defined');
         }
+        this.raceIds$.next(ids);
+    }
+
+    getAllRaceIds$(): Observable<number[]> {
+        return this.raceIds$.asObservable();
+    }
+
+    getCompletedRaceIds$(): Observable<number[]> {
+        return this.completedRaceIds.asObservable();
     }
 
     private createRaceday(): void {
         // create N async races with length and scheduled at a countdown
         // this could be all races for a day, or just a block of races "createRaceBlock()"
 
-        const r1 = this.manager.createRace(2000, 20);
-        const r2 = this.manager.createRace(4000, 100);
-        const r3 = this.manager.createRace(6000, 200);
+        const r1 = this.manager.createRace(200, 5);
+        const r2 = this.manager.createRace(400, 20);
+        const r3 = this.manager.createRace(600, 30);
+        // const r1 = this.manager.createRace(2000, 20);
+        // const r2 = this.manager.createRace(4000, 100);
+        // const r3 = this.manager.createRace(6000, 200);
+
+        // update compleated races ids list
+        [r1, r2, r3].forEach(race => {
+            this.manager.getRaceState$(race.id).pipe(
+                filter(state => state === 'completed'),
+                take(1)
+            ).subscribe(() => {
+                const updated = [...this.completedRaceIds.value, race.id];
+                this.completedRaceIds.next(updated);
+            });
+        });
+        // update race ids list
+        this.raceIds$.next(this.manager.getAllRaceIds());
 
         // create more races when the last one start running (in state)
         this.lastRaceId = r3.id;
         this.manager.getRaceState$(this.lastRaceId)
-            .pipe(take(1))
             .subscribe(state => {
                 if (state === 'in') this.createRaceday();
             });
