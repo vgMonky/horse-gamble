@@ -25,14 +25,20 @@
             >
                 <!-- Closed Header: Show Token Symbol and Balance -->
                 <div class="p-wallet__balance-head p-wallet__balance-head--closed" closedHeader>
-                    <img class="p-wallet__balance-icon" src="{{ balance.token.logo }}">
-                    <p>{{ balance.amount.formatted }} <strong>{{ balance.token.symbol }}</strong></p>
+                    <div class="p-wallet__balance-head-left">
+                        <img class="p-wallet__balance-icon" src="{{ balance.token.logo }}">
+                        <p>{{ balance.amount.formatted }} <strong>{{ balance.token.symbol }}</strong></p>
+                    </div>
+                    <div class="p-wallet__balance-arrow">&#x25BC;</div>
                 </div>
 
                 <!-- Open Header: (Optional) Show Same or Different Info When Expanded -->
                 <div class="p-wallet__balance-head p-wallet__balance-head--open" openHeader>
-                    <img class="p-wallet__balance-icon" src="{{ balance.token.logo }}">
-                    <p>{{ 'COMPONENTS.TRANSFER-FORM.TITLE' | translate }} {{ balance.token.symbol }}</p>
+                    <div class="p-wallet__balance-head-left">
+                        <img class="p-wallet__balance-icon" src="{{ balance.token.logo }}">
+                        <p>{{ 'COMPONENTS.TRANSFER-FORM.TITLE' | translate }} {{ balance.token.symbol }}</p>
+                    </div>
+                    <div class="p-wallet__balance-arrow">&#x25B2;</div>
                 </div>
 
                 <!-- Expandable Body: Show Detailed Info -->

@@ -24,14 +24,19 @@
 
         &:hover,
         &:active {
-            background-color: var(--c-background-1);
-            color: var(--c-accent-0);
+            background-color: var(--c-background-0);
+            // color: var(--c-accent-0);
         }
 
         &--expanded {
             background-color: var(--c-background-0);
             color: var(--c-accent-0);
             font-weight: bold;
+
+            &:hover,
+            &:active {
+                background-color: var(--c-background-1);
+            }
         }
     }
 

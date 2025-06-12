@@ -18,36 +18,42 @@
         >
             <!-- Closed Header -->
             <div closedHeader class="p-races__header">
-                <strong>Race #{{ raceId }} |</strong>
-                {{ getDistance(raceId) }}m |
-                <ng-container [ngSwitch]="true">
-                    <ng-container *ngSwitchCase="raceStates[raceId] === 'pre'">
-                        <span class="p-races__pre-label">⏱ {{ countdowns[raceId] }}s</span>
+                <div class="p-races__header-left">
+                    <strong>Race #{{ raceId }} |</strong>
+                    {{ getDistance(raceId) }}m |
+                    <ng-container [ngSwitch]="true">
+                        <ng-container *ngSwitchCase="raceStates[raceId] === 'pre'">
+                            <span class="p-races__pre-label">⏱ {{ countdowns[raceId] }}s</span>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="raceStates[raceId] === 'post'">
+                            <span class="p-races__live-label">FINISHED</span>
+                        </ng-container>
+                        <ng-container *ngSwitchDefault>
+                            <span class="p-races__live-label">LIVE</span>
+                        </ng-container>
                     </ng-container>
-                    <ng-container *ngSwitchCase="raceStates[raceId] === 'post'">
-                        <span class="p-races__live-label">FINISHED</span>
-                    </ng-container>
-                    <ng-container *ngSwitchDefault>
-                        <span class="p-races__live-label">LIVE</span>
-                    </ng-container>
-                </ng-container>
+                </div>
+                <div class="p-races__header-arrow">&#x25BC;</div>
             </div>
 
             <!-- Open Header -->
             <div openHeader class="p-races__header p-races__header--open">
-                <strong>Race #{{ raceId }}</strong> |
-                {{ getDistance(raceId) }}m |
-                <ng-container [ngSwitch]="true">
-                    <ng-container *ngSwitchCase="raceStates[raceId] === 'pre'">
-                        <span class="p-races__pre-label">⏱ {{ countdowns[raceId] }}s</span>
+                <div class="p-races__header-left">
+                    <strong>Race #{{ raceId }}</strong> |
+                    {{ getDistance(raceId) }}m |
+                    <ng-container [ngSwitch]="true">
+                        <ng-container *ngSwitchCase="raceStates[raceId] === 'pre'">
+                            <span class="p-races__pre-label">⏱ {{ countdowns[raceId] }}s</span>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="raceStates[raceId] === 'post'">
+                            <span class="p-races__live-label">FINISHED</span>
+                        </ng-container>
+                        <ng-container *ngSwitchDefault>
+                            <span class="p-races__live-label">LIVE</span>
+                        </ng-container>
                     </ng-container>
-                    <ng-container *ngSwitchCase="raceStates[raceId] === 'post'">
-                        <span class="p-races__live-label">FINISHED</span>
-                    </ng-container>
-                    <ng-container *ngSwitchDefault>
-                        <span class="p-races__live-label">LIVE</span>
-                    </ng-container>
-                </ng-container>
+                </div>
+                <div class="p-races__header-arrow">&#x25B2;</div>
             </div>
 
             <!-- Body -->

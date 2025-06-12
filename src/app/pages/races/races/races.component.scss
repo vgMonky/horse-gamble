@@ -22,10 +22,22 @@
     &__header {
         display: flex;
         flex-direction: row;
-        justify-content: center;
+        justify-content: space-between;
         align-items: center;
-        gap: 6px;
-        min-height: 50px;
+        width: 100%;
+
+
+        &-left{
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 6px;
+            min-height: 50px;
+        }
+
+        &-arrow{
+            font-size: 10pt;
+        }
 
         &--open{
 
