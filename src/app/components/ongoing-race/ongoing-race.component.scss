@@ -1,14 +1,8 @@
 @use 'mixin' as *;
 
 .c-ongoing-race {
-
-    &__title {
-        @include text-title;
-    }
-
-    &__subtitle {
-        @include text-subtitle;
-    }
+    max-width: 1000px;
+    margin: auto;
 
     &__top{
     }

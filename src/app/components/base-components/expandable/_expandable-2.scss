@@ -3,7 +3,7 @@
     border: 1px solid var(--c-background-3);
     border-bottom: none;
     border-radius: 8px 8px 0px 0px;
-    overflow: auto;
+    overflow: hidden;
     transition: all 0.2s;
 
     &--expanded {
@@ -16,7 +16,7 @@
         justify-content: space-between;
         align-items: center;
         flex-direction: row;
-        padding: -0px 15px;
+        padding: 0px 15px;
         background-color: var(--c-background-0);
         cursor: pointer;
         user-select: none;
@@ -37,7 +37,7 @@
         overflow: auto;
         background-color: var(--c-background-0);
         border-top: 1px solid var(--c-background-3);
-        padding: 0px 0px;
+        padding: 0px 12px;
         transition: 0.3s ease;
 
         &--expanded {

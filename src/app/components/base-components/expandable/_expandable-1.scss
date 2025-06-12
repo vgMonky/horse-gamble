@@ -1,7 +1,9 @@
 .c-expandable {
+    width: 95vw;
+    max-width: 1000px;
     border: 1px solid var(--c-background-3);
     border-radius: 8px;
-    overflow: auto;
+    overflow-y: hidden;
     transition: all 0.2s;
 
     &--expanded {
@@ -34,7 +36,6 @@
     }
 
     &__body {
-        overflow: auto;
         background-color: var(--c-background-0);
         border-top: 1px solid var(--c-background-3);
         padding: 0px 0px;

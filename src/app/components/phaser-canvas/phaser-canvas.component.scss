@@ -3,11 +3,8 @@
 
 
 .c-phaser-canvas{
-    width: 90vw;
     max-width: 1000px;
     &.mobile {
-        margin: auto;
-        width: 95vw;
     }
 
     &__phaser-container {
