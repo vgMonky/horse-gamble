@@ -75,7 +75,17 @@ export class PhaserCanvasComponent implements OnInit, OnDestroy {
             width: 1000,
             height: 250,
             parent: this.containerRef.nativeElement,
-            scene
+            scene,
+            input: {
+                // allow wheel to bubble so the page can scroll
+                mouse: {
+                    preventDefaultWheel: false
+                },
+                // stop Phaser from doing event.preventDefault() on touch
+                touch: {
+                    capture: false
+                }
+            }
         });
     }
 }

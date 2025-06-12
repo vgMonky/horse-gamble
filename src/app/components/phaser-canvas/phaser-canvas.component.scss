@@ -26,6 +26,11 @@
         &.mobile {
             flex-direction: column;
         }
+
+        p{
+            margin: 5px 0px;
+            color: var(--c-foreground-2);
+        }
     }
 
     &__slider{
