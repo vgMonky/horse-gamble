@@ -13,6 +13,8 @@
             *ngFor="let raceId of visibleRaceIds"
             [expandableId]="'race-' + raceId"
             [variant]="1"
+            (open)="expanded[raceId] = true"
+            (close)="expanded[raceId] = false"
         >
             <!-- Closed Header -->
             <div closedHeader class="p-races__header">
@@ -49,7 +51,11 @@
             </div>
 
             <!-- Body -->
-            <div body>
+            <div
+                body
+                *ngIf="expanded[raceId]"
+                class="c-expandable__body c-expandable__body--expanded"
+            >
                 <app-ongoing-race [raceId]="raceId"></app-ongoing-race>
             </div>
         </app-expandable>

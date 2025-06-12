@@ -32,6 +32,7 @@ export class RacesComponent implements OnDestroy {
     private destroy$ = new Subject<void>();
     private countdownSubs = new Map<number, Subscription>();
     raceStates: Record<number, string> = {};
+    expanded: { [raceId: number]: boolean } = {};
 
     constructor(
         private horseRaceService: HorseRaceService,
