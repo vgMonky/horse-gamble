@@ -7,7 +7,7 @@
     transition: all 0.2s;
 
     &--expanded {
-        // box-shadow: var(--c-shadow-1);
+        box-shadow:none;
     }
 
     &__header {
@@ -41,7 +41,7 @@
         transition: 0.3s ease;
 
         &--expanded {
-            padding: 6px;
+            padding: 6px 12px;
             max-height: none;
         }
     }

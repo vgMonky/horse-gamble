@@ -5,7 +5,7 @@
     transition: all 0.2s;
 
     &--expanded {
-        // box-shadow: var(--c-shadow-1);
+        box-shadow: var(--c-shadow-1);
     }
 
     &__header {
@@ -22,12 +22,12 @@
 
         &:hover,
         &:active {
-            background-color: var(--c-background-0);
+            background-color: var(--c-background-1);
             color: var(--c-accent-0);
         }
 
         &--expanded {
-            background-color: var(--c-background-1);
+            background-color: var(--c-background-0);
             color: var(--c-accent-0);
             font-weight: bold;
         }
@@ -42,7 +42,7 @@
 
         &--expanded {
             padding: 6px;
-            max-height: none;
+            padding-bottom: 10px;
         }
     }
 
