@@ -75,3 +75,40 @@ import { ExpandableGroupComponent } from '@app/components/base-components/expand
 ```
 
 Now, when you open one expandable, any previously open expandable within the group will automatically close. 🎉
+
+## Expandable Style
+You can customize the look of each expandable using style variants.
+
+### 🔧 1. Use a Variant
+Pass a variant input to apply a specific style:
+
+```html
+<app-expandable expandableId="a" variant="1">
+    <div closedHeader>Closed</div>
+    <div openHeader>Open</div>
+    <div body>Body</div>
+</app-expandable>
+```
+
+This will apply the class expandable-variant-1 to the component.
+
+### 🎨 2. Add a New Variant
+Create a new SCSS partial, e.g. _expandable-3.scss:
+
+```scss
+// styles/_expandable-3.scss
+.c-expandable {
+    border-left: 4px solid hotpink;
+    background: #1a1a1a;
+}
+```
+
+Import it in expandable.component.scss:
+
+```scss
+:host(.expandable-variant-3) {
+    @import 'styles/expandable-3';
+}
+```
+
+That’s it! Now <app-expandable variant="3"> will use your custom style. ✅

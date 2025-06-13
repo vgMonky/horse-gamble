@@ -1,7 +1,7 @@
 // src/app/components/ongoing-horse-ui/ongoing-horse-ui.component.ts
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { OngoingHorse } from '@app/game/ongoing-race.service';
+import { RaceHorse } from '@app/game/horse-race.abstract';
 
 @Component({
     standalone: true,
@@ -10,8 +10,9 @@ import { OngoingHorse } from '@app/game/ongoing-race.service';
     templateUrl: './ongoing-horse-ui.component.html',
     styleUrls: ['./ongoing-horse-ui.component.scss']
 })
-export class OngoingHorseUiComponent {
-    @Input() ongoingHorse!: OngoingHorse;
+export class RaceHorseUiComponent {
+    @Input() raceId! : number;
+    @Input() RaceHorse!: RaceHorse;
     @Input() color!: string;
 
     getOrdinal(n: number) {

@@ -1,10 +1,8 @@
 // src/app/components/phaser-canvas/game_visuals/sounds.ts
 import Phaser from 'phaser';
 import type { Subscription } from 'rxjs';
-import type {
-    OngoingRaceService,
-    OngoingRaceState
-} from '@app/game/ongoing-race.service';
+import type { HorseRaceService } from '@app/game/horse-race.service';
+import type { HorseRaceState } from '@app/game/horse-race.abstract';
 
 // default volumes (0.0–1.0)
 const DEFAULT_VOLUMES = {
@@ -30,11 +28,12 @@ export class SoundLayer {
     private tickSound?: Phaser.Sound.BaseSound;
     private horseSounds: Phaser.Sound.BaseSound[] = [];
 
-    private currentState: OngoingRaceState = 'pre';
+    private currentState: HorseRaceState = 'pre';
 
     constructor(
+        private raceId : number,
         private scene:   Phaser.Scene,
-        private raceSvc: OngoingRaceService
+        private raceSvc: HorseRaceService
     ) {
         // when the scene shuts down, fully clean up
         this.scene.events.once('shutdown', () => this.destroy());
@@ -68,7 +67,7 @@ export class SoundLayer {
         }
 
         // watch for race-state changes
-        this.stateSub = this.raceSvc.raceState$.subscribe(state => {
+        this.stateSub = this.raceSvc.manager.getRaceState$(this.raceId).subscribe(state => {
             this.currentState = state;
 
             if (state === 'in') {
@@ -86,7 +85,7 @@ export class SoundLayer {
         });
 
         // watch for the countdown ticks
-        this.countdownSub = this.raceSvc.countdown$.subscribe(timeLeft => {
+        this.countdownSub = this.raceSvc.manager.getCountdown$(this.raceId).subscribe(timeLeft => {
             if (this.currentState === 'pre' && timeLeft > 0 && timeLeft <= 5) {
                 this.safePlay(this.tickSound);
             }

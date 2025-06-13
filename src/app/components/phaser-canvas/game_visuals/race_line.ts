@@ -1,22 +1,23 @@
 // src/app/components/phaser-canvas/game_visuals/race_line.ts
 import Phaser from 'phaser';
-import type {
-    OngoingRaceService,
-    OngoingHorsesList,
-    OngoingRaceState
-} from '@app/game/ongoing-race.service';
-import { SLOT_COLOR_MAP } from '@app/game/ongoing-race.service';
+import {
+    RaceHorsesList,
+    HorseRaceState,
+    SLOT_COLOR_MAP,
+} from '@app/game/horse-race.abstract';
+import { HorseRaceService } from '@app/game/horse-race.service';
 import { Subscription } from 'rxjs';
 
 export class RaceLineLayer {
     private cam: Camera;
 
     constructor(
+        private raceId : number,
         private scene: Phaser.Scene,
-        private ongoingRaceService: OngoingRaceService,
+        private horseRaceService: HorseRaceService,
         private getMarkerOpacity: () => number
     ) {
-        this.cam = new Camera(this.scene, this.ongoingRaceService, this.getMarkerOpacity);
+        this.cam = new Camera(this.raceId, this.scene, this.horseRaceService, this.getMarkerOpacity);
         // ensure we clean up when the scene shuts down
         this.scene.events.once('shutdown', () => this.destroy());
     }
@@ -53,17 +54,18 @@ class Camera {
     public origin: { x: number; y: number };
     private graphics: Phaser.GameObjects.Graphics;
     private posToPx = 20;
-    private raceSvc: OngoingRaceService;
-    private horsesList!: OngoingHorsesList;
-    private raceState: OngoingRaceState = 'pre';
+    private raceSvc: HorseRaceService;
+    private horsesList!: RaceHorsesList;
+    private raceState: HorseRaceState = 'pre';
     private sub = new Subscription();
     private images: Map<string, Phaser.GameObjects.Image> = new Map();
     private sprites: Map<string, Phaser.GameObjects.Sprite> = new Map();
     private shadows: Map<string, Phaser.GameObjects.Ellipse> = new Map();
 
     constructor(
+        private raceId : number,
         private scene: Phaser.Scene,
-        raceSvc: OngoingRaceService,
+        raceSvc: HorseRaceService,
         private getMarkerOpacity: () => number,
         origin?: { x: number; y: number }
     ) {
@@ -73,12 +75,12 @@ class Camera {
 
         // add both subscriptions to the composite
         this.sub.add(
-            this.raceSvc.horsesList$.subscribe(list => {
+            this.raceSvc.manager.getHorsesList$(this.raceId).subscribe(list => {
                 this.horsesList = list;
             })
         );
         this.sub.add(
-            this.raceSvc.raceState$.subscribe(state => {
+            this.raceSvc.manager.getRaceState$(this.raceId).subscribe(state => {
                 this.raceState = state;
             })
         );
@@ -86,18 +88,18 @@ class Camera {
 
     updateCam(): void {
         // Set cam game position
-        if (this.pos < this.raceSvc.winningDistance) {
+        if (this.pos < this.raceSvc.manager.getWinningDistance(this.raceId)) {
             const first = this.horsesList.getByPlacement()[0].position;
-            if (first < this.raceSvc.winningDistance) {
+            if (first < this.raceSvc.manager.getWinningDistance(this.raceId)) {
                 this.pos = first;
             } else {
-                this.pos = this.raceSvc.winningDistance;
+                this.pos = this.raceSvc.manager.getWinningDistance(this.raceId);
             }
         }
 
         // interpolate origin.x between start(0.5) and finalOrigin
         const finalOriginX = 0.63;
-        const progress    = Phaser.Math.Clamp(this.pos / this.raceSvc.winningDistance, 0, 1);
+        const progress    = Phaser.Math.Clamp(this.pos / this.raceSvc.manager.getWinningDistance(this.raceId), 0, 1);
         this.origin.x     = Phaser.Math.Interpolation.Linear([0.5, finalOriginX], progress);
 
         // Calculate and draw cam point of view
@@ -112,7 +114,7 @@ class Camera {
         this.drawCamCross();
 
         // Draw race end
-        this.drawCamImg(this.raceSvc.winningDistance, 'img_final_post', 'p0', 0.14, -18, 0, 0);
+        this.drawCamImg(this.raceSvc.manager.getWinningDistance(this.raceId), 'img_final_post', 'p0', 0.14, -18, 0, 0);
 
         // Draw race start
         this.drawCamImg(0, 'img_start_gate', 'g0', 0.20, 0, -110, 1);
@@ -266,7 +268,7 @@ class Camera {
             }
         } else {
             // update x position
-            if (this.pos >= this.raceSvc.winningDistance) {
+            if (this.pos >= this.raceSvc.manager.getWinningDistance(this.raceId)) {
                 sprite.x += finalSlideSpeed;
             } else {
                 const dx = initialTargetX - sprite.x;

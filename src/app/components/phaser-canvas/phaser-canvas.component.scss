@@ -3,6 +3,9 @@
 
 
 .c-phaser-canvas{
+    max-width: 1000px;
+    &.mobile {
+    }
 
     &__phaser-container {
         @include border;
@@ -13,10 +16,6 @@
         align-items: center;
         border: 1px solid var(--c-background-4);
         overflow: hidden;
-
-        &.mobile {
-            width: 330px;
-        }
     }
 
     &__sliders-container{
@@ -26,6 +25,11 @@
 
         &.mobile {
             flex-direction: column;
+        }
+
+        p{
+            margin: 5px 0px;
+            color: var(--c-foreground-2);
         }
     }
 

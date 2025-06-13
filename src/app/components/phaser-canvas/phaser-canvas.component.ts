@@ -4,7 +4,8 @@ import {
     OnInit,
     OnDestroy,
     ElementRef,
-    ViewChild
+    ViewChild,
+    Input
 } from '@angular/core';
 import Phaser from 'phaser';
 import { MainScene } from './game_visuals/main_scene';
@@ -12,10 +13,11 @@ import { BreakpointObserver } from '@angular/cdk/layout';
 import { BREAKPOINT } from 'src/types';
 import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { OngoingRaceService } from '@app/game/ongoing-race.service';
+import { HorseRaceService } from '@app/game/horse-race.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ExpandableComponent } from '../base-components/expandable/expandable.component';
+import { skip } from 'rxjs/operators';
 
 @Component({
     selector: 'app-phaser-canvas',
@@ -31,6 +33,7 @@ import { ExpandableComponent } from '../base-components/expandable/expandable.co
 export class PhaserCanvasComponent implements OnInit, OnDestroy {
     @ViewChild('phaserContainer', { static: true })
     containerRef!: ElementRef;
+    @Input() raceId!: number;
 
     isMobileView$: Observable<boolean>;
     markerOpacity = 1;
@@ -38,11 +41,10 @@ export class PhaserCanvasComponent implements OnInit, OnDestroy {
     isMuted = false;
 
     private game?: Phaser.Game;
-    private gameSubs: Subscription[] = [];
 
     constructor(
         private breakpointObserver: BreakpointObserver,
-        private ongoingRaceService: OngoingRaceService
+        private horseRaceService: HorseRaceService
     ) {
         this.isMobileView$ = this.breakpointObserver
             .observe(BREAKPOINT)
@@ -54,14 +56,15 @@ export class PhaserCanvasComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
-        // destroy Phaser instance
+        // destroy Phaser
         this.game?.destroy(true);
     }
 
     private startGame(): void {
         // instantiate the scene
         const scene = new MainScene(
-            this.ongoingRaceService,
+            this.raceId,
+            this.horseRaceService,
             () => this.markerOpacity,
             () => this.lightnessValue,
             () => this.isMuted
@@ -72,7 +75,17 @@ export class PhaserCanvasComponent implements OnInit, OnDestroy {
             width: 1000,
             height: 250,
             parent: this.containerRef.nativeElement,
-            scene
+            scene,
+            input: {
+                // allow wheel to bubble so the page can scroll
+                mouse: {
+                    preventDefaultWheel: false
+                },
+                // stop Phaser from doing event.preventDefault() on touch
+                touch: {
+                    capture: false
+                }
+            }
         });
     }
 }

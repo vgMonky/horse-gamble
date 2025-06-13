@@ -5,17 +5,17 @@
             "TITLE": "Home Landing",
             "DESCRIPTION": "A horse race gambling game based on Telos EVM."
         },
-        "UPCOMING": {
-            "NAME": "Upcoming",
-            "TITLE": "Upcoming Races"
-        },
-        "ONGOING": {
-            "NAME": "Ongoing",
+        "RACES": {
+            "NAME": "Races",
             "TITLE": "Ongoing Races"
         },
         "COMPLETED": {
             "NAME": "Completed",
             "TITLE": "Completed Races"
+        },
+        "BETS": {
+            "NAME": "Bets",
+            "TITLE": "List of my bets"
         },
         "WALLET": {
             "NAME": "Wallet",

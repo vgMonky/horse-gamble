@@ -2,6 +2,4 @@
 @use './app/style/variables';
 @use './app/style/mixin';
 @use './app/style/globals';
-@use './app/style/transitions';
-
-@use'./app/components/phaser-canvas/phaser-canvas-expandable'
+@use './app/style/transitions'

@@ -1,13 +1,13 @@
 // src/app/components/phaser-canvas/game_visuals/mini_map.ts
 import Phaser from 'phaser';
-import type { OngoingRaceService, OngoingHorsesList } from '@app/game/ongoing-race.service';
-import { SLOT_COLOR_MAP } from '@app/game/ongoing-race.service';
+import type { HorseRaceService } from '@app/game/horse-race.service';
+import { SLOT_COLOR_MAP, RaceHorsesList } from '@app/game/horse-race.abstract';
 import { Subscription } from 'rxjs';
 
 export class MiniMapLayer {
     private graphics: Phaser.GameObjects.Graphics;
     private dots = new Map<number, Phaser.GameObjects.Arc>();
-    private horsesList!: OngoingHorsesList;
+    private horsesList!: RaceHorsesList;
     private sub = new Subscription();
     private center!: { x: number; y: number };
     private shape!: StadiumShape;
@@ -18,14 +18,15 @@ export class MiniMapLayer {
     private readonly startOffset = 2/12;  // adjust if you want a different 0-pos
 
     constructor(
+        private raceId : number,
         private scene: Phaser.Scene,
-        private raceSvc: OngoingRaceService,
+        private raceSvc: HorseRaceService,
         private getMarkerOpacity: () => number
     ) {
         this.graphics = this.scene.add.graphics().setDepth(80);
 
         this.sub.add(
-            this.raceSvc.horsesList$.subscribe(list => {
+            this.raceSvc.manager.getHorsesList$(this.raceId).subscribe(list => {
                 this.horsesList = list;
             })
         );
@@ -75,7 +76,7 @@ export class MiniMapLayer {
     update(): void {
         if (!this.horsesList) return;
 
-        const dist = this.raceSvc.winningDistance;
+        const dist = this.raceSvc.manager.getWinningDistance(this.raceId);
         this.horsesList.getAll().forEach(h => {
             const idx = h.slot;
             const totalTracks = 4;  // you’ve hard-coded 4 rings

@@ -1,10 +1,10 @@
 import Phaser from 'phaser';
 import { Subscription } from 'rxjs';
 import type {
-    OngoingRaceService,
-    OngoingRaceState,
-    OngoingHorsesList
-} from '@app/game/ongoing-race.service';
+    HorseRaceState,
+    RaceHorsesList
+} from '@app/game/horse-race.abstract';
+import type { HorseRaceService } from '@app/game/horse-race.service';
 
 export class TextLayer {
     private overlay!: Phaser.GameObjects.Graphics;
@@ -13,11 +13,12 @@ export class TextLayer {
     private stateSub?: Subscription;
     private countdownSub?: Subscription;
     private horsesSub?: Subscription;
-    private latestList?: OngoingHorsesList;
+    private latestList?: RaceHorsesList;
 
     constructor(
+        private raceId : number,
         private scene: Phaser.Scene,
-        private raceSvc: OngoingRaceService,
+        private raceSvc: HorseRaceService,
         private opacity: number = 0.5
     ) {}
 
@@ -54,13 +55,13 @@ export class TextLayer {
             .setDepth(101);
 
         // keep latest horses list for podium
-        this.horsesSub = this.raceSvc.horsesList$
+        this.horsesSub = this.raceSvc.manager.getHorsesList$(this.raceId)
             .subscribe(list => this.latestList = list);
 
         // show/hide & content based on state
-        this.stateSub = this.raceSvc.raceState$
-            .subscribe((state: OngoingRaceState) => {
-                const visible = (state === 'pre' || state === 'post');
+        this.stateSub = this.raceSvc.manager.getRaceState$(this.raceId)
+            .subscribe((state: HorseRaceState) => {
+                const visible = (state === 'pre' || state === 'post' || state === 'completed');
                 this.overlay.setVisible(visible);
                 this.countdownText.setVisible(visible);
                 this.messageText.setVisible(visible);
@@ -80,7 +81,7 @@ export class TextLayer {
             });
 
         // update countdown digits
-        this.countdownSub = this.raceSvc.countdown$
+        this.countdownSub = this.raceSvc.manager.getCountdown$(this.raceId)
             .subscribe(count => {
                 this.countdownText.setText(count.toString());
             });
