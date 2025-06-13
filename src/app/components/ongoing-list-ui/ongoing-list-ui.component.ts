@@ -64,13 +64,22 @@ export class OngoingListUiComponent implements AfterViewInit, OnDestroy {
                         if (listInstance !== this.lastListInstance) {
                             this.lastListInstance = listInstance;
                         }
-                        setTimeout(() => this.runFLIP(listInstance.getByPlacement()), 0);
+
+                        // Step 1: Record current positions
+                        this.recordPositions();
+
+                        // Step 2: Update the list to the new placement
+                        this.horsesList = listInstance.getByPlacement();
+
+                        // Step 3: Wait until Angular renders, then run FLIP safely
+                        requestAnimationFrame(() => this.runFLIP());
                     });
             } catch (err) {
                 console.error('Invalid race ID', this.raceId, err);
             }
         }
     }
+
 
     ngAfterViewInit(): void {
         this.recordPositions();
@@ -90,51 +99,52 @@ export class OngoingListUiComponent implements AfterViewInit, OnDestroy {
         });
     }
 
-    private runFLIP(newList: RaceHorse[]): void {
+    private runFLIP(): void {
         const oldYMap = new Map(this.prevY);
-        this.horsesList = newList;
 
         this.ngZone.runOutsideAngular(() => {
-            requestAnimationFrame(() => {
-                const newYMap = new Map<number, number>();
-                this.horseElems.forEach(el => {
-                    const idx = +el.nativeElement.dataset.index;
-                    const { top: y } = el.nativeElement.getBoundingClientRect();
-                    newYMap.set(idx, y);
-                });
+            const newYMap = new Map<number, number>();
 
+            this.horseElems.forEach(el => {
+                const idx = +el.nativeElement.dataset.index;
+                const { top } = el.nativeElement.getBoundingClientRect();
+                const y = top + window.pageYOffset;
+                newYMap.set(idx, y);
+            });
+
+            this.horseElems.forEach(el => {
+                const idx = +el.nativeElement.dataset.index;
+                const oldY = oldYMap.get(idx);
+                const newY = newYMap.get(idx);
+                if (oldY == null || newY == null) return;
+
+                const deltaY = oldY - newY;
+                if (deltaY) {
+                    this.renderer.setStyle(el.nativeElement, 'transition', 'none');
+                    this.renderer.setStyle(el.nativeElement, 'transform', `translateY(${deltaY}px)`);
+                }
+            });
+
+            // Force reflow
+            this.horseElems.first?.nativeElement.getBoundingClientRect();
+
+            requestAnimationFrame(() => {
                 this.horseElems.forEach(el => {
                     const idx = +el.nativeElement.dataset.index;
                     const oldY = oldYMap.get(idx);
                     const newY = newYMap.get(idx);
-                    if (oldY == null || newY == null) return;
-
-                    const deltaY = oldY - newY;
-                    if (deltaY) {
-                        this.renderer.setStyle(el.nativeElement, 'transition', 'none');
-                        this.renderer.setStyle(el.nativeElement, 'transform', `translateY(${deltaY}px)`);
+                    if (oldY != null && newY != null && oldY !== newY) {
+                        this.renderer.setStyle(el.nativeElement, 'transition', 'transform 200ms linear');
+                        this.renderer.setStyle(el.nativeElement, 'transform', 'translateY(0)');
                     }
                 });
 
-                // Force reflow
-                this.horseElems.first?.nativeElement.getBoundingClientRect();
-
-                requestAnimationFrame(() => {
-                    this.horseElems.forEach(el => {
-                        const idx = +el.nativeElement.dataset.index;
-                        const oldY = oldYMap.get(idx);
-                        const newY = newYMap.get(idx);
-                        // Only animate if there was an actual vertical shift
-                        if (oldY != null && newY != null && oldY !== newY) {
-                            this.renderer.setStyle(el.nativeElement, 'transition', 'transform 200ms linear');
-                            this.renderer.setStyle(el.nativeElement, 'transform', 'translateY(0)');
-                        }
-                    });
-                    setTimeout(() => this.recordPositions(), 1);
-                });
+                // Capture next baseline immediately after FLIP completes
+                setTimeout(() => this.recordPositions(), 200); // match transition time
             });
         });
     }
+
 
     getColor(slot: number): string {
         return SLOT_COLOR_MAP[slot] ?? 'black';
