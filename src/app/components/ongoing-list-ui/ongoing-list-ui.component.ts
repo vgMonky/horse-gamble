@@ -65,15 +65,20 @@ export class OngoingListUiComponent implements AfterViewInit, OnDestroy {
                             this.lastListInstance = listInstance;
                         }
 
-                        // Step 1: Record current positions
+                        const newList = listInstance.getByPlacement();
+
+                        // Always update the list (even if empty)
+                        this.horsesList = newList;
+
+                        // If it's empty, just return (don't FLIP yet)
+                        if (newList.length === 0) return;
+
                         this.recordPositions();
 
-                        // Step 2: Update the list to the new placement
-                        this.horsesList = listInstance.getByPlacement();
-
-                        // Step 3: Wait until Angular renders, then run FLIP safely
+                        // Wait for DOM update, then run FLIP
                         requestAnimationFrame(() => this.runFLIP());
-                    });
+                });
+
             } catch (err) {
                 console.error('Invalid race ID', this.raceId, err);
             }
