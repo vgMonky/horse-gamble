@@ -111,4 +111,13 @@ export class PhaserCanvasComponent implements OnInit, OnDestroy {
         }
         this.followHorse = false;
     }
+
+    // set horseFollow
+    readonly horseCount = 4;
+
+    setHorseFollow(index: number) {
+        const normalized = ((index % this.horseCount) + this.horseCount) % this.horseCount;
+        this.horseFollow = normalized;
+        this.followHorse = true;
+    }
 }

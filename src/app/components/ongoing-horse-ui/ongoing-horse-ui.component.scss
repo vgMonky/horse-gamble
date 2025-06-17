@@ -41,4 +41,8 @@
         min-width: 60px ;
         text-align: right;
     }
+
+    &:hover{
+        background-color: var(--c-background-1);
+    }
 }

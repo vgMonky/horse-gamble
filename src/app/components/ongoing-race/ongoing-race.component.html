@@ -7,7 +7,10 @@
     </div>
 
     <div class="c-ongoing-race__bottom">
-        <app-ongoing-list-ui [raceId]="raceId"></app-ongoing-list-ui>
+        <app-ongoing-list-ui
+            [raceId]="raceId"
+            (horseSelected)="canvasCmp.setHorseFollow($event)">
+        </app-ongoing-list-ui>
     </div>
 
     <div class="c-ongoing-race__subtitle">

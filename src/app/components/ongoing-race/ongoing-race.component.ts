@@ -29,7 +29,7 @@ import { Observable, map } from 'rxjs';
     styleUrls: ['./ongoing-race.component.scss']
 })
 export class OngoingRacesComponent implements OnChanges {
-    @ViewChild(PhaserCanvasComponent) private canvasCmp!: PhaserCanvasComponent;
+    @ViewChild(PhaserCanvasComponent) public canvasCmp!: PhaserCanvasComponent;
     @Input({ required: true }) raceId!: number;
 
     isMobileView$: Observable<boolean>;
