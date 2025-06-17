@@ -54,7 +54,7 @@ class Camera {
     public pos = 0;
     public origin: { x: number; y: number };
     private graphics: Phaser.GameObjects.Graphics;
-    private posToPx = 20;
+    private posToPx = 15;
     private raceSvc: HorseRaceService;
     private horsesList!: RaceHorsesList;
     private raceState: HorseRaceState = 'pre';
