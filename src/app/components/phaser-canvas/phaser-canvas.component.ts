@@ -17,7 +17,6 @@ import { HorseRaceService } from '@app/game/horse-race.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ExpandableComponent } from '../base-components/expandable/expandable.component';
-import { skip } from 'rxjs/operators';
 
 @Component({
     selector: 'app-phaser-canvas',
@@ -37,6 +36,7 @@ export class PhaserCanvasComponent implements OnInit, OnDestroy {
 
     isMobileView$: Observable<boolean>;
     markerOpacity = 1;
+    placementFollow = 0
     lightnessValue = 0.1;
     isMuted = false;
 
@@ -66,6 +66,7 @@ export class PhaserCanvasComponent implements OnInit, OnDestroy {
             this.raceId,
             this.horseRaceService,
             () => this.markerOpacity,
+            () => this.placementFollow,
             () => this.lightnessValue,
             () => this.isMuted
         );

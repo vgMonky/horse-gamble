@@ -15,9 +15,10 @@ export class RaceLineLayer {
         private raceId : number,
         private scene: Phaser.Scene,
         private horseRaceService: HorseRaceService,
-        private getMarkerOpacity: () => number
+        private getMarkerOpacity: () => number,
+        private getPlacementFollow: () => number
     ) {
-        this.cam = new Camera(this.raceId, this.scene, this.horseRaceService, this.getMarkerOpacity);
+        this.cam = new Camera(this.raceId, this.scene, this.horseRaceService, this.getMarkerOpacity, this.getPlacementFollow);
         // ensure we clean up when the scene shuts down
         this.scene.events.once('shutdown', () => this.destroy());
     }
@@ -67,6 +68,7 @@ class Camera {
         private scene: Phaser.Scene,
         raceSvc: HorseRaceService,
         private getMarkerOpacity: () => number,
+        private getPlacementFollow: () => number,
         origin?: { x: number; y: number }
     ) {
         this.raceSvc = raceSvc;
@@ -88,10 +90,12 @@ class Camera {
 
     updateCam(): void {
         // Set cam game position
+        const placementFollow = this.getPlacementFollow()
         if (this.pos < this.raceSvc.manager.getWinningDistance(this.raceId)) {
             const first = this.horsesList.getByPlacement()[0].position;
+            const follow = this.horsesList.getByPlacement()[placementFollow].position;
             if (first < this.raceSvc.manager.getWinningDistance(this.raceId)) {
-                this.pos = first;
+                this.pos = follow;
             } else {
                 this.pos = this.raceSvc.manager.getWinningDistance(this.raceId);
             }
