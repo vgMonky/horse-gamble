@@ -60,10 +60,27 @@
         </div>
     </app-expandable>
 
-    <div
-        #phaserContainer
-        class="c-phaser-canvas__phaser-container"
-        [class.mobile]="(isMobileView$ | async)"
-    >
+    <div class="c-phaser-canvas__canvas-wrapper">
+        <div
+            #phaserContainer
+            class="c-phaser-canvas__phaser-container"
+            [class.mobile]="(isMobileView$ | async)"
+        ></div>
+        <div class="c-phaser-canvas__canvas-input">
+            <div class="c-phaser-canvas__placement-controls">
+                <button
+                    type="button"
+                    (click)="previousPlacement()"
+                    [disabled]="placementFollow >= maxPlacement"
+                    aria-label="Previous placement"
+                >&larr;</button>
+                <button
+                    type="button"
+                    (click)="forwardPlacement()"
+                    [disabled]="placementFollow <= minPlacement"
+                    aria-label="Next placement"
+                >&rarr;</button>
+            </div>
+        </div>
     </div>
 </div>
