@@ -37,7 +37,7 @@ export class PhaserCanvasComponent implements OnInit, OnDestroy {
     isMobileView$: Observable<boolean>;
     markerOpacity = 0;
     lightnessValue = 0.1;
-    placementFollow = 0;
+    followFirst = true;
     horseFollow = 0;
     followHorse = false;
     isMuted = false;
@@ -69,7 +69,7 @@ export class PhaserCanvasComponent implements OnInit, OnDestroy {
             this.horseRaceService,
             () => this.markerOpacity,
             () => this.lightnessValue,
-            () => this.placementFollow,
+            () => this.followFirst,
             () => this.horseFollow,
             () => this.followHorse,
             () => this.isMuted
@@ -94,23 +94,13 @@ export class PhaserCanvasComponent implements OnInit, OnDestroy {
         });
     }
 
-    // set placmentFollow
-    readonly maxPlacement = 3;
-    readonly minPlacement = 0;
-
-    forwardPlacement() {
-        if (this.placementFollow > this.minPlacement) {
-            this.placementFollow--;
-        }
+    togglePlacement() {
+        if (this.followFirst == true) {
+            this.followFirst = false;
+        }else {this.followFirst = true}
         this.followHorse = false;
     }
 
-    previousPlacement() {
-        if (this.placementFollow < this.maxPlacement) {
-            this.placementFollow++;
-        }
-        this.followHorse = false;
-    }
 
     // set horseFollow
     readonly horseCount = 4;
