@@ -215,7 +215,7 @@ export class HorseRace {
             const finished = list.applyAdvances(advances, this.winningDistance);
 
             this._list$.next(list);
-            list.consoleLog();
+            // list.consoleLog();
 
             if (finished === list.getAll().length) {
                 // 1) stop the racing ticks right away
