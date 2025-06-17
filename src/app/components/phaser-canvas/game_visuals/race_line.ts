@@ -16,9 +16,11 @@ export class RaceLineLayer {
         private scene: Phaser.Scene,
         private horseRaceService: HorseRaceService,
         private getMarkerOpacity: () => number,
-        private getPlacementFollow: () => number
+        private getPlacementFollow: () => number,
+        private getHorseFollow: () => number,
+        private getFollowHorse: () => Boolean,
     ) {
-        this.cam = new Camera(this.raceId, this.scene, this.horseRaceService, this.getMarkerOpacity, this.getPlacementFollow);
+        this.cam = new Camera(this.raceId, this.scene, this.horseRaceService, this.getMarkerOpacity, this.getPlacementFollow, this.getHorseFollow, this.getFollowHorse);
         // ensure we clean up when the scene shuts down
         this.scene.events.once('shutdown', () => this.destroy());
     }
@@ -69,6 +71,8 @@ class Camera {
         raceSvc: HorseRaceService,
         private getMarkerOpacity: () => number,
         private getPlacementFollow: () => number,
+        private getHorseFollow: () => number,
+        private getFollowHorse: () => Boolean,
         origin?: { x: number; y: number }
     ) {
         this.raceSvc = raceSvc;
@@ -90,15 +94,20 @@ class Camera {
 
     updateCam(): void {
         // Set cam game position
-        const placementFollow = this.getPlacementFollow()
-        if (this.pos < this.raceSvc.manager.getWinningDistance(this.raceId)) {
-            const first = this.horsesList.getByPlacement()[0].position;
-            const follow = this.horsesList.getByPlacement()[placementFollow].position;
-            if (first < this.raceSvc.manager.getWinningDistance(this.raceId)) {
-                this.pos = follow;
-            } else {
-                this.pos = this.raceSvc.manager.getWinningDistance(this.raceId);
-            }
+        const placementFollow: number = this.getPlacementFollow() // from 0 to 3
+        const horseFollow: number = this.getHorseFollow() // from 0 to 3
+        const followHorse: Boolean = this.getFollowHorse() // if true uses horseFollow
+
+        const pFollow = this.horsesList.getByPlacement()[placementFollow].position;
+        const hFollow = this.horsesList.getAll()[horseFollow].position;
+
+        if (followHorse == false) {
+        this.pos = pFollow
+        }else {this.pos = hFollow}
+
+        // camera stops at final winning post
+        if (this.pos >= this.raceSvc.manager.getWinningDistance(this.raceId)) {
+            this.pos = this.raceSvc.manager.getWinningDistance(this.raceId);
         }
 
         // interpolate origin.x between start(0.5) and finalOrigin

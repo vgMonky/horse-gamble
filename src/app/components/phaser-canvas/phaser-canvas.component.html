@@ -41,18 +41,20 @@
                     <label>Mute Sounds</label>
                     <input type="checkbox" [(ngModel)]="isMuted" />
                 </div>
-                <div class="c-phaser-canvas__slider">
-                    <label for="placementFollow">
-                        Placement to Follow: {{ placementFollow }}
-                    </label>
-                    <input
-                        type="range"
-                        id="placmentFollowSlider"
-                        min="0"
-                        max="3"
-                        step="1"
-                        [(ngModel)]="placementFollow"
-                    />
+                <div class="c-phaser-canvas__placement-controls">
+                    <label>Placement to follow</label>
+                    <button
+                        type="button"
+                        (click)="previousPlacement()"
+                        [disabled]="placementFollow >= maxPlacement"
+                        aria-label="Previous placement"
+                    >&larr;</button>
+                    <button
+                        type="button"
+                        (click)="forwardPlacement()"
+                        [disabled]="placementFollow <= minPlacement"
+                        aria-label="Next placement"
+                    >&rarr;</button>
                 </div>
             </div>
         </div>

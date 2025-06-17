@@ -21,8 +21,10 @@ export class MainScene extends Phaser.Scene {
         private raceId: number,
         private horseRaceService: HorseRaceService,
         private markerOpacityGetter: () => number,
-        private placementFollowGetter: () => number,
         private filterLightnessGetter: () => number,
+        private placementFollowGetter: () => number,
+        private HorseFollowGetter: () => number,
+        private FollowHorseGetter: () => Boolean,
         private muteGetter: () => boolean
     ) {
         super('MainScene');
@@ -32,7 +34,15 @@ export class MainScene extends Phaser.Scene {
         this.bg = new ParallaxBackground(this.raceId, this, this.horseRaceService);
         this.bg.preload();
 
-        this.raceLine = new RaceLineLayer(this.raceId, this, this.horseRaceService, this.markerOpacityGetter, this.placementFollowGetter);
+        this.raceLine = new RaceLineLayer(
+            this.raceId,
+            this,
+            this.horseRaceService,
+            this.markerOpacityGetter,
+            this.placementFollowGetter,
+            this.HorseFollowGetter,
+            this.FollowHorseGetter
+        );
         this.raceLine.preload();
 
         this.soundLayer = new SoundLayer(this.raceId, this, this.horseRaceService);

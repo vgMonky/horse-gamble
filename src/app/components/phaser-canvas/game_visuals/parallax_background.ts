@@ -111,6 +111,7 @@ export class ParallaxBackground {
         });
 
         this.sub = this.raceSvc.manager.getHorsesList$(this.raceId).subscribe((list: RaceHorsesList) => {
+            // !!! WE SHOULD USE cam.pos TO FREEZ INSTEAD OF leader
             const leader = list.getByPlacement()[0];
             const pos    = leader.position!;
             const dist   = this.raceSvc.manager.getWinningDistance(this.raceId);
