@@ -51,17 +51,18 @@
             class="c-phaser-canvas__phaser-container"
             [class.mobile]="(isMobileView$ | async)"
         ></div>
+
         <div class="c-phaser-canvas__canvas-input">
             <div class="c-phaser-canvas__placement-controls">
                 <button
                     type="button"
-                    (click)="togglePlacement()"
+                    (click)="togglePlacementFollow()"
                     [disabled]="followFirst == false"
                     aria-label="Previous placement"
                 >&larr;</button>
                 <button
                     type="button"
-                    (click)="togglePlacement()"
+                    (click)="togglePlacementFollow()"
                     [disabled]="followFirst == true"
                     aria-label="Next placement"
                 >&rarr;</button>

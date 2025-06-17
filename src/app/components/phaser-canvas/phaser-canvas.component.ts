@@ -94,13 +94,12 @@ export class PhaserCanvasComponent implements OnInit, OnDestroy {
         });
     }
 
-    togglePlacement() {
+    togglePlacementFollow() {
         if (this.followFirst == true) {
             this.followFirst = false;
         }else {this.followFirst = true}
         this.followHorse = false;
     }
-
 
     // set horseFollow
     readonly horseCount = 4;
