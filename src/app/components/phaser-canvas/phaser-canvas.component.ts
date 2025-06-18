@@ -17,7 +17,6 @@ import { HorseRaceService } from '@app/game/horse-race.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ExpandableComponent } from '../base-components/expandable/expandable.component';
-import { skip } from 'rxjs/operators';
 
 @Component({
     selector: 'app-phaser-canvas',
@@ -36,8 +35,12 @@ export class PhaserCanvasComponent implements OnInit, OnDestroy {
     @Input() raceId!: number;
 
     isMobileView$: Observable<boolean>;
-    markerOpacity = 1;
+
+    markerOpacity = 0;
     lightnessValue = 0.1;
+    placementFollow = 0;
+    horseFollow = 0;
+    followHorse = false;
     isMuted = false;
 
     private game?: Phaser.Game;
@@ -67,6 +70,9 @@ export class PhaserCanvasComponent implements OnInit, OnDestroy {
             this.horseRaceService,
             () => this.markerOpacity,
             () => this.lightnessValue,
+            () => this.placementFollow,
+            () => this.horseFollow,
+            () => this.followHorse,
             () => this.isMuted
         );
         // boot Phaser
@@ -87,5 +93,19 @@ export class PhaserCanvasComponent implements OnInit, OnDestroy {
                 }
             }
         });
+    }
+
+    setPlacementFollow(index: number) {
+        const horseCount = 4;
+        const normalized = ((index % horseCount) + horseCount) % horseCount;
+        this.placementFollow = normalized;
+        this.followHorse = false;
+    }
+
+    setHorseFollow(index: number) {
+        const horseCount = 4;
+        const normalized = ((index % horseCount) + horseCount) % horseCount;
+        this.horseFollow = normalized;
+        this.followHorse = true;
     }
 }

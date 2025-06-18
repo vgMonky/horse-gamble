@@ -15,12 +15,17 @@ export class RaceLineLayer {
         private raceId : number,
         private scene: Phaser.Scene,
         private horseRaceService: HorseRaceService,
-        private getMarkerOpacity: () => number
+        private getMarkerOpacity: () => number,
+        private getPlacementFollow: () => number,
+        private getHorseFollow: () => number,
+        private getFollowHorse: () => Boolean,
     ) {
-        this.cam = new Camera(this.raceId, this.scene, this.horseRaceService, this.getMarkerOpacity);
+        this.cam = new Camera(this.raceId, this.scene, this.horseRaceService, this.getMarkerOpacity, this.getPlacementFollow, this.getHorseFollow, this.getFollowHorse);
         // ensure we clean up when the scene shuts down
         this.scene.events.once('shutdown', () => this.destroy());
     }
+
+    public getCamPos = () => this.cam.pos;
 
     preload(): void {
         this.scene.load.image('img_final_post', 'assets/game-img/sprite-sheet/finish-post.png');
@@ -53,7 +58,7 @@ class Camera {
     public pos = 0;
     public origin: { x: number; y: number };
     private graphics: Phaser.GameObjects.Graphics;
-    private posToPx = 20;
+    private posToPx = 15;
     private raceSvc: HorseRaceService;
     private horsesList!: RaceHorsesList;
     private raceState: HorseRaceState = 'pre';
@@ -67,6 +72,9 @@ class Camera {
         private scene: Phaser.Scene,
         raceSvc: HorseRaceService,
         private getMarkerOpacity: () => number,
+        private getPlacementFollow: () => number,
+        private getHorseFollow: () => number,
+        private getFollowHorse: () => Boolean,
         origin?: { x: number; y: number }
     ) {
         this.raceSvc = raceSvc;
@@ -88,13 +96,20 @@ class Camera {
 
     updateCam(): void {
         // Set cam game position
-        if (this.pos < this.raceSvc.manager.getWinningDistance(this.raceId)) {
-            const first = this.horsesList.getByPlacement()[0].position;
-            if (first < this.raceSvc.manager.getWinningDistance(this.raceId)) {
-                this.pos = first;
-            } else {
-                this.pos = this.raceSvc.manager.getWinningDistance(this.raceId);
-            }
+        const placementFollow: number = this.getPlacementFollow() // placment from 0 to 3
+        const horseFollow: number = this.getHorseFollow() // horse slot from 0 to 3
+        const followHorse: Boolean = this.getFollowHorse() // if true uses horseFollow
+
+        const placement = this.horsesList.getByPlacement()[placementFollow].position;
+        const horse = this.horsesList.getAll()[horseFollow].position;
+
+        if (followHorse == false) {
+            this.pos = placement
+        }else {this.pos = horse}
+
+        // camera stops at final winning post
+        if (this.pos >= this.raceSvc.manager.getWinningDistance(this.raceId)) {
+            this.pos = this.raceSvc.manager.getWinningDistance(this.raceId);
         }
 
         // interpolate origin.x between start(0.5) and finalOrigin
@@ -159,7 +174,7 @@ class Camera {
         const worldY = cam.worldView.y + cam.height * this.origin.y;
         const size   = 6;
 
-        this.graphics.lineStyle(2, 0xffffff, this.getMarkerOpacity());
+        this.graphics.lineStyle(2, 0x0f0f0f, 0.9);
         this.graphics.beginPath();
         this.graphics.moveTo(worldX - size, worldY);
         this.graphics.lineTo(worldX + size, worldY);

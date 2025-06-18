@@ -5,11 +5,14 @@
         *ngFor="let h of horsesList"
         class="c-ongoing-horse-wrapper"
         [attr.data-index]="h.slot"
+        (click)="horseSelected.emit(h.slot)"
+        [class.selected]="isFollowingHorse && selectedHorse === h.slot"
     >
         <app-ongoing-horse-ui
             [raceId]="raceId"
             [RaceHorse]="h"
             [color]="getColor(h.slot)"
+            [class.selected]="isFollowingHorse && selectedHorse === h.slot"
         ></app-ongoing-horse-ui>
     </div>
 </div>

@@ -45,10 +45,30 @@
         </div>
     </app-expandable>
 
-    <div
-        #phaserContainer
-        class="c-phaser-canvas__phaser-container"
-        [class.mobile]="(isMobileView$ | async)"
-    >
+    <div class="c-phaser-canvas__canvas-wrapper">
+        <div
+            #phaserContainer
+            class="c-phaser-canvas__phaser-container"
+            [class.mobile]="(isMobileView$ | async)"
+        ></div>
+
+        <div
+            class="c-phaser-canvas__canvas-input"
+            >
+            <div class="c-phaser-canvas__placement-controls">
+                <button
+                    type="button"
+                    (click)="setPlacementFollow(3)"
+                    [class.selected]="!followHorse && placementFollow === 3"
+                    aria-label="Follow last"
+                >&larr;</button>
+                <button
+                    type="button"
+                    (click)="setPlacementFollow(0)"
+                    [class.selected]="!followHorse && placementFollow === 0"
+                    aria-label="Follow 1st"
+                >&rarr;</button>
+            </div>
+        </div>
     </div>
 </div>

@@ -8,7 +8,9 @@ import {
     Renderer2,
     NgZone,
     Input,
-    SimpleChanges
+    SimpleChanges,
+    Output,
+    EventEmitter
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BreakpointObserver } from '@angular/cdk/layout';
@@ -31,6 +33,9 @@ import { BREAKPOINT } from 'src/types';
 })
 export class OngoingListUiComponent implements AfterViewInit, OnDestroy {
     @Input() raceId!: number;
+    @Input() selectedHorse?: number;
+    @Input() isFollowingHorse = false;
+    @Output() horseSelected = new EventEmitter<number>();
 
     horsesList: RaceHorse[] = [];
     isMobileView = false;

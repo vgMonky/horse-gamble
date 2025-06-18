@@ -36,8 +36,8 @@ export class MiniMapLayer {
     create(): void {
         const cam = this.scene.cameras.main;
         this.center = {
-            x: cam.worldView.x + cam.width  - this.baseWidth  / 2 - 20,
-            y: cam.worldView.y + this.baseHeight / 2 + 20
+            x: cam.worldView.x + cam.width  - this.baseWidth  / 2 - 35,
+            y: cam.worldView.y + this.baseHeight / 2 + 25
         };
 
         // init our shape helper

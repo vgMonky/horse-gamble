@@ -123,12 +123,12 @@ export class HorseRaceService implements OnDestroy {
         // create N async races with length and scheduled at a countdown
         // this could be all races for a day, or just a block of races "createRaceBlock()"
 
-        const r1 = this.manager.createRace(2000, 20);
-        const r2 = this.manager.createRace(4000, 100);
-        const r3 = this.manager.createRace(6000, 200);
-        const r4 = this.manager.createRace(2000, 300);
-        const r5 = this.manager.createRace(4000, 400);
-        const r6 = this.manager.createRace(6000, 500);
+        const r1 = this.manager.createRace(2000, 6);
+        const r2 = this.manager.createRace(4000, 20);
+        const r3 = this.manager.createRace(6000, 40);
+        const r4 = this.manager.createRace(2000, 60);
+        const r5 = this.manager.createRace(4000, 80);
+        const r6 = this.manager.createRace(6000, 100);
 
         // update compleated races ids list
         [r1, r2, r3, r4, r5, r6].forEach(race => {

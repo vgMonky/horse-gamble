@@ -17,4 +17,9 @@
 
 .c-ongoing-horse-wrapper {
     will-change: transform;
+
+    &.selected {
+        border: 1px solid var(--c-accent-1);
+        border-radius: 8px;
+    }
 }

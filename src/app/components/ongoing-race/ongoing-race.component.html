@@ -7,7 +7,14 @@
     </div>
 
     <div class="c-ongoing-race__bottom">
-        <app-ongoing-list-ui [raceId]="raceId"></app-ongoing-list-ui>
+        <ng-container *ngIf="canvasCmp">
+            <app-ongoing-list-ui
+            [raceId]="raceId"
+            [selectedHorse]="canvasCmp.horseFollow"
+            [isFollowingHorse]="canvasCmp.followHorse"
+            (horseSelected)="canvasCmp.setHorseFollow($event)"
+        ></app-ongoing-list-ui>
+        </ng-container>
     </div>
 
     <div class="c-ongoing-race__subtitle">
