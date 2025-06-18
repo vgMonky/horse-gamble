@@ -52,7 +52,10 @@
             [class.mobile]="(isMobileView$ | async)"
         ></div>
 
-        <div class="c-phaser-canvas__canvas-input">
+        <div
+            class="c-phaser-canvas__canvas-input"
+            [class.show]="showCanvasInput"
+            >
             <div class="c-phaser-canvas__placement-controls">
                 <button
                     type="button"
