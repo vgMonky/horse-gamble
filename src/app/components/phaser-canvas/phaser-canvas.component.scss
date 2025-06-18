@@ -73,7 +73,7 @@
                 color: var(--c-accent-0);
             }
 
-            &:active{
+            &.selected{
                 background-color: var(--c-accent-0);
                 color: var(--c-background-0);
             }

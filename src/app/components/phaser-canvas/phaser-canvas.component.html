@@ -59,11 +59,13 @@
                 <button
                     type="button"
                     (click)="setPlacementFollow(3)"
+                    [class.selected]="!followHorse && placementFollow === 3"
                     aria-label="Follow last"
                 >&larr;</button>
                 <button
                     type="button"
                     (click)="setPlacementFollow(0)"
+                    [class.selected]="!followHorse && placementFollow === 0"
                     aria-label="Follow 1st"
                 >&rarr;</button>
             </div>

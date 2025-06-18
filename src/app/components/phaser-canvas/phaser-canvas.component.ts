@@ -35,7 +35,6 @@ export class PhaserCanvasComponent implements OnInit, OnDestroy {
     @Input() raceId!: number;
 
     isMobileView$: Observable<boolean>;
-    showCanvasInput = false;
 
     markerOpacity = 0;
     lightnessValue = 0.1;
