@@ -1,13 +1,16 @@
 // expandable.component.scss
+@use './expandable-0' as ex0;
+@use './expandable-1' as ex1;
+@use './expandable-2' as ex2;
 
 :host(.expandable-variant-0) {
-    @import 'expandable-0';
+    @include ex0.variant-0;
 }
 
 :host(.expandable-variant-1) {
-    @import 'expandable-1';
+    @include ex1.variant-1;
 }
 
 :host(.expandable-variant-2) {
-    @import 'expandable-2';
+    @include ex2.variant-2;
 }
