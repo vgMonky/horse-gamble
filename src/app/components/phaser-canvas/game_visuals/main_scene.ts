@@ -31,9 +31,6 @@ export class MainScene extends Phaser.Scene {
     }
 
     preload(): void {
-        this.bg = new ParallaxBackground(this.raceId, this, this.horseRaceService);
-        this.bg.preload();
-
         this.raceLine = new RaceLineLayer(
             this.raceId,
             this,
@@ -44,6 +41,14 @@ export class MainScene extends Phaser.Scene {
             this.FollowHorseGetter
         );
         this.raceLine.preload();
+
+        this.bg = new ParallaxBackground(
+            this.raceId,
+            this,
+            this.horseRaceService,
+            this.raceLine.getCamPos
+        );
+        this.bg.preload();
 
         this.soundLayer = new SoundLayer(this.raceId, this, this.horseRaceService);
         this.soundLayer.preload();

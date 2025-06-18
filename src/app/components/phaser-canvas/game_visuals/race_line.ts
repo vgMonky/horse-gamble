@@ -25,6 +25,8 @@ export class RaceLineLayer {
         this.scene.events.once('shutdown', () => this.destroy());
     }
 
+    public getCamPos = () => this.cam.pos;
+
     preload(): void {
         this.scene.load.image('img_final_post', 'assets/game-img/sprite-sheet/finish-post.png');
         this.scene.load.image('img_start_gate', 'assets/game-img/sprite-sheet/starting-gate.png');

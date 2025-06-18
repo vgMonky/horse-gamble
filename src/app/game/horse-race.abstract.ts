@@ -218,11 +218,11 @@ export class HorseRace {
             // list.consoleLog();
 
             if (finished === list.getAll().length) {
-                // 1) stop the racing ticks right away
+                // stop the racing ticks right away
                 this.raceSub?.unsubscribe();
-                // 2) switch UI into 'post'
+                // switch UI into 'post'
                 this._state$.next('post');
-                // 3) start the post-race countdown just once
+                // start the post-race countdown just once
                 this.postTimer.start(
                     this.postDuration,
                     () => this.raceCompleted(),

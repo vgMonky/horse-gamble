@@ -1,11 +1,7 @@
 // src/app/components/phaser-canvas/game_visuals/parallax_background.ts
 import Phaser from 'phaser';
 import type { Subscription } from 'rxjs';
-import type {
-    RaceHorsesList,
-    RaceHorse
-} from '@app/game/horse-race.abstract';
-import { HorseRaceService } from '@app/game/horse-race.service'
+import { HorseRaceService } from '@app/game/horse-race.service';
 
 interface Layer {
     sprite:   Phaser.GameObjects.TileSprite;
@@ -29,14 +25,14 @@ interface LayerConfig {
 
 export class ParallaxBackground {
     private layers: Layer[] = [];
-    private sub?: Subscription;
     private raceStateSub?: Subscription;
     private raceState: 'pre' | 'in' | 'post' | 'completed' = 'pre';
 
     constructor(
-        private raceId : number,
+        private raceId: number,
         private scene: Phaser.Scene,
-        private raceSvc: HorseRaceService
+        private raceSvc: HorseRaceService,
+        private getCamPos: () => number
     ) {
         this.scene.events.once('shutdown', () => this.destroy());
     }
@@ -110,54 +106,43 @@ export class ParallaxBackground {
             });
         });
 
-        this.sub = this.raceSvc.manager.getHorsesList$(this.raceId).subscribe((list: RaceHorsesList) => {
-            // !!! WE SHOULD USE cam.pos TO FREEZ INSTEAD OF leader
-            const leader = list.getByPlacement()[0];
-            const pos    = leader.position!;
-            const dist   = this.raceSvc.manager.getWinningDistance(this.raceId);
-
-            // 1) Freeze in pre or when fully done
-            const done         = pos >= dist;
-            const shouldFreeze = this.raceState === 'pre' || done;
-
-            // 2) Compute normalized, shifted progress [0,1]
-            const mapStartOffset   = 2/12;
-            const rawProgress      = Phaser.Math.Clamp(pos / dist, 0, 1);
-            const shiftedProgress  = Phaser.Math.Wrap(rawProgress + mapStartOffset, 0, 1);
-
-            // 3) Figure out which quarter we’re in
-            const q         = shiftedProgress * 4;
-            const inSecond  = q >= 1   && q <  2;
-            const inFourth  = q >= 3   && q <= 4;
-            const invertForest = inSecond || inFourth;
-
-            // 4) Apply to your layers
-            this.layers.forEach(l => {
-                if (['forest','trees3','trees2','trees1','fence'].includes(l.key)) {
-                    if (shouldFreeze) {
-                        l.speed = 0;
-                    } else if ((l.key==='forest'||l.key==='trees3') && invertForest) {
-                        l.speed = -l.original;
-                    } else {
-                        l.speed = l.original;
-                    }
-                }
-            });
-        });
-
-        this.raceStateSub = this.raceSvc.manager.getRaceState$(this.raceId).subscribe(state => {
-            this.raceState = state;
-        });
+        // only need to track raceState
+        this.raceStateSub = this.raceSvc.manager
+            .getRaceState$(this.raceId)
+            .subscribe(state => this.raceState = state);
     }
 
     update(_time: number, delta: number): void {
+        const dist   = this.raceSvc.manager.getWinningDistance(this.raceId);
+        const rawPos = this.getCamPos();
+        const pos    = Phaser.Math.Clamp(rawPos, 0, dist);
+        const freeze = this.raceState === 'pre' || pos >= dist;
+
+        // Compute normalized, shifted progress [0,1]
+        const mapStartOffset   = 2 / 12;
+        const rawProgress      = Phaser.Math.Clamp(pos / dist, 0, 1);
+        const shiftedProgress  = Phaser.Math.Wrap(rawProgress + mapStartOffset, 0, 1);
+
+        // Figure out which quarter we’re in
+        const q            = shiftedProgress * 4;
+        const invertForest = (q >= 1 && q < 2) || (q >= 3 && q <= 4);
+
+        // Update each layer's speed & position
         this.layers.forEach(l => {
+            if (['forest','trees3','trees2','trees1','fence'].includes(l.key)) {
+                if (freeze) {
+                    l.speed = 0;
+                } else if ((l.key === 'forest' || l.key === 'trees3') && invertForest) {
+                    l.speed = -l.original;
+                } else {
+                    l.speed = l.original;
+                }
+            }
             l.sprite.tilePositionX += l.speed * delta;
         });
     }
 
     destroy(): void {
-        this.sub?.unsubscribe();
         this.raceStateSub?.unsubscribe();
     }
 }
