@@ -92,23 +92,36 @@ Pass a variant input to apply a specific style:
 
 This will apply the class expandable-variant-1 to the component.
 
-### 🎨 2. Add a New Variant
-Create a new SCSS partial, e.g. _expandable-3.scss:
+### 🎨 2. Add a New Variant (Sass Modules)
 
-```scss
-// styles/_expandable-3.scss
-.c-expandable {
-    border-left: 4px solid hotpink;
-    background: #1a1a1a;
-}
-```
+1. **Create a new SCSS partial** with a mixin in `src/app/components/base-components/expandable/_expandable-3.scss`:
 
-Import it in expandable.component.scss:
+    ```scss
+    // _expandable-3.scss
+    @mixin variant-3 {
+      .c-expandable {
+        border-left: 4px solid hotpink;
+        background: #1a1a1a;
+      }
+    }
+    ```
 
-```scss
-:host(.expandable-variant-3) {
-    @import 'styles/expandable-3';
-}
-```
+2. **Load and include** it in your `expandable.component.scss` alongside the others:
+
+    ```scss
+    // expandable.component.scss
+
+    // existing variants
+    @use './expandable-0' as ex0;
+    @use './expandable-1' as ex1;
+    @use './expandable-2' as ex2;
+
+    // new variant
+    @use './expandable-3' as ex3;
+
+    :host(.expandable-variant-3) {
+      @include ex3.variant-3;
+    }
+    ```
 
 That’s it! Now <app-expandable variant="3"> will use your custom style. ✅
