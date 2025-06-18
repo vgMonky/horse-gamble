@@ -30,13 +30,6 @@
         left: 40px;
         transform: translateX(-50%);
         z-index: 10;
-        /* start hidden */
-        opacity: 1;
-        transition:  0.3s;
-
-        &.show {
-            opacity: 1;
-        }
     }
 
     &__sliders-container{

@@ -54,18 +54,17 @@
 
         <div
             class="c-phaser-canvas__canvas-input"
-            [class.show]="showCanvasInput"
             >
             <div class="c-phaser-canvas__placement-controls">
                 <button
                     type="button"
-                    (click)="togglePlacementFollow()"
-                    aria-label="Previous placement"
+                    (click)="setPlacementFollow(3)"
+                    aria-label="Follow last"
                 >&larr;</button>
                 <button
                     type="button"
-                    (click)="togglePlacementFollow()"
-                    aria-label="Next placement"
+                    (click)="setPlacementFollow(0)"
+                    aria-label="Follow 1st"
                 >&rarr;</button>
             </div>
         </div>

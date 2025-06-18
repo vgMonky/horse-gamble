@@ -22,7 +22,7 @@ export class MainScene extends Phaser.Scene {
         private horseRaceService: HorseRaceService,
         private markerOpacityGetter: () => number,
         private filterLightnessGetter: () => number,
-        private followFirstGetter: () => Boolean,
+        private placementFollowGetter: () => number,
         private HorseFollowGetter: () => number,
         private FollowHorseGetter: () => Boolean,
         private muteGetter: () => boolean
@@ -39,7 +39,7 @@ export class MainScene extends Phaser.Scene {
             this,
             this.horseRaceService,
             this.markerOpacityGetter,
-            this.followFirstGetter,
+            this.placementFollowGetter,
             this.HorseFollowGetter,
             this.FollowHorseGetter
         );
