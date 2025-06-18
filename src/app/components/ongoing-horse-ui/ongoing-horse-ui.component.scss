@@ -44,5 +44,10 @@
 
     &:hover{
         background-color: var(--c-background-1);
+        cursor: pointer;
+    }
+
+    &:active{
+        border: 1px solid var(--c-accent-1);
     }
 }

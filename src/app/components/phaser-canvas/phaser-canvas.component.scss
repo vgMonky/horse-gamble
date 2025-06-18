@@ -25,12 +25,13 @@
 
     &__canvas-input {
         position: absolute;
+        margin-left: 0px;
         bottom: 10px;
         left: 40px;
         transform: translateX(-50%);
         z-index: 10;
         /* start hidden */
-        opacity: 0;
+        opacity: 1;
         transition:  0.3s;
 
         &.show {
@@ -68,16 +69,21 @@
             width: 1.5rem;
             height: 1.5rem;
             font-size: 1rem;
-            color: var(--c-background-1);
-            background-color: var(--c-accent-0);
-            border: none;
+            color: var(--c-foreground-2);
+            background-color: var(--c-background-0);
+            border: 1px solid rgba(0, 0, 0, 0);
             border-radius: 8px;
-        }
+            opacity: 80%;
+            transition: 0.2s;
 
-        button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            background-color: var(--c-accent-1);
+            &:hover{
+                color: var(--c-accent-0);
+            }
+
+            &:active{
+                background-color: var(--c-accent-0);
+                color: var(--c-background-0);
+            }
         }
     }
 
