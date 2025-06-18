@@ -74,8 +74,7 @@
             }
 
             &.selected{
-                background-color: var(--c-accent-0);
-                color: var(--c-background-0);
+                border: 1px solid var(--c-accent-0);
             }
         }
     }
