@@ -12,13 +12,21 @@ export class Bet {
         public raceId: number,
         public betActor: string,
         public betMode: BetMode,
-        public betPicks: number[]
+        public betPicks: number[],
+        public betAmount: number
     ) {}
 
     /** Logs a human-readable description of this bet. */
     log(): void {
         console.log(
-            `[Bet ${this.betId}] race=${this.raceId} actor="${this.betActor}" mode=${this.betMode} picks=[${this.betPicks.join(', ')}]`
+            `
+            [Bet ${this.betId}]
+            race=${this.raceId}
+            actor="${this.betActor}"
+            mode=${this.betMode}
+            picks=[${this.betPicks.join(', ')}]
+            amount=${this.betAmount}
+            `
         );
     }
 }
@@ -36,9 +44,10 @@ export class BetManager {
         raceId: number,
         betActor: string,
         betMode: BetMode,
-        betPicks: number[]
+        betPicks: number[],
+        betAmount: number
     ): Bet {
-        const bet = new Bet(this.nextBetId++, raceId, betActor, betMode, betPicks);
+        const bet = new Bet(this.nextBetId++, raceId, betActor, betMode, betPicks, betAmount);
         bet.log();
         this.bets.push(bet);
         this.betsSubject.next([...this.bets]);
@@ -54,12 +63,12 @@ export class BetManager {
 
 @Injectable({ providedIn: 'root' })
 export class BetService {
-    private manager = new BetManager();
+    public manager = new BetManager();
 
     constructor() {
         // on startup, create two example bets:
-        this.manager.generateBet(1, 'AliceWallet', 'win', [2]);
-        this.manager.generateBet(2, 'BobWallet',     'exacta', [1, 3]);
+        this.manager.generateBet(1, 'AliceWallet', 'win', [2], 100);
+        this.manager.generateBet(2, 'BobWallet',     'exacta', [1, 3], 50);
     }
 
     /** Expose the bets stream */

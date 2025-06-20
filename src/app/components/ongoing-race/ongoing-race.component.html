@@ -24,6 +24,6 @@
     *ngIf="isModalOpen"
     (close)="isModalOpen = false"
     >
-        <app-bet-ticket-ui></app-bet-ticket-ui>
+        <app-bet-ticket-ui [raceId]="raceId"></app-bet-ticket-ui>
     </app-window-container>
 </div>
