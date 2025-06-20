@@ -14,6 +14,7 @@ import { WindowContainerComponent } from '@app/components/base-components/window
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { BREAKPOINT } from 'src/types';
 import { Observable, map } from 'rxjs';
+import { BetTicketUiComponent } from '@app/components/bet-ticket-ui/bet-ticket-ui.component';
 
 @Component({
     standalone: true,
@@ -23,7 +24,8 @@ import { Observable, map } from 'rxjs';
         CommonModule,
         PhaserCanvasComponent,
         OngoingListUiComponent,
-        WindowContainerComponent
+        WindowContainerComponent,
+        BetTicketUiComponent
     ],
     templateUrl: './ongoing-race.component.html',
     styleUrls: ['./ongoing-race.component.scss']
