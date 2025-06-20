@@ -1,20 +1,11 @@
 <!-- src/app/components/bet-ticket-ui/bet-ticket-ui.component.html -->
 <div class="c-bet-ticket">
-    <h2 class="c-bet-ticket__header">Place Your Bet (Race #{{ raceId }})</h2>
+    <h2 class="c-bet-ticket__header">Place Your Bet</h2>
+    <p class="c-bet-ticket__form-title"> Race #{{ raceId }}</p>
+    <p class="c-bet-ticket__form-title"> {{actor}}</p>
+    <br>
 
     <form class="c-bet-ticket__form" (ngSubmit)="confirm()">
-        <div class="c-bet-ticket__input-container">
-            <label class="c-bet-ticket__form-title" for="actor">Your Name</label>
-            <input
-                id="actor"
-                name="actor"
-                type="text"
-                class="c-bet-ticket__form-input"
-                [(ngModel)]="actor"
-                placeholder="AliceWallet"
-            />
-        </div>
-
         <div class="c-bet-ticket__input-container">
             <label class="c-bet-ticket__form-title" for="mode">Bet Type</label>
             <select

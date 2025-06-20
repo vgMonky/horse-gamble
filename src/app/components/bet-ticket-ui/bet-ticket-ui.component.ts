@@ -3,6 +3,7 @@ import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BetService, BetMode } from '@app/game/bet.service';
+import { SessionService } from '@app/services/session-kit.service';
 
 @Component({
     standalone: true,
@@ -14,16 +15,25 @@ import { BetService, BetMode } from '@app/game/bet.service';
 export class BetTicketUiComponent {
     /** The race we're betting on */
     @Input() raceId!: number;
+    actor!: string;
 
     /** Form fields */
-    actor = '';
     mode: BetMode = 'win';
     picks = '';          // comma-separated list of horse numbers
     amount = 0;
 
-    modes: BetMode[] = ['win', 'place', 'show', 'exacta', 'trifecta'];
+    modes: BetMode[] = ['win', 'exacta'];
 
-    constructor(private betService: BetService) {}
+    constructor(
+        private betService: BetService,
+        private sessionService: SessionService
+    ) {}
+
+    ngOnInit() {
+        this.sessionService.session$.subscribe(session => {
+            this.actor = String(session?.actor ?? 'Anonymus');
+        });
+    }
 
     confirm() {
         const pickNumbers = this.picks
@@ -33,14 +43,13 @@ export class BetTicketUiComponent {
 
         this.betService.manager.generateBet(
             this.raceId,
-            this.actor || 'Anonymous',
+            this.actor,
             this.mode,
             pickNumbers,
             this.amount
         );
 
-        // you could reset the form or emit an event here
-        this.actor = '';
+        // reset picks & amount; actor stays from session
         this.mode = 'win';
         this.picks = '';
         this.amount = 0;

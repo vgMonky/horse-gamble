@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 /** Types of bets that can be placed. */
-export type BetMode = 'win' | 'place' | 'show' | 'exacta' | 'trifecta';
+export type BetMode = 'win' | 'exacta' ;
 
 /** Represents a single bet on a race. */
 export class Bet {

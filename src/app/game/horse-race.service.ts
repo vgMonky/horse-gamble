@@ -46,10 +46,6 @@ class RaceManager {
         return race;
     }
 
-    stopRace(id: number): void {
-        this.getHorseRaceById(id).stopRace();
-    }
-
     getRaceState$(id: number): Observable<HorseRaceState> {
         return this.getHorseRaceById(id).raceState$;
     }
