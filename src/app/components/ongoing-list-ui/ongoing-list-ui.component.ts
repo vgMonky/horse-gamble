@@ -101,6 +101,7 @@ export class OngoingListUiComponent implements AfterViewInit, OnDestroy {
     }
 
     private recordPositions(): void {
+        if (!this.horseElems) return;
         this.prevY.clear();
         this.horseElems.forEach(el => {
             const idx = +el.nativeElement.dataset.index;

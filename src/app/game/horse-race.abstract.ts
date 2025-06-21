@@ -196,7 +196,7 @@ export class HorseRace {
         // reset completed flag each time we start
         this.completed = false;
         this.stopRace();
-        console.log(`race ${this.id} started`);
+        // console.log(`race ${this.id} started`);
         this._list$.next(new RaceHorsesList(this.allHorses, this.count));
         this._state$.next('pre');
         this.preTimer.start(
@@ -237,7 +237,7 @@ export class HorseRace {
         // stop any leftover timers (though raceSub is already gone)
         this.stopRace();
         this._state$.next('completed');
-        console.log(`race ${this.id} finished`);
+        // console.log(`race ${this.id} finished`);
     }
 
     stopRace(): void {

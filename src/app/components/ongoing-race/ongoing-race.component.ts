@@ -3,7 +3,8 @@ import {
     ViewChild,
     Input,
     OnChanges,
-    SimpleChanges
+    SimpleChanges,
+    ChangeDetectorRef
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from '@app/shared/shared.module';
@@ -42,11 +43,16 @@ export class OngoingRacesComponent implements OnChanges {
 
     constructor(
         private breakpointObserver: BreakpointObserver,
-        private horseRaceService: HorseRaceService
+        private horseRaceService: HorseRaceService,
+        private cd: ChangeDetectorRef
     ) {
         this.isMobileView$ = this.breakpointObserver
         .observe(BREAKPOINT)
         .pipe(map(result => result.matches));
+    }
+
+    ngAfterViewInit() {
+        this.cd.detectChanges();
     }
 
     ngOnChanges(changes: SimpleChanges): void {
