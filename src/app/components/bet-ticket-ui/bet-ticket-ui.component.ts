@@ -3,6 +3,7 @@ import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BetService, BetMode } from '@app/game/bet.service';
+import { PoolService } from '@app/game/pool.service';
 import { SessionService } from '@app/services/session-kit.service';
 
 @Component({
@@ -26,6 +27,7 @@ export class BetTicketUiComponent {
 
     constructor(
         private betService: BetService,
+        public poolService: PoolService,
         private sessionService: SessionService
     ) {}
 

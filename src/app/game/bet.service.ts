@@ -65,14 +65,5 @@ export class BetManager {
 export class BetService {
     public manager = new BetManager();
 
-    constructor() {
-        // on startup, create two example bets:
-        this.manager.generateBet(1, 'AliceWallet', 'win', [2], 100);
-        this.manager.generateBet(2, 'BobWallet',     'exacta', [1, 3], 50);
-    }
-
-    /** Expose the bets stream */
-    getAllBets$(): Observable<Bet[]> {
-        return this.manager.getAllBets$();
-    }
+    constructor() {}
 }

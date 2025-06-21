@@ -18,6 +18,12 @@
             </select>
         </div>
 
+        <ng-container *ngIf="poolService.manager.getPool(raceId, mode) as pool">
+            <p class="c-bet-ticket__form-title">
+                Total in pool: {{ pool.total$ | async }}
+            </p>
+        </ng-container>
+
         <div class="c-bet-ticket__input-container">
             <label class="c-bet-ticket__form-title" for="picks">Horse Picks</label>
             <input
