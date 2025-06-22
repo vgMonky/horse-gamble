@@ -5,11 +5,16 @@ import { FormsModule } from '@angular/forms';
 import { BetService } from '@app/game/bet.service';
 import { PoolService } from '@app/game/pool.service';
 import { SessionService } from '@app/services/session-kit.service';
+import { BetPickUiComponent } from '../bet-pick-ui/bet-pick-ui.component';
 
 @Component({
     standalone: true,
     selector: 'app-bet-ticket-ui',
-    imports: [CommonModule, FormsModule],
+    imports: [
+        CommonModule,
+        FormsModule,
+        BetPickUiComponent
+    ],
     templateUrl: './bet-ticket-ui.component.html',
     styleUrls: ['./bet-ticket-ui.component.scss']
 })

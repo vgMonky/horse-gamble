@@ -1,0 +1,29 @@
+@use 'mixin' as *;
+
+.c-bet-pick-ui{
+    margin: 8px 0px;
+
+    &__box{
+        width: 45px;
+        height: 45px;
+        border: 1px solid var(--c-background-4);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &:hover{
+            border-color: var(--c-foreground-2);
+            cursor: pointer;
+
+            p{
+                color: var(--c-accent-0);
+            }
+        }
+    }
+
+    &__text{
+        font-weight: bold;
+        color: var(--c-background-4);
+    }
+}
