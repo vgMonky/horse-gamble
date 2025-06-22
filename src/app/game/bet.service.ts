@@ -1,6 +1,8 @@
 // src/app/game/bet.service.ts
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import type { HorseSlot } from './horse-race.abstract';
+
 
 /** Represents a single bet on a race. */
 export class Bet {
@@ -8,7 +10,7 @@ export class Bet {
         public betId: number,
         public raceId: number,
         public betActor: string,
-        public betPick: number,
+        public betPick: HorseSlot,
         public betAmount: number
     ) {}
 
@@ -38,7 +40,7 @@ export class BetManager {
     generateBet(
         raceId: number,
         betActor: string,
-        betPick: number,
+        betPick: HorseSlot,
         betAmount: number
     ): Bet {
         const bet = new Bet(this.nextBetId++, raceId, betActor, betPick, betAmount);

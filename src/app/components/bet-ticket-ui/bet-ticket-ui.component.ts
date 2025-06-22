@@ -6,6 +6,7 @@ import { BetService } from '@app/game/bet.service';
 import { PoolService } from '@app/game/pool.service';
 import { SessionService } from '@app/services/session-kit.service';
 import { BetPickUiComponent } from '../bet-pick-ui/bet-pick-ui.component';
+import type { HorseSlot } from '@app/game/horse-race.abstract';
 
 @Component({
     standalone: true,
@@ -24,7 +25,7 @@ export class BetTicketUiComponent {
     actor!: string;
 
     /** Form fields */
-    pick!:number;
+    pick!:HorseSlot;
     amount!:number;
 
     constructor(
@@ -49,6 +50,6 @@ export class BetTicketUiComponent {
 
         // reset pick & amount
         this.pick = 0;
-        this.amount = 10;
+        this.amount = 0;
     }
 }

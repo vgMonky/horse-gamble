@@ -3,6 +3,8 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject, Observable, Subscription, map } from 'rxjs';
 import { Bet, BetService } from './bet.service';
 import { HorseRaceService } from './horse-race.service';
+import type { HorseSlot } from './horse-race.abstract';
+
 
 export class Pool {
     private betsSubject  = new BehaviorSubject<Bet[]>([]);
@@ -39,12 +41,13 @@ export class Pool {
         this.log()
     }
 
-    /** Compute fractional win‐odds for slots 0–3: (poolTotal – stakeOnSlot) / stakeOnSlot */
-    private updateOdds(): void {
+        /** Compute fractional win‐odds for each HorseSlot: (poolTotal – stakeOnSlot) / stakeOnSlot */    private updateOdds(): void {
         const total = this.totalSubject.getValue();
         const bets = this.betsSubject.getValue();
 
-        const odds = [0, 1, 2, 3].map(slot => {
+        // enforce only valid HorseSlot values
+        const slots: HorseSlot[] = [0, 1, 2, 3];
+        const odds = slots.map(slot => {
             const stakeOnSlot = bets
                 .filter((b: Bet) => b.betPick === slot)
                 .reduce((sum: number, b: Bet) => sum + b.betAmount, 0);

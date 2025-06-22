@@ -10,7 +10,7 @@
         <ng-container *ngIf="canvasCmp">
             <app-ongoing-list-ui
             [raceId]="raceId"
-            [selectedHorse]="canvasCmp.horseFollow"
+            [selectedHorse]="horseFollowSlot"
             [isFollowingHorse]="canvasCmp.followHorse"
             (horseSelected)="canvasCmp.setHorseFollow($event)"
         ></app-ongoing-list-ui>

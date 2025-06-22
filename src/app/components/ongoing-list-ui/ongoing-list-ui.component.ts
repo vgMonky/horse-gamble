@@ -19,7 +19,8 @@ import { HorseRaceService } from '@app/game/horse-race.service';
 import {
     RaceHorse,
     RaceHorsesList,
-    SLOT_COLOR_MAP
+    SLOT_COLOR_MAP,
+    HorseSlot
 } from '@app/game/horse-race.abstract';
 import { RaceHorseUiComponent } from '@app/components/ongoing-horse-ui/ongoing-horse-ui.component';
 import { BREAKPOINT } from 'src/types';
@@ -33,7 +34,7 @@ import { BREAKPOINT } from 'src/types';
 })
 export class OngoingListUiComponent implements AfterViewInit, OnDestroy {
     @Input() raceId!: number;
-    @Input() selectedHorse?: number;
+    @Input() selectedHorse?: HorseSlot;
     @Input() isFollowingHorse = false;
     @Output() horseSelected = new EventEmitter<number>();
 
@@ -157,7 +158,7 @@ export class OngoingListUiComponent implements AfterViewInit, OnDestroy {
     }
 
 
-    getColor(slot: number): string {
+    getColor(slot: HorseSlot): string {
         return SLOT_COLOR_MAP[slot] ?? 'black';
     }
 }

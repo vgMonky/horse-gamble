@@ -2,7 +2,9 @@
 import { BehaviorSubject, interval, Subscription } from 'rxjs';
 import { Horse } from './horses-database';
 
-export const SLOT_COLOR_MAP: Record<number, string> = {
+export type HorseSlot = 0 | 1 | 2 | 3;
+
+export const SLOT_COLOR_MAP: Record<HorseSlot, string> = {
     0: 'hsl(0,70%,30%)',     // RED
     1: 'hsl(90,70%,30%)',    // GREEN
     2: 'hsl(300,70%,30%)', // MAGENTA
@@ -10,9 +12,9 @@ export const SLOT_COLOR_MAP: Record<number, string> = {
 };
 
 export interface RaceHorse {
-    slot:             number;
-    horse:            Horse;
-    position:     number;
+    slot: HorseSlot;
+    horse: Horse;
+    position: number;
     finalPlace: number | null;
 }
 
@@ -22,7 +24,7 @@ export class RaceHorsesList {
     constructor(allHorses: Horse[], private count: number) {
         const selected = this.shuffle(allHorses).slice(0, count);
         this.list = selected.map((h, i) => ({
-            slot:                i,
+            slot:                i as HorseSlot,
             horse:             h,
             position:        0,
             finalPlace:    null

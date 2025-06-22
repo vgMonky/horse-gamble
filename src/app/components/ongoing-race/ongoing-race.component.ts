@@ -15,6 +15,7 @@ import { WindowContainerComponent } from '@app/components/base-components/window
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { BREAKPOINT } from 'src/types';
 import { Observable, map } from 'rxjs';
+import type { HorseSlot } from '@app/game/horse-race.abstract';
 import { BetTicketUiComponent } from '@app/components/bet-ticket-ui/bet-ticket-ui.component';
 
 @Component({
@@ -49,6 +50,11 @@ export class OngoingRacesComponent implements OnChanges {
         this.isMobileView$ = this.breakpointObserver
         .observe(BREAKPOINT)
         .pipe(map(result => result.matches));
+    }
+
+    /** Expose horseFollow as a HorseSlot for child binding */
+    get horseFollowSlot(): HorseSlot | undefined {
+        return this.canvasCmp?.horseFollow as HorseSlot | undefined;
     }
 
     ngAfterViewInit() {
