@@ -1,15 +1,19 @@
 <!-- src/app/components/bet-ticket-ui/bet-ticket-ui.component.html -->
 <div class="c-bet-ticket">
     <h2 class="c-bet-ticket__header">Place Your Bet</h2>
-    <p class="c-bet-ticket__form-title"> Race #{{ raceId }}</p>
-    <p class="c-bet-ticket__form-title"> {{actor}}</p>
+    <p class="c-bet-ticket__form-title">Race #{{ raceId }}</p>
+    <p class="c-bet-ticket__form-title">{{ actor }}</p>
     <p class="c-bet-ticket__form-title">
-        Total in pool:
-        {{ poolService.manager.getPool(raceId)?.total$ | async }}
+        Total in pool: ${{ poolService.manager.getPool(raceId)?.total$ | async }}
     </p>
     <br>
 
-    <form class="c-bet-ticket__form" (ngSubmit)="confirm()">
+    <form
+        #betForm="ngForm"
+        class="c-bet-ticket__form"
+        (ngSubmit)="confirm()"
+        novalidate
+    >
         <div class="c-bet-ticket__input-container">
             <label class="c-bet-ticket__form-title" for="pick">Bet Pick</label>
             <app-bet-pick-ui></app-bet-pick-ui>
@@ -19,8 +23,18 @@
                 type="number"
                 class="c-bet-ticket__form-input"
                 [(ngModel)]="pick"
+                #pickCtrl="ngModel"
+                required
+                min="0"
+                max="3"
                 placeholder="from 0 to 3"
             />
+            <div
+                *ngIf="pickCtrl.invalid && pickCtrl.touched"
+                class="c-bet-ticket__error"
+            >
+                Pick must be between 0 and 3.
+            </div>
         </div>
 
         <div class="c-bet-ticket__input-container">
@@ -29,17 +43,41 @@
                 id="amount"
                 name="amount"
                 type="number"
-                min="0"
                 class="c-bet-ticket__form-input"
                 [(ngModel)]="amount"
+                #amountCtrl="ngModel"
+                required
+                min="1"
                 placeholder="$$$"
             />
+            <div
+                *ngIf="amountCtrl.invalid && amountCtrl.touched"
+                class="c-bet-ticket__error"
+            >
+                Amount must be at least 1.
+            </div>
         </div>
+
+        <!-- ERROR ALERT -->
+        <p *ngIf="(raceState$ | async) !== 'pre'" class="c-bet-ticket__error">
+            Race already started <br>
+            <b>bets are closed.</b>
+        </p>
 
         <div class="c-bet-ticket__input-buttons">
             <button
                 type="submit"
-                class="c-bet-ticket__form-button c-bet-ticket__form-button--confirm"
+                class="c-bet-ticket__form-button"
+                [disabled]="
+                    betForm.invalid ||
+                    (raceState$ | async) !== 'pre'
+                "
+                [ngClass]="{
+                    'c-bet-ticket__form-button--available':
+                        betForm.valid && (raceState$ | async) === 'pre',
+                    'c-bet-ticket__form-button--unavailable':
+                        betForm.invalid || (raceState$ | async) !== 'pre'
+                }"
             >
                 Confirm
             </button>

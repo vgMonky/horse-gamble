@@ -34,8 +34,16 @@
     }
 
     &__form-button {
-        &--confirm {
+        &--available {
             @include button-1;
         }
+        &--unavailable {
+            @include button-unable-0;
+        }
+    }
+
+    &__error{
+        @include text-smaller;
+        color: var(--c-alert-0);
     }
 }

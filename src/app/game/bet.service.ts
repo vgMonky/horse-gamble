@@ -1,8 +1,7 @@
-// src/app/game/bet.service.ts
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, firstValueFrom } from 'rxjs';
 import type { HorseSlot } from './horse-race.abstract';
-
+import { HorseRaceService } from './horse-race.service';
 
 /** Represents a single bet on a race. */
 export class Bet {
@@ -36,14 +35,43 @@ export class BetManager {
     protected betsSubject = new BehaviorSubject<Bet[]>([]);
     protected nextBetId = 1;
 
-    /** Create, store, emit and log a new Bet. */
-    generateBet(
+    constructor(private raceService: HorseRaceService) {}
+
+    /** Create, store, emit and log a new Bet - only if race is still 'pre'. */
+    async generateBet(
         raceId: number,
         betActor: string,
         betPick: HorseSlot,
         betAmount: number
-    ): Bet {
-        const bet = new Bet(this.nextBetId++, raceId, betActor, betPick, betAmount);
+    ): Promise<Bet> {
+        // 1) Validate pick
+        if (betPick < 0 || betPick > 3) {
+            throw new Error(`Invalid slot ${betPick}. Must be 0-3.`);
+        }
+
+        // 2) Validate amount
+        if (betAmount <= 0) {
+            throw new Error(`Invalid amount ${betAmount}. Must be >= 1.`);
+        }
+
+        // 3) Check race state
+        const state = await firstValueFrom(
+            this.raceService.manager.getRaceState$(raceId)
+        );
+        if (state !== 'pre') {
+            throw new Error(
+                `Cannot place bet: race ${raceId} is already '${state}'.`
+            );
+        }
+
+        // 4) Place the bet
+        const bet = new Bet(
+            this.nextBetId++,
+            raceId,
+            betActor,
+            betPick,
+            betAmount
+        );
         bet.log();
         this.bets.push(bet);
         this.betsSubject.next([...this.bets]);
@@ -56,10 +84,11 @@ export class BetManager {
     }
 }
 
-
 @Injectable({ providedIn: 'root' })
 export class BetService {
-    public manager = new BetManager();
+    public manager: BetManager;
 
-    constructor() {}
+    constructor(private raceService: HorseRaceService) {
+        this.manager = new BetManager(raceService);
+    }
 }

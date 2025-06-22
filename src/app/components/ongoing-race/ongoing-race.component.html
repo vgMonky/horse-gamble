@@ -18,7 +18,13 @@
     </div>
 
     <div class="c-ongoing-race__subtitle">
-        <button class="c-ongoing-race__button" (click)="isModalOpen = true">Bet Now</button>
+        <button
+            *ngIf="(raceState$ | async) === 'pre'"
+            class="c-ongoing-race__button"
+            (click)="isModalOpen = true"
+        >
+            Bet Now
+        </button>
     </div>
     <app-window-container
     *ngIf="isModalOpen"

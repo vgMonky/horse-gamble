@@ -15,7 +15,7 @@ import { WindowContainerComponent } from '@app/components/base-components/window
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { BREAKPOINT } from 'src/types';
 import { Observable, map } from 'rxjs';
-import type { HorseSlot } from '@app/game/horse-race.abstract';
+import type { HorseSlot, HorseRaceState } from '@app/game/horse-race.abstract';
 import { BetTicketUiComponent } from '@app/components/bet-ticket-ui/bet-ticket-ui.component';
 
 @Component({
@@ -35,6 +35,9 @@ import { BetTicketUiComponent } from '@app/components/bet-ticket-ui/bet-ticket-u
 export class OngoingRacesComponent implements OnChanges {
     @ViewChild(PhaserCanvasComponent) public canvasCmp!: PhaserCanvasComponent;
     @Input({ required: true }) raceId!: number;
+
+    /** Current race state */
+    raceState$!: Observable<HorseRaceState>;
 
     isMobileView$: Observable<boolean>;
 
@@ -65,6 +68,7 @@ export class OngoingRacesComponent implements OnChanges {
         if ('raceId' in changes && this.raceId != null) {
             try {
                 this.winPos = this.horseRaceService.manager.getWinningDistance(this.raceId);
+                this.raceState$ = this.horseRaceService.manager.getRaceState$(this.raceId);
             } catch (err) {
                 console.error('Invalid race ID', this.raceId, err);
             }
