@@ -3,41 +3,27 @@
     <h2 class="c-bet-ticket__header">Place Your Bet</h2>
     <p class="c-bet-ticket__form-title"> Race #{{ raceId }}</p>
     <p class="c-bet-ticket__form-title"> {{actor}}</p>
+    <p class="c-bet-ticket__form-title">
+        Total in pool:
+        {{ poolService.manager.getPool(raceId)?.total$ | async }}
+    </p>
     <br>
 
     <form class="c-bet-ticket__form" (ngSubmit)="confirm()">
         <div class="c-bet-ticket__input-container">
-            <label class="c-bet-ticket__form-title" for="mode">Bet Type</label>
-            <select
-                id="mode"
-                name="mode"
-                class="c-bet-ticket__form-input"
-                [(ngModel)]="mode"
-            >
-                <option *ngFor="let m of modes" [value]="m">{{ m }}</option>
-            </select>
-        </div>
-
-        <ng-container *ngIf="poolService.manager.getPool(raceId, mode) as pool">
-            <p class="c-bet-ticket__form-title">
-                Total in pool: {{ pool.total$ | async }}
-            </p>
-        </ng-container>
-
-        <div class="c-bet-ticket__input-container">
-            <label class="c-bet-ticket__form-title" for="picks">Horse Picks</label>
+            <label class="c-bet-ticket__form-title" for="pick">Winner Horse</label>
             <input
-                id="picks"
-                name="picks"
-                type="text"
+                id="pick"
+                name="pick"
+                type="number"
                 class="c-bet-ticket__form-input"
-                [(ngModel)]="picks"
-                placeholder="e.g. 2 or 1,3"
+                [(ngModel)]="pick"
+                placeholder="from 0 to 3"
             />
         </div>
 
         <div class="c-bet-ticket__input-container">
-            <label class="c-bet-ticket__form-title" for="amount">Amount</label>
+            <label class="c-bet-ticket__form-title" for="amount">Bet Amount</label>
             <input
                 id="amount"
                 name="amount"
@@ -45,6 +31,7 @@
                 min="0"
                 class="c-bet-ticket__form-input"
                 [(ngModel)]="amount"
+                placeholder="$$$"
             />
         </div>
 

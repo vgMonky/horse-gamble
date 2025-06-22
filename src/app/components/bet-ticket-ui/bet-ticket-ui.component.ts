@@ -2,7 +2,7 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { BetService, BetMode } from '@app/game/bet.service';
+import { BetService } from '@app/game/bet.service';
 import { PoolService } from '@app/game/pool.service';
 import { SessionService } from '@app/services/session-kit.service';
 
@@ -19,11 +19,8 @@ export class BetTicketUiComponent {
     actor!: string;
 
     /** Form fields */
-    mode: BetMode = 'win';
-    picks = '';          // comma-separated list of horse numbers
-    amount = 0;
-
-    modes: BetMode[] = ['win', 'exacta'];
+    pick!:number;
+    amount!:number;
 
     constructor(
         private betService: BetService,
@@ -38,22 +35,15 @@ export class BetTicketUiComponent {
     }
 
     confirm() {
-        const pickNumbers = this.picks
-            .split(',')
-            .map(s => parseInt(s.trim(), 10))
-            .filter(n => !isNaN(n));
-
         this.betService.manager.generateBet(
             this.raceId,
             this.actor,
-            this.mode,
-            pickNumbers,
+            this.pick,
             this.amount
         );
 
-        // reset picks & amount; actor stays from session
-        this.mode = 'win';
-        this.picks = '';
-        this.amount = 0;
+        // reset pick & amount
+        this.pick = 0;
+        this.amount = 10;
     }
 }

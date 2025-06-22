@@ -2,17 +2,13 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
-/** Types of bets that can be placed. */
-export type BetMode = 'win' | 'exacta' ;
-
 /** Represents a single bet on a race. */
 export class Bet {
     constructor(
         public betId: number,
         public raceId: number,
         public betActor: string,
-        public betMode: BetMode,
-        public betPicks: number[],
+        public betPick: number,
         public betAmount: number
     ) {}
 
@@ -23,8 +19,7 @@ export class Bet {
             [Bet ${this.betId}]
             race=${this.raceId}
             actor="${this.betActor}"
-            mode=${this.betMode}
-            picks=[${this.betPicks.join(', ')}]
+            pick=${this.betPick}
             amount=${this.betAmount}
             `
         );
@@ -43,11 +38,10 @@ export class BetManager {
     generateBet(
         raceId: number,
         betActor: string,
-        betMode: BetMode,
-        betPicks: number[],
+        betPick: number,
         betAmount: number
     ): Bet {
-        const bet = new Bet(this.nextBetId++, raceId, betActor, betMode, betPicks, betAmount);
+        const bet = new Bet(this.nextBetId++, raceId, betActor, betPick, betAmount);
         bet.log();
         this.bets.push(bet);
         this.betsSubject.next([...this.bets]);

@@ -1,7 +1,7 @@
 // src/app/game/pool.service.ts
 import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject, Observable, Subscription, map } from 'rxjs';
-import { Bet, BetMode, BetService } from './bet.service';
+import { Bet, BetService } from './bet.service';
 import { HorseRaceService } from './horse-race.service';
 
 export class Pool {
@@ -9,59 +9,79 @@ export class Pool {
     public  bets$         = this.betsSubject.asObservable();
 
     private totalSubject = new BehaviorSubject<number>(0);
-    public  total$        = this.totalSubject.asObservable();
+    public  total$       = this.totalSubject.asObservable();
+
+    private oddsSubject  = new BehaviorSubject<number[]>([0, 0, 0, 0]);
+    public  odds$        = this.oddsSubject.asObservable();
 
     constructor(
         public raceId: number,
-        public betMode: BetMode
     ) {
-        console.log(`Created Pool for race ${raceId}, mode ${betMode}`);
+        console.log(`Created Pool for race ${raceId}`);
     }
 
     addBet(bet: Bet): void {
-        if (bet.raceId !== this.raceId || bet.betMode !== this.betMode) {
-            return;
-        }
+        if (bet.raceId !== this.raceId) return;
 
-        // derive the new array from the subject
-        const current = this.betsSubject.getValue();
-        const updated = [...current, bet];
-        this.betsSubject.next(updated);
+        // 1) store bet
+        const currentBets = this.betsSubject.getValue();
+        const updatedBets = [...currentBets, bet];
+        this.betsSubject.next(updatedBets);
 
-        // update total
+        // 2) update running total
         const newTotal = this.totalSubject.getValue() + bet.betAmount;
         this.totalSubject.next(newTotal);
 
-        console.log(`Pool [${this.raceId}-${this.betMode}] added Bet ${bet.betId}, total=${newTotal}`);
+        // 3) recalculate odds
+        this.updateOdds();
+
+        console.log(`Bet ${bet.betId} added to Pool [${this.raceId}]`);
+        this.log()
+    }
+
+    /** Compute fractional win‐odds for slots 0–3: (poolTotal – stakeOnSlot) / stakeOnSlot */
+    private updateOdds(): void {
+        const total = this.totalSubject.getValue();
+        const bets = this.betsSubject.getValue();
+
+        const odds = [0, 1, 2, 3].map(slot => {
+            const stakeOnSlot = bets
+                .filter((b: Bet) => b.betPick === slot)
+                .reduce((sum: number, b: Bet) => sum + b.betAmount, 0);
+
+            return stakeOnSlot === 0
+                ? 0
+                : (total - stakeOnSlot) / stakeOnSlot;
+        });
+
+        this.oddsSubject.next(odds);
     }
 
     log(): void {
-        const ids   = this.betsSubject.getValue().map(b => b.betId);
-        const total = this.totalSubject.getValue();
-        console.log(
-            `Pool race=${this.raceId}, mode=${this.betMode}, bets=[${ids.join(', ')}], total=${total}`
-        );
+        const bets = this.betsSubject.getValue();
+        console.log(`
+        Pool race=${this.raceId},
+        total=${this.totalSubject.getValue()},
+        odds=[${this.oddsSubject.getValue().map(o => o.toFixed(2)).join(', ')}]
+        bets=[${bets.map((b: Bet) => b.betId).join(', ')}]
+        `);
     }
 }
 
+
 export class PoolManager {
     private pools: Pool[] = [];
-    private modes: BetMode[] = ['win', 'exacta'];
     private subs = new Subscription();
 
     constructor(
         allRaceIds$: Observable<number[]>,
         allBets$:    Observable<Bet[]>
     ) {
-        // 1) create pools for every race + mode
+        // 1) create pools for every race
         this.subs.add(
             allRaceIds$.subscribe(ids => {
                 ids.forEach(id => {
-                    this.modes.forEach(mode => {
-                        if (!this.pools.some(p => p.raceId === id && p.betMode === mode)) {
-                            this.pools.push(new Pool(id, mode));
-                        }
-                    });
+                    this.pools.push(new Pool(id));
                 });
             })
         );
@@ -73,7 +93,7 @@ export class PoolManager {
                 .subscribe(bet => {
                     if (!bet) return;
                     const pool = this.pools.find(
-                        p => p.raceId === bet.raceId && p.betMode === bet.betMode
+                        p => p.raceId === bet.raceId
                     );
                     pool?.addBet(bet);
                 })
@@ -86,8 +106,8 @@ export class PoolManager {
     }
 
     /** Retrieve the Pool for the given raceId and betMode */
-    getPool(raceId: number, betMode: BetMode): Pool | undefined {
-        return this.pools.find(p => p.raceId === raceId && p.betMode === betMode);
+    getPool(raceId: number): Pool | undefined {
+        return this.pools.find(p => p.raceId === raceId);
     }
 
     /** manually tear down subscriptions */
