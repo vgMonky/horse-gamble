@@ -23,9 +23,10 @@
             class="c-ongoing-race__button"
             (click)="isModalOpen = true"
         >
-            Bet Now
+            Make Bet
         </button>
     </div>
+    <!-- Modal -->
     <app-window-container
     *ngIf="isModalOpen"
     (close)="isModalOpen = false"
