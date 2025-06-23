@@ -1,20 +1,37 @@
-<!-- bet-pick-ui.component.html -->
+<!-- src/app/components/bet-pick-ui/bet-pick-ui.component.html -->
 <div class="c-bet-pick-ui">
     <app-drop-down>
-        <!-- show computed label -->
+        <!-- button shows current horse index -->
         <div dropdown-button class="c-bet-pick-ui__box">
-            <p class="c-bet-pick-ui__text">{{ selectedLabel }}</p>
+            <div
+                class="c-bet-pick-ui__index"
+                [style.background]=" getColor(selected!) "
+            >
+                {{ getSelectedHorseIndex() }}
+            </div>
         </div>
 
-        <!-- list options -->
+        <!-- dropdown list: show each horse with index, name, odd -->
         <div dropdown-body class="c-bet-pick-ui__menu-body">
-            <p
-                *ngFor="let opt of options"
-                (click)="onSelect(opt.slot)"
-                [class.selected]="opt.slot === selected"
+            <div
+                *ngFor="let opt of options$ | async"
+                class="c-bet-pick-ui__item"
+                (click)="onSelect(opt.horse.slot)"
+                [class.selected]="opt.horse.slot === selected"
             >
-                {{ opt.label }}
-            </p>
+                <div
+                    class="c-bet-pick-ui__item-index"
+                    [style.background]=" opt.color "
+                >
+                    {{ opt.horse.horse.index }}
+                </div>
+                <div class="c-bet-pick-ui__item-name">
+                    {{ opt.horse.horse.name }}
+                </div>
+                <div class="c-bet-pick-ui__item-odd">
+                    {{ opt.odd | number:'1.2-2' }}
+                </div>
+            </div>
         </div>
     </app-drop-down>
 </div>

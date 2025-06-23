@@ -26,8 +26,8 @@ export class BetTicketUiComponent implements OnChanges {
     actor!: string;
 
     /** Form fields */
-    pick!: HorseSlot;
-    amount!: number;
+    pick?: HorseSlot;
+    amount?: number;
 
     /** Tracks the race’s current state */
     raceState$!: Observable<HorseRaceState>;
@@ -58,10 +58,10 @@ export class BetTicketUiComponent implements OnChanges {
         await this.betService.manager.generateBet(
             this.raceId,
             this.actor,
-            this.pick,
-            this.amount
+            this.pick!,
+            this.amount!
         );
-        this.pick = 0;
-        this.amount = 0;
+        this.pick = undefined;
+        this.amount = undefined;
     }
 }
