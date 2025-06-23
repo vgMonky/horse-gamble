@@ -1,6 +1,6 @@
 <!-- src/app/components/bet-ticket-ui/bet-ticket-ui.component.html -->
 <div class="c-bet-ticket">
-    <h2 class="c-bet-ticket__header">Place Your Bet</h2>
+    <h2 class="c-bet-ticket__header">Place Your Win Bet</h2>
     <p class="c-bet-ticket__form-title">Race #{{ raceId }}</p>
     <p class="c-bet-ticket__form-title">{{ actor }}</p>
     <p class="c-bet-ticket__form-title">
@@ -15,25 +15,25 @@
         novalidate
     >
         <div class="c-bet-ticket__input-container">
-            <label class="c-bet-ticket__form-title" for="pick">Bet Pick</label>
-            <app-bet-pick-ui></app-bet-pick-ui>
+            <label class="c-bet-ticket__form-title" for="pick">Win Bet Pick</label>
+            <app-bet-pick-ui
+                [(selected)]="pick">
+            </app-bet-pick-ui>
+
+            <!-- only use this hidden input for form-control purposes -->
             <input
                 id="pick"
                 name="pick"
-                type="number"
-                class="c-bet-ticket__form-input"
+                type="hidden"
                 [(ngModel)]="pick"
                 #pickCtrl="ngModel"
                 required
-                min="0"
-                max="3"
-                placeholder="from 0 to 3"
             />
             <div
                 *ngIf="pickCtrl.invalid && pickCtrl.touched"
                 class="c-bet-ticket__error"
             >
-                Pick must be between 0 and 3.
+                You must select a horse.
             </div>
         </div>
 

@@ -26,4 +26,12 @@
         font-weight: bold;
         color: var(--c-background-4);
     }
+
+    &__menu-body{
+        cursor: pointer;
+
+        p:hover{
+            color: var(--c-accent-0);
+        }
+    }
 }

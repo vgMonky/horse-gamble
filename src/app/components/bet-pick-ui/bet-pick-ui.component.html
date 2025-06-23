@@ -1,17 +1,20 @@
+<!-- bet-pick-ui.component.html -->
 <div class="c-bet-pick-ui">
     <app-drop-down>
-        <!-- Dropdown Button -->
+        <!-- show computed label -->
         <div dropdown-button class="c-bet-pick-ui__box">
-            <p class="c-bet-pick-ui__text">1st</p>
+            <p class="c-bet-pick-ui__text">{{ selectedLabel }}</p>
         </div>
 
-        <!-- Dropdown Body -->
-        <div dropdown-body class="c-login__menu-body">
-            <p>horse slot 0</p>
-            <p>horse slot 1</p>
-            <p>horse slot 2</p>
-            <p>horse slot 3</p>
+        <!-- list options -->
+        <div dropdown-body class="c-bet-pick-ui__menu-body">
+            <p
+                *ngFor="let opt of options"
+                (click)="onSelect(opt.slot)"
+                [class.selected]="opt.slot === selected"
+            >
+                {{ opt.label }}
+            </p>
         </div>
     </app-drop-down>
 </div>
-
