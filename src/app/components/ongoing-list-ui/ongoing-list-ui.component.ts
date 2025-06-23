@@ -183,7 +183,7 @@ export class OngoingListUiComponent implements AfterViewInit, OnDestroy {
         const num = rawNum / divisor;
         const den = rawDen / divisor
 
-        return `$${decimal.toFixed(2)}/$1.00`;
+        return `${decimal.toFixed(2)}/1.00`;
     }
 
 }

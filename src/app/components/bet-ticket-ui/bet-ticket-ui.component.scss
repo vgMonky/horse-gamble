@@ -29,7 +29,7 @@
 
     &__input-buttons {
         display: flex;
-        justify-content: flex-end;
+        justify-content: left;
         margin-top: 20px;
     }
 
@@ -45,5 +45,10 @@
     &__error{
         @include text-smaller;
         color: var(--c-alert-0);
+    }
+
+    &__separator {
+        @include hr-separator(0px);
+        margin: 15px 0px;
     }
 }
