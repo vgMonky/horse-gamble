@@ -7,6 +7,8 @@ import { SharedModule } from '@app/shared/shared.module';
 import { TranslateService } from '@ngx-translate/core';
 import { RacesMenuMobileComponent } from './components/races-menu-mobile/races-menu-mobile.component';
 import { HorseRaceService } from './game/horse-race.service';
+import { BetService } from './game/bet.service';
+import { PoolService } from './game/pool.service';
 
 @Component({
     selector: 'app-root',
@@ -35,7 +37,9 @@ export class AppComponent {
     constructor(
         private redirectService: RedirectService, //Automatically sets redirection rules
         private translate: TranslateService,
-        private raceManagerService: HorseRaceService
+        private horseRaceSrv: HorseRaceService,
+        private betSrv: BetService,
+        private poolSrv: PoolService
     ) {
         // Set default language
         this.translate.use('en');

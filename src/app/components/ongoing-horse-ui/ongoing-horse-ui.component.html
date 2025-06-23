@@ -10,6 +10,9 @@
         <div class="c-ongoing-horse-ui__name">
             {{ RaceHorse.horse.name }}
         </div>
+        <div class="c-ongoing-horse-ui__odd">
+            {{ odd }}
+        </div>
     </div>
 
     <ng-container *ngIf="RaceHorse.finalPlace == null; else finishedTpl">

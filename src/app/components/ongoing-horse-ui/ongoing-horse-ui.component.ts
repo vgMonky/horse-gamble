@@ -14,6 +14,7 @@ export class RaceHorseUiComponent {
     @Input() raceId! : number;
     @Input() RaceHorse!: RaceHorse;
     @Input() color!: string;
+    @Input() odd!: string
 
     getOrdinal(n: number) {
         const s = ['th','st','nd','rd'];

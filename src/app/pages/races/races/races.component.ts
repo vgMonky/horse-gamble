@@ -12,6 +12,7 @@ import {
 import { ExpandableComponent } from '@app/components/base-components/expandable/expandable.component';
 import { ExpandableGroupComponent } from '@app/components/base-components/expandable/expandable-group.component';
 import { ExpandableManagerService } from '@app/components/base-components/expandable/expandable-manager.service';
+import { PoolService } from '@app/game/pool.service';
 
 @Component({
     standalone: true,
@@ -36,8 +37,8 @@ export class RacesComponent implements OnDestroy {
 
     constructor(
         private horseRaceService: HorseRaceService,
-        private expandableManager: ExpandableManagerService
-
+        private expandableManager: ExpandableManagerService,
+        public PoolSrv: PoolService
     ) {
         combineLatest([
             this.horseRaceService.getAllRaceIds$(),

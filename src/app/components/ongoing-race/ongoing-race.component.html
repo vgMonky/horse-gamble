@@ -10,7 +10,7 @@
         <ng-container *ngIf="canvasCmp">
             <app-ongoing-list-ui
             [raceId]="raceId"
-            [selectedHorse]="canvasCmp.horseFollow"
+            [selectedHorse]="horseFollowSlot"
             [isFollowingHorse]="canvasCmp.followHorse"
             (horseSelected)="canvasCmp.setHorseFollow($event)"
         ></app-ongoing-list-ui>
@@ -18,12 +18,19 @@
     </div>
 
     <div class="c-ongoing-race__subtitle">
-        <button class="c-ongoing-race__button" (click)="isModalOpen = true">Bet Now</button>
+        <button
+            *ngIf="(raceState$ | async) === 'pre'"
+            class="c-ongoing-race__button"
+            (click)="isModalOpen = true"
+        >
+            Make Bet
+        </button>
     </div>
+    <!-- Modal -->
     <app-window-container
     *ngIf="isModalOpen"
     (close)="isModalOpen = false"
     >
-        <p class="c-ongoing-race__subtitle">bet-ticket-ui</p>
+        <app-bet-ticket-ui [raceId]="raceId"></app-bet-ticket-ui>
     </app-window-container>
 </div>

@@ -1,0 +1,79 @@
+@use 'mixin' as *;
+
+.c-bet-pick-ui {
+    margin: 8px 0;
+
+    &__box {
+        width: 45px;
+        height: 45px;
+        @include border;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &:hover {
+            border-color: var(--c-foreground-2);
+            cursor: pointer;
+        }
+    }
+
+    &__index {
+        width: 30px;
+        height: 30px;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+    }
+
+    &__menu-body {
+        cursor: pointer;
+        padding: 4px;
+        background: var(--c-background-0);
+        border-radius: 4px;
+    }
+
+    &__item {
+        @include border;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 4px;
+        border-radius: 4px;
+        background: var(--c-background-0);
+        margin-bottom: 4px;
+        min-width: 250px;
+
+        &.selected {
+            background: var(--c-background-1);
+        }
+
+        &:hover {
+            background: var(--c-background-1);
+            cursor: pointer;
+        }
+    }
+
+    &__item-index {
+        width: 35px;
+        height: 35px;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+    }
+
+    &__item-name {
+        font-size: 1rem;
+        flex: 1;
+    }
+
+    &__item-odd {
+        @include text-smaller;
+        min-width: 50px;
+        text-align: right;
+    }
+}

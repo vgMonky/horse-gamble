@@ -1,0 +1,54 @@
+@use 'mixin' as *;
+
+.c-bet-ticket {
+    &__header {
+        font-size: 18px;
+        margin-bottom: 20px;
+    }
+
+    &__form {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    &__form-title {
+        font-size: 14px;
+        color: var(--c-foreground-2);
+        margin-bottom: 5px;
+    }
+
+    &__form-input {
+        @include input;
+    }
+
+    &__input-container {
+        display: flex;
+        flex-direction: column;
+    }
+
+    &__input-buttons {
+        display: flex;
+        justify-content: left;
+        margin-top: 20px;
+    }
+
+    &__form-button {
+        &--available {
+            @include button-1;
+        }
+        &--unavailable {
+            @include button-unable-0;
+        }
+    }
+
+    &__error{
+        @include text-smaller;
+        color: var(--c-alert-0);
+    }
+
+    &__separator {
+        @include hr-separator(0px);
+        margin: 15px 0px;
+    }
+}
