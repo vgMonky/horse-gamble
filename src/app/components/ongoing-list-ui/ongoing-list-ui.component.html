@@ -1,18 +1,21 @@
 <!-- src/app/components/ongoing-list-ui/ongoing-list-ui.component.html -->
 <div class="c-ongoing-list-ui" [class.mobile]="isMobileView">
-    <div
+    <ng-container *ngIf="odds$ | async as odds">
+        <div
         #horseTrack
         *ngFor="let h of horsesList"
         class="c-ongoing-horse-wrapper"
         [attr.data-index]="h.slot"
         (click)="horseSelected.emit(h.slot)"
         [class.selected]="isFollowingHorse && selectedHorse === h.slot"
-    >
-        <app-ongoing-horse-ui
-            [raceId]="raceId"
-            [RaceHorse]="h"
-            [color]="getColor(h.slot)"
-            [class.selected]="isFollowingHorse && selectedHorse === h.slot"
-        ></app-ongoing-horse-ui>
-    </div>
+        >
+            <app-ongoing-horse-ui
+                [raceId]="raceId"
+                [RaceHorse]="h"
+                [odd]="formatFraction(odds[h.slot])"
+                [color]="getColor(h.slot)"
+                [class.selected]="isFollowingHorse && selectedHorse === h.slot"
+            ></app-ongoing-horse-ui>
+        </div>
+    </ng-container>
 </div>

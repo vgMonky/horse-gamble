@@ -14,7 +14,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil, Observable, of } from 'rxjs';
 import { HorseRaceService } from '@app/game/horse-race.service';
 import {
     RaceHorse,
@@ -24,6 +24,7 @@ import {
 } from '@app/game/horse-race.abstract';
 import { RaceHorseUiComponent } from '@app/components/ongoing-horse-ui/ongoing-horse-ui.component';
 import { BREAKPOINT } from 'src/types';
+import { PoolService } from '@app/game/pool.service';
 
 @Component({
     standalone: true,
@@ -39,6 +40,7 @@ export class OngoingListUiComponent implements AfterViewInit, OnDestroy {
     @Output() horseSelected = new EventEmitter<number>();
 
     horsesList: RaceHorse[] = [];
+    odds$: Observable<number[]> = of([0,0,0,0]);
     isMobileView = false;
 
     private lastListInstance?: RaceHorsesList;
@@ -50,6 +52,7 @@ export class OngoingListUiComponent implements AfterViewInit, OnDestroy {
 
     constructor(
         private horseRaceService: HorseRaceService,
+        private poolSrv: PoolService,
         private breakpointObserver: BreakpointObserver,
         private renderer: Renderer2,
         private ngZone: NgZone
@@ -84,6 +87,10 @@ export class OngoingListUiComponent implements AfterViewInit, OnDestroy {
                         // Wait for DOM update, then run FLIP
                         requestAnimationFrame(() => this.runFLIP());
                 });
+
+                this.odds$ = this.poolSrv.manager
+                .getPool(this.raceId)?.odds$
+                ?? of([0,0,0,0]);
 
             } catch (err) {
                 console.error('Invalid race ID', this.raceId, err);
@@ -157,8 +164,26 @@ export class OngoingListUiComponent implements AfterViewInit, OnDestroy {
         });
     }
 
-
     getColor(slot: HorseSlot): string {
         return SLOT_COLOR_MAP[slot] ?? 'black';
     }
+
+    formatFraction(decimal: number): string {
+        if (decimal <= 0) return '0/0';
+
+        // scale up to integer ratio
+        const rawNum = Math.round(decimal * 100);
+        const rawDen = 100;
+
+        // compute greatest common divisor
+        const gcd = (a: number, b: number): number =>
+            b === 0 ? a : gcd(b, a % b);
+
+        const divisor = gcd(rawNum, rawDen);
+        const num = rawNum / divisor;
+        const den = rawDen / divisor
+
+        return `$${decimal.toFixed(2)}/$1.00`;
+    }
+
 }

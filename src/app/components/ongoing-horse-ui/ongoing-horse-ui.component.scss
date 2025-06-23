@@ -29,6 +29,10 @@
         font-size: 1rem;
     }
 
+    &__odd {
+        @include text-smaller;
+    }
+
     &__position {
         min-width: 60px ;
         text-align: right;
