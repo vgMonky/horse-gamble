@@ -10,6 +10,7 @@ import { Subscription } from 'rxjs';
 
 export class RaceLineLayer {
     private cam: Camera;
+    private neededSkins: Set<string> = new Set();
 
     constructor(
         private raceId : number,
@@ -27,7 +28,10 @@ export class RaceLineLayer {
             this.getMarkerOpacity,
             this.getPlacementFollow,
             this.getHorseFollow,
-            this.getFollowHorse
+            this.getFollowHorse,
+            (skins: string[]) => {
+                skins.forEach(s => this.neededSkins.add(s));
+            }
         );
         // ensure we clean up when the scene shuts down
         this.scene.events.once('shutdown', () => this.destroy());
@@ -43,6 +47,14 @@ export class RaceLineLayer {
             this.scene.load.spritesheet(
                 `horseSpriteSheet${i}`,
                 `assets/game-img/sprite-sheet/horse-sprite-sheet-${i}.png`,
+                { frameWidth: 575, frameHeight: 434 }
+            );
+        }
+
+        for (const skin of this.neededSkins) {
+            this.scene.load.spritesheet(
+                `overlay-${skin}`,
+                `assets/game-img/sprite-sheet/split/split-horse-${skin}.png`,
                 { frameWidth: 575, frameHeight: 434 }
             );
         }
@@ -74,6 +86,7 @@ class Camera {
     private images: Map<string, Phaser.GameObjects.Image> = new Map();
     private sprites: Map<string, Phaser.GameObjects.Sprite> = new Map();
     private shadows: Map<string, Phaser.GameObjects.Ellipse> = new Map();
+    private composites: Map<string, CompositeHorse> = new Map();
 
     constructor(
         private raceId : number,
@@ -83,6 +96,7 @@ class Camera {
         private getPlacementFollow: () => number,
         private getHorseFollow: () => number,
         private getFollowHorse: () => Boolean,
+        private reportNeededSkins: (skins: string[]) => void,
         origin?: { x: number; y: number }
     ) {
         this.raceSvc = raceSvc;
@@ -93,6 +107,9 @@ class Camera {
         this.sub.add(
             this.raceSvc.manager.getHorsesList$(this.raceId).subscribe(list => {
                 this.horsesList = list;
+                // collect skins and report back
+                const skins = list.getAll().map(h => h.horse.skin);
+                this.reportNeededSkins([...new Set(skins)]);        
             })
         );
         this.sub.add(
@@ -245,80 +262,60 @@ class Camera {
         shadowOffsetX = -15,
         shadowOffsetY = 70
     ): void {
-        const finalSlideSpeed = 25; // pixels per second after cam stops
-        const cam             = this.scene.cameras.main;
-        const worldX0         = cam.worldView.x + cam.width * this.origin.x;
-        const worldY0         = cam.worldView.y + cam.height * this.origin.y;
-
-        const deltaX         = (pointPos - this.pos) * this.posToPx;
+        const finalSlideSpeed = 25;
+        const cam = this.scene.cameras.main;
+        const worldX0 = cam.worldView.x + cam.width * this.origin.x;
+        const worldY0 = cam.worldView.y + cam.height * this.origin.y;
+        const deltaX = (pointPos - this.pos) * this.posToPx;
         const initialTargetX = worldX0 + deltaX + offsetX;
-        const y              = worldY0 + offsetY;
-        const key            = `sprite:${instanceId}`;
-        let sprite           = this.sprites.get(key);
-        const animKey        = `run:${spriteSheetKey}`;
-
-        if (!this.scene.anims.exists(animKey)) {
-            this.scene.anims.create({
-                key: animKey,
-                frames: this.scene.anims.generateFrameNumbers(spriteSheetKey),
-                frameRate,
-                repeat: -1
-            });
-        }
-
-        if (!sprite) {
-            // create sprite
-            sprite = this.scene.add.sprite(initialTargetX, y, spriteSheetKey)
-                .setScale(scale)
-                .setDepth(depth);
-            this.sprites.set(key, sprite);
-
-            // create shadow ellipse with offsets
+        const y = worldY0 + offsetY;
+        const key = `composite:${instanceId}`;
+        const animKey = `run:${spriteSheetKey}`;
+        const horse = this.horsesList.getAll()[parseInt(instanceId.replace('horse', ''))];
+        const overlayKey = `overlay-${horse.horse.skin}`;
+    
+        let composite = this.composites.get(key);
+        if (!composite) {
+            const container = this.scene.add.container();
+            composite = new CompositeHorse(
+                this.scene,
+                container,
+                spriteSheetKey,
+                overlayKey,
+                animKey,
+                scale,
+                depth,
+                frameRate
+            );
+            composite.spawn(initialTargetX, y, idle);
+            this.composites.set(key, composite);
+    
+            // optional shadow
             const shadow = this.scene.add.ellipse(
                 initialTargetX + shadowOffsetX,
                 y + shadowOffsetY,
-                sprite.displayWidth - 30,
+                140,
                 12,
                 0x000000,
                 0.4
-            )
-            .setScale(1, 0.5)
-            .setDepth(depth - 0.5);
+            ).setScale(1, 0.5).setDepth(depth - 0.5);
             this.shadows.set(key, shadow);
-
-            if (!idle) {
-                sprite.play(animKey);
-            }
         } else {
-            // update x position
             if (this.pos >= this.raceSvc.manager.getWinningDistance(this.raceId)) {
-                sprite.x += finalSlideSpeed;
+                composite.update(composite.base.x + finalSlideSpeed, y, idle);
             } else {
-                const dx = initialTargetX - sprite.x;
-                sprite.x += Math.abs(dx) > 1 ? dx * 0.04 : 0;
-                if (Math.abs(dx) <= 1) {
-                    sprite.x = initialTargetX;
-                }
+                const dx = initialTargetX - composite.base.x;
+                const nextX = composite.base.x + (Math.abs(dx) > 1 ? dx * 0.04 : 0);
+                composite.update(nextX, y, idle);
             }
-
-            sprite.setY(y).setDepth(depth);
-
-            // update shadow with offsets
+    
             const shadow = this.shadows.get(key)!;
-            shadow.x = sprite.x + shadowOffsetX;
+            shadow.x = composite.base.x + shadowOffsetX;
             shadow.y = y + shadowOffsetY;
             shadow.setDepth(depth - 0.5);
-
-            if (idle) {
-                if (sprite.anims.isPlaying) {
-                    sprite.anims.stop();
-                }
-                sprite.setFrame(3);
-            } else if (!sprite.anims.isPlaying) {
-                sprite.play(animKey);
-            }
         }
     }
+    
 
     /** parse “hsl( … )” into a Phaser-friendly color integer */
     private hslStringToPhaserColor(hslStr: string, lightnessAdjust = 0): number {
@@ -343,5 +340,91 @@ class Camera {
         this.sprites.clear();
         this.shadows.forEach(shadow => shadow.destroy());
         this.shadows.clear();
+        this.composites.forEach(comp => comp.destroy());
+        this.composites.clear();
+    }
+}
+
+class CompositeHorse {
+    public base!: Phaser.GameObjects.Sprite;
+    public overlay!: Phaser.GameObjects.Sprite;
+    private overlayAnimKey!: string;
+
+    constructor(
+        private scene: Phaser.Scene,
+        private container: Phaser.GameObjects.Container,
+        private baseKey: string,
+        private overlayKey: string,
+        private animKey: string,
+        private scale: number,
+        private depth: number,
+        private frameRate: number
+        
+    ) {
+        this.ensureAnim();
+    }
+
+    private ensureAnim() {
+        // Base animation
+        if (!this.scene.anims.exists(this.animKey)) {
+            this.scene.anims.create({
+                key: this.animKey,
+                frames: this.scene.anims.generateFrameNumbers(this.baseKey),
+                frameRate: this.frameRate,
+                repeat: -1
+            });
+        }
+    
+        // Overlay animation (must exist separately but use same key!)
+        const overlayAnimKey = `${this.animKey}__overlay`;
+        if (!this.scene.anims.exists(overlayAnimKey)) {
+            this.scene.anims.create({
+                key: overlayAnimKey,
+                frames: this.scene.anims.generateFrameNumbers(this.overlayKey),
+                frameRate: this.frameRate,
+                repeat: -1
+            });
+        }
+    
+        // update to use it in spawn & update
+        this.overlayAnimKey = overlayAnimKey;
+    }
+
+    spawn(x: number, y: number, idle: boolean) {
+        this.base = this.scene.add.sprite(x, y, this.baseKey)
+            .setScale(this.scale)
+            .setDepth(this.depth);
+        this.overlay = this.scene.add.sprite(x, y, this.overlayKey)
+            .setScale(this.scale)
+            .setDepth(this.depth + 0.01);
+        this.container.add([this.base, this.overlay]);
+
+        if (!idle) {
+            this.base.play(this.animKey);
+            this.overlay.play(this.overlayAnimKey);
+        } else {
+            this.base.setFrame(3);
+            this.overlay.setFrame(3);
+        }
+    }
+
+    update(x: number, y: number, idle: boolean) {
+        this.base.setPosition(x, y);
+        this.overlay.setPosition(x, y);
+
+        if (idle) {
+            this.base.anims.stop();
+            this.overlay.anims.stop();
+            this.base.setFrame(3);
+            this.overlay.setFrame(3);
+        } else if (!this.base.anims.isPlaying) {
+            this.base.play(this.animKey);
+            this.overlay.play(this.overlayAnimKey);
+        }
+    }
+
+    destroy() {
+        this.base.destroy();
+        this.overlay.destroy();
     }
 }
