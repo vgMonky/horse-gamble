@@ -20,7 +20,15 @@ export class RaceLineLayer {
         private getHorseFollow: () => number,
         private getFollowHorse: () => Boolean,
     ) {
-        this.cam = new Camera(this.raceId, this.scene, this.horseRaceService, this.getMarkerOpacity, this.getPlacementFollow, this.getHorseFollow, this.getFollowHorse);
+        this.cam = new Camera(
+            this.raceId,
+            this.scene,
+            this.horseRaceService,
+            this.getMarkerOpacity,
+            this.getPlacementFollow,
+            this.getHorseFollow,
+            this.getFollowHorse
+        );
         // ensure we clean up when the scene shuts down
         this.scene.events.once('shutdown', () => this.destroy());
     }
