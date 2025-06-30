@@ -1,17 +1,15 @@
 // src/app/components/phaser-canvas/game_visuals/race_line.ts
 import Phaser from 'phaser';
-import {
-    RaceHorsesList,
-    HorseRaceState,
-    SLOT_COLOR_MAP,
-} from '@app/game/horse-race.abstract';
+import { RaceHorsesList, HorseRaceState } from '@app/game/horse-race.abstract';
+import { SlotColor } from '@app/game/color-database';
 import { HorseRaceService } from '@app/game/horse-race.service';
 import { Subscription } from 'rxjs';
 
 export class RaceLineLayer {
     private cam: Camera;
     private neededSkins: Set<string> = new Set();
-
+    private neededJockeys: Set<string> = new Set();
+    
     constructor(
         private raceId : number,
         private scene: Phaser.Scene,
@@ -29,11 +27,10 @@ export class RaceLineLayer {
             this.getPlacementFollow,
             this.getHorseFollow,
             this.getFollowHorse,
-            (skins: string[]) => {
-                skins.forEach(s => this.neededSkins.add(s));
-            }
+            (skins: string[]) => skins.forEach(s => this.neededSkins.add(s)),
+            (jockeys: string[]) => jockeys.forEach(j => this.neededJockeys.add(j))
         );
-        // ensure we clean up when the scene shuts down
+    
         this.scene.events.once('shutdown', () => this.destroy());
     }
 
@@ -42,15 +39,15 @@ export class RaceLineLayer {
     preload(): void {
         this.scene.load.image('img_final_post', 'assets/game-img/sprite-sheet/finish-post.png');
         this.scene.load.image('img_start_gate', 'assets/game-img/sprite-sheet/starting-gate.png');
-
-        for (let i = 0; i <= 3; i++) {
+    
+        for (const jockey of this.neededJockeys) {
             this.scene.load.spritesheet(
-                `horseSpriteSheet${i}`,
-                `assets/game-img/sprite-sheet/horse-sprite-sheet-${i}.png`,
+                `jockeySpriteSheet-${jockey}`,
+                `assets/game-img/sprite-sheet/split/split-jockey-${jockey}.png`,
                 { frameWidth: 575, frameHeight: 434 }
             );
         }
-
+    
         for (const skin of this.neededSkins) {
             this.scene.load.spritesheet(
                 `overlay-${skin}`,
@@ -82,6 +79,7 @@ class Camera {
     private raceSvc: HorseRaceService;
     private horsesList!: RaceHorsesList;
     private raceState: HorseRaceState = 'pre';
+    private slotColorMap: Record<number, SlotColor> = {};
     private sub = new Subscription();
     private images: Map<string, Phaser.GameObjects.Image> = new Map();
     private sprites: Map<string, Phaser.GameObjects.Sprite> = new Map();
@@ -97,6 +95,7 @@ class Camera {
         private getHorseFollow: () => number,
         private getFollowHorse: () => Boolean,
         private reportNeededSkins: (skins: string[]) => void,
+        private reportNeededJockeys: (jockeyNames: string[]) => void,
         origin?: { x: number; y: number }
     ) {
         this.raceSvc = raceSvc;
@@ -117,6 +116,13 @@ class Camera {
                 this.raceState = state;
             })
         );
+        try {
+            this.slotColorMap = this.raceSvc.manager.getSlotColorMap(this.raceId);
+            const jockeyNames = [...new Set(Object.values(this.slotColorMap).map(c => c.name))];
+            this.reportNeededJockeys(jockeyNames);
+        } catch (e) {
+            console.error('Failed to load slot color map for race', this.raceId, e);
+        }
     }
 
     updateCam(): void {
@@ -165,11 +171,12 @@ class Camera {
         // Draw race horses
         this.horsesList.getAll().forEach((h, index) => {
             if (h.position != null) {
-                const hsl   = SLOT_COLOR_MAP[h.slot];
+                const hsl = this.slotColorMap[h.slot]?.color ?? 'hsl(0,0%,0%)';
                 const color = this.hslStringToPhaserColor(hsl, 25);
                 this.drawCamPoint(h.position, color);
 
-                const spriteSheetKey = `horseSpriteSheet${index}`;
+                const jockeyColor = this.slotColorMap[h.slot]?.name ?? 'black';
+                const spriteSheetKey = `jockeySpriteSheet-${jockeyColor}`;
                 const instanceId     = `horse${index}`;
                 const offsetY        = 18 + index * 10;
                 const offsetX        = -90;
@@ -359,10 +366,7 @@ class CompositeHorse {
         private scale: number,
         private depth: number,
         private frameRate: number
-        
-    ) {
-        this.ensureAnim();
-    }
+    ) {}
 
     private ensureAnim() {
         // Base animation
@@ -374,29 +378,30 @@ class CompositeHorse {
                 repeat: -1
             });
         }
-    
-        // Overlay animation (must exist separately but use same key!)
-        const overlayAnimKey = `${this.animKey}__overlay`;
-        if (!this.scene.anims.exists(overlayAnimKey)) {
+
+        // Overlay animation
+        this.overlayAnimKey = `${this.animKey}__overlay`;
+        if (!this.scene.anims.exists(this.overlayAnimKey)) {
             this.scene.anims.create({
-                key: overlayAnimKey,
+                key: this.overlayAnimKey,
                 frames: this.scene.anims.generateFrameNumbers(this.overlayKey),
                 frameRate: this.frameRate,
                 repeat: -1
             });
         }
-    
-        // update to use it in spawn & update
-        this.overlayAnimKey = overlayAnimKey;
     }
 
     spawn(x: number, y: number, idle: boolean) {
+        this.ensureAnim();
+
         this.base = this.scene.add.sprite(x, y, this.baseKey)
             .setScale(this.scale)
             .setDepth(this.depth);
+
         this.overlay = this.scene.add.sprite(x, y, this.overlayKey)
             .setScale(this.scale)
             .setDepth(this.depth + 0.01);
+
         this.container.add([this.base, this.overlay]);
 
         if (!idle) {
@@ -428,3 +433,4 @@ class CompositeHorse {
         this.overlay.destroy();
     }
 }
+
