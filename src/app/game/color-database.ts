@@ -12,5 +12,7 @@ export const ALL_COLORS: SlotColor[] = [
     { index: 2, name: 'black',   color: 'hsl(0,0%,10%)' },
     { index: 3, name: 'magenta', color: 'hsl(300,70%,30%)' },
     { index: 4, name: 'cyan',    color: 'hsl(180,70%,30%)' },
+    { index: 5, name: 'orange',    color: 'hsl(30,70%,30%)' },
+    { index: 6, name: 'blue',    color: 'hsl(210,70%,30%)' },
     // ...
 ];
