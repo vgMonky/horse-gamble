@@ -7,7 +7,7 @@ export interface Horse {
 
 export const ALL_HORSES: Horse[] = [
     { index:  1,  name: 'Fast Fury', skin: 'creme'},
-    { index:  2,  name: 'Rare Rocket', skin: 'brown-light'},
+    { index:  2,  name: 'Gengis Run', skin: 'brown-light'},
     { index:  3,  name: 'Silver Arrow', skin: 'gray-blue'},
     { index:  4,  name: 'Wind Chaser', skin: 'white-ghost'},
     { index:  5,  name: 'Storm Bringer', skin: 'brown'},
