@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["src/app/app.component.scss"],
-  "sourcesContent": [":host {\n    height: 100vh;\n    display: flex;\n    flex-direction: column;\n    overflow: hidden;\n    align-items: center;\n}\n\n.navbar {\n    width: 100%;\n}\n\n.view {\n    width: 100%;\n    flex-grow: 1;\n    overflow-y: auto;\n    background: linear-gradient(rgba(0, 0, 0, 0.06) 0px, rgba(0, 0, 0, 0) 50px);\n    padding-bottom: 80px;\n\n    /* Firefox scrollbar styling */\n    scrollbar-width: thin;\n    scrollbar-color: var(--c-accent-0) var(--c-background-1);\n}\n\n/* Custom scrollbar for Webkit browsers */\n.view::-webkit-scrollbar {\n    width: 8px;\n    height: 8px;\n}\n\n.view::-webkit-scrollbar-track {\n    background: var(--c-background-1);\n}\n\n.view::-webkit-scrollbar-thumb {\n    background-color: var(--c-accent-0);\n    border-radius: 4px;\n    border: 2px solid var(--c-background-1);\n}\n"],
-  "mappings": ";AAAA;AACI,UAAA;AACA,WAAA;AACA,kBAAA;AACA,YAAA;AACA,eAAA;;AAGJ,CAAA;AACI,SAAA;;AAGJ,CAAA;AACI,SAAA;AACA,aAAA;AACA,cAAA;AACA,cAAA,gBAAA,KAAA,CAAA,EAAA,CAAA,EAAA,CAAA,EAAA,MAAA,GAAA,EAAA,KAAA,CAAA,EAAA,CAAA,EAAA,CAAA,EAAA,GAAA;AACA,kBAAA;AAGA,mBAAA;AACA,mBAAA,IAAA,cAAA,IAAA;;AAIJ,CAbA,IAaA;AACI,SAAA;AACA,UAAA;;AAGJ,CAlBA,IAkBA;AACI,cAAA,IAAA;;AAGJ,CAtBA,IAsBA;AACI,oBAAA,IAAA;AACA,iBAAA;AACA,UAAA,IAAA,MAAA,IAAA;;",
-  "names": []
-}
