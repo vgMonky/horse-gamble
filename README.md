@@ -1,5 +1,5 @@
 # Horse Gamble
-Horse gamble frontend system for blockchain users
+The Horse Gamble game built on top of a frontend system for blockchain dApp
 
 Live preview: https://vgmonky.github.io/horse-gamble/races
 
